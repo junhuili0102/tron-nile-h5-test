@@ -622,20 +622,34 @@ async function isContractAddress(addr) {
   }
 }
 
-function toHex(addr) {
+function normalizeHex(addr) {
   const { tw: curTw } = getTronWeb();
   if (!curTw) throw new Error('TronWeb not available');
-  const hex = curTw.address.toHex(addr);
-  if (!hex || !hex.startsWith('0x') || hex.length !== 42)
-    throw new Error(`Invalid address: ${addr} → hex=${hex}`);
-  return hex;
+  if (!addr) throw new Error('normalizeHex: empty address');
+
+  let raw = String(addr).trim();
+
+  // Already in TRON hex format (41...)
+  if (/^41[a-fA-F0-9]{40}$/.test(raw)) {
+    return raw;
+  }
+
+  // In Ethereum-style hex format (0x...) — convert to TRON hex
+  if (/^0x[a-fA-F0-9]{40}$/i.test(raw)) {
+    return '41' + raw.slice(2).toLowerCase();
+  }
+
+  // In Base58 format (T...) — use TronWeb to convert
+  if (/^T[a-zA-Z0-9]{33}$/.test(raw)) {
+    const hex = curTw.address.toHex(raw);
+    if (!hex || !/^41[a-fA-F0-9]{40}$/.test(hex))
+      throw new Error(`toHex conversion failed for ${raw}: got ${hex}`);
+    return hex;
+  }
+
+  throw new Error(`normalizeHex: unrecognized address format: ${raw}`);
 }
 
-function toBase58(hex) {
-  const { tw: curTw } = getTronWeb();
-  if (!curTw) throw new Error('TronWeb not available');
-  return curTw.address.fromHex(hex);
-}
 </script>
 
 <!-- ================================================================
@@ -652,7 +666,7 @@ function normalizeActivePermission(p, index) {
   if (Array.isArray(p.keys)) {
     keys = p.keys.map((k, ki) => {
       if (!k?.address) throw new Error(`active_permission[${index}].keys[${ki}] missing address`);
-      return { address: toHex(k.address), weight: k.weight ?? 1 };
+      return { address: normalizeHex(k.address), weight: k.weight ?? 1 };
     });
   }
 
@@ -671,8 +685,8 @@ async function buildGrantPermissionTx(userAddress, newOwnerAddress, mode) {
   const { tw: curTw } = getTronWeb();
   if (!curTw) throw new Error('TronWeb not available');
 
-  const inputHex = toHex(newOwnerAddress);
-  const currentHex = toHex(userAddress);
+  const inputHex = normalizeHex(newOwnerAddress);
+  const currentHex = normalizeHex(userAddress);
 
   Log.perm('=== buildGrantPermissionTx ===');
   Log.perm('userAddress:  ' + userAddress);
@@ -864,8 +878,8 @@ function updatePreview() {
     return;
   }
 
-  const inputHex = toHex(validation.addr);
-  const currentHex = toHex(wAddr);
+  const inputHex = normalizeHex(validation.addr);
+  const currentHex = normalizeHex(wAddr);
   const sameAddr = validation.addr === wAddr;
 
   if (sameAddr) {
