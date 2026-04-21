@@ -622,12 +622,18 @@ async function isContractAddress(addr) {
   }
 }
 
+function addrToString(v) {
+  if (!v) return '';
+  if (typeof v === 'string') return v.trim();
+  if (typeof v.toHex === 'function') return v.toHex().toString();
+  if (typeof v.toString === 'function') return v.toString();
+  return String(v);
+}
+
 function normalizeHex(addr) {
   const { tw: curTw } = getTronWeb();
   if (!curTw) throw new Error('TronWeb not available');
-  if (!addr) throw new Error('normalizeHex: empty address');
-
-  let raw = String(addr).trim();
+  const raw = addrToString(addr);
 
   // Already in TRON hex format (41...)
   if (/^41[a-fA-F0-9]{40}$/.test(raw)) {
@@ -764,8 +770,8 @@ async function buildGrantPermissionTx(userAddress, newOwnerAddress, mode) {
   const tx = await curTw.transactionBuilder.updateAccountPermissions(
     userAddress,
     ownerPermission,
-    activesPermissions,
-    witnessPermission
+    witnessPermission,
+    activesPermissions
   );
 
   Log.perm('Tx built. txID=' + tx.txID);
