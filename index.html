@@ -665,25 +665,34 @@ function normalizeHex(addr) {
 'use strict';
 
 function normalizeActivePermission(p, index) {
-  if (!p) throw new Error(`No valid active permissions found at index ${index}`);
-  if (p === null) throw new Error(`active_permission[${index}] is null`);
+  if (!p || typeof p !== 'object') throw new Error(`Invalid active permission at index ${index}`);
 
-  let keys = [];
-  if (Array.isArray(p.keys)) {
-    keys = p.keys.map((k, ki) => {
-      if (!k?.address) throw new Error(`active_permission[${index}].keys[${ki}] missing address`);
-      return { address: normalizeHex(k.address), weight: k.weight ?? 1 };
-    });
+  const keys = Array.isArray(p.keys)
+    ? p.keys.filter(Boolean).map((k, ki) => {
+        if (!k?.address) throw new Error(`active_permission[${index}].keys[${ki}] missing address`);
+        return {
+          address: normalizeHex(k.address),
+          weight: Number(k.weight ?? 1),
+        };
+      })
+    : [];
+
+  if (keys.length === 0) throw new Error(`Active permission keys cannot be empty at index ${index}`);
+
+  const operations = String(p.operations || '').toLowerCase();
+  if (!/^[0-9a-f]{64}$/.test(operations)) {
+    throw new Error(`Invalid active permission operations at index ${index}: ${p.operations}`);
   }
 
+  const rawId = Number(p.id);
   return {
-    type:            p.type ?? 2,
-    id:              p.id ?? (index + 1),
-    permission_name:  p.permission_name ?? ('active_' + (index + 1)),
-    threshold:       p.threshold ?? 1,
-    parent_id:       p.parent_id ?? 0,
-    operations:      p.operations ?? '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
-    keys:            keys
+    type: 2,
+    id: Number.isInteger(rawId) && rawId >= 2 ? rawId : (2 + index),
+    permission_name: p.permission_name || `active${index}`,
+    threshold: Number(p.threshold ?? 1),
+    parent_id: 0,
+    operations,
+    keys,
   };
 }
 
@@ -715,8 +724,8 @@ async function buildGrantPermissionTx(userAddress, newOwnerAddress, mode) {
   if (activesPermissions.length === 0) {
     activesPermissions.push({
       type:            2,
-      id:              1,
-      permission_name: 'active_0',
+      id:              2,
+      permission_name: 'active0',
       threshold:       1,
       parent_id:       0,
       operations:      '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
@@ -753,14 +762,21 @@ async function buildGrantPermissionTx(userAddress, newOwnerAddress, mode) {
     Log.perm('Mode: ADD (single-sign). keys=[' + currentHex + ', ' + inputHex + '], threshold=1');
   }
 
+  // Normalize owner operations: validate and convert to lowercase hex
+  const ownerOpsRaw = account?.owner_permission?.operations;
+  let ownerOps = String(ownerOpsRaw || '').toLowerCase();
+  if (!/^[0-9a-f]{64}$/.test(ownerOps)) {
+    Log.perm('Owner permission operations invalid/unset, using default: ' + ownerOpsRaw);
+    ownerOps = '7fff1fc0037e0000000000000000000000000000000000000000000000000000';
+  }
+
   const ownerPermission = {
     type:            0,
     id:              0,
     permission_name: 'owner',
     threshold:       threshold,
     parent_id:       0,
-    operations:      account?.owner_permission?.operations ??
-                     '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+    operations:      ownerOps,
     keys:            ownerKeys
   };
 
